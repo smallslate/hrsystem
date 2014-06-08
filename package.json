@@ -1,0 +1,17 @@
+{
+	"name": "hrsystem",
+	"version": "0.0.1",
+	"description": "HR System",
+	"dependencies": {
+		"express": "*",
+		"jade": "*"
+	},
+	"devDependencies": {
+	    "grunt": "*",
+	    "grunt-contrib-coffee": "*", 
+	    "grunt-concurrent": "*",
+	    "grunt-nodemon": "*",
+	    "load-grunt-tasks": "*",
+	    "grunt-contrib-watch": "*"	
+	}	
+}
