@@ -4,14 +4,16 @@
 	"description": "HR System",
 	"dependencies": {
 		"express": "*",
-		"jade": "*"
+		"jade": "*",
+		"config": "*"
 	},
 	"devDependencies": {
 	    "grunt": "*",
+	    "grunt-env": "*",	
 	    "grunt-contrib-coffee": "*", 
 	    "grunt-concurrent": "*",
 	    "grunt-nodemon": "*",
 	    "load-grunt-tasks": "*",
-	    "grunt-contrib-watch": "*"	
+	    "grunt-contrib-watch": "*" 
 	}	
 }

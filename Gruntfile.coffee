@@ -1,10 +1,12 @@
 module.exports = (grunt) ->
+  targetEnv = 'development' 
+	  
   grunt.initConfig
     coffee :
       app:
         expand: true
         cwd: 'src'
-        src: ['*.coffee']
+        src: ['**/*.coffee']
         dest: 'lib/app',
         ext: '.js'
     concurrent:
@@ -29,7 +31,18 @@ module.exports = (grunt) ->
       app:
         files: 'src/**/*.coffee'
         tasks: ['coffee:app']
-                
-  require('load-grunt-tasks') grunt;      	
-  grunt.registerTask('default', ['coffee','concurrent']);
+    env:
+      options:
+        NODE_CONFIG_DIR: grunt.option('configDir') || "#{__dirname}/lib/app/config"        
+      development:
+        NODE_ENV: 'development'	
+      test:
+        NODE_ENV: 'test'
+      staging:
+        NODE_ENV: 'staging'
+      production:
+        NODE_ENV: 'production' 
+  	
+  require('load-grunt-tasks') grunt;          
+  grunt.registerTask('default', ["env:#{targetEnv}", 'coffee','concurrent']);
   

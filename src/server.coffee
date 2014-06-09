@@ -1,10 +1,19 @@
-http = require "http"
-express = require "express"
-app = express()
+http = require 'http'
+express = require 'express'
+utils = require './utils'
 
-app.set('port', process.env.PORT || 3000);
+class Application
+  constructor: ->
+    @app = @
+    @server = express()
+    @namespaces =
+      utils: utils
+      config: utils.config
+     
+    @initRoutes()  
+    http.createServer(@server).listen(process.env.PORT)
+    
+  initRoutes: ()->
+    @namespaces.utils.router(@app)   
 
-
-
-http.createServer(app).listen app.get('port'), ->
-  console.log("server started")
+module.exports = new Application()
