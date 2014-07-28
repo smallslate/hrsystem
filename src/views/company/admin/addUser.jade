@@ -1,0 +1,19 @@
+extends /templates/layout
+block head
+  title Add New Employee
+  <script src="/javascript/hrsystem/apps/admin/addUser.js"></script>
+block content
+  .container(style="margin-top:25px;" ng-app="addUser" ng-controller="addUserCtrl")
+    form.form-horizontal(role="form")     
+      .form-group
+        label.col-sm-2.control-label(for="userId") Employee User Id
+        .col-sm-10
+          input.form-control#userId(placeholder="Enter Employee User Id" data-ng-model="userObj.userId")
+      .form-group
+        label.col-sm-2.control-label(for="email") Employee Email
+        .col-sm-10
+          input.form-control#email(type="email" placeholder="Enter Employee Email" data-ng-model="userObj.email")
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type="submit" ng-click ="addUser()") Save   
+

@@ -1,0 +1,49 @@
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+}
+
+.navbar-wrapper > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 0px;
+}
+.navbar-wrapper .navbar .container {
+  width: auto;
+}
+.nav>li>a {
+  color: #777;
+  font-weight:bold;
+}
+.customNavBar {
+  background-color: white;
+  border-bottom: 0px;
+}
+.navBarBottom {
+  border-bottom: 1px solid #e7e7e7;
+}
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .navbar-wrapper .container {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+}

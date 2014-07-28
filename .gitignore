@@ -45,5 +45,5 @@ Icon?
 *.iws
 .idea/
 
-lib
+app
 node_modules

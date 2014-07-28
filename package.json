@@ -5,7 +5,11 @@
 	"dependencies": {
 		"express": "*",
 		"jade": "*",
-		"config": "*"
+		"sequelize":"*",
+		"mysql":"*",
+		"express-session":"*",
+		"body-parser":"*",
+		"nodemailer":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",
@@ -14,6 +18,7 @@
 	    "grunt-concurrent": "*",
 	    "grunt-nodemon": "*",
 	    "load-grunt-tasks": "*",
-	    "grunt-contrib-watch": "*" 
+	    "grunt-contrib-watch": "*",
+	    "grunt-contrib-copy":"*"
 	}	
 }
