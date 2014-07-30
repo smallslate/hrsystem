@@ -31,9 +31,7 @@ class Application
     @server.locals.basedir = path.join __dirname, 'views'
     @namespaces =
       models: factory.db.models
-      mail: factory.mail
-    require("./controllers")(@app)
-    
-      
+      mail: factory.mail 
+    require('./routes')(@app)
 module.exports = new Application()      
     

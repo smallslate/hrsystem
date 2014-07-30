@@ -1,4 +1,6 @@
 UserDao = require('../dao/userDao')
+S = require('string')
+uuid = require('node-uuid');
 
 module.exports = (app)-> 
   server = app.server
@@ -11,14 +13,13 @@ module.exports = (app)->
   server.post "/saveUser",(req,res)->
     userObj = req.body.userObj
     userObj.companyuid = req.session.company.companyuid
-    userDaoObj.addUser(req.body.userObj)
+    userDaoObj.addUser(userObj)
     .then (user)->
-      mailOptions = 
-        from: 'support@smallslate.com'
-        to: user.email
-        subject: 'User Verification from '+req.session.company.companyName
-        text: 'Testing email'
-      mail.transporter.sendMail mailOptions, (error, info)->
+      console.log  mail.getNewUserEmailObj()
+      mailOptions = mail.getNewUserEmailObj()
+      mailOptions.subject = S(mailOptions.subject).template({'company':req.session.company.companyName}).s
+      mailOptions.to = user.email
+      mail.transporter.sendMail mailOptions, (error, info)=>
         if error
           console.log(error);
         else
@@ -27,4 +28,4 @@ module.exports = (app)->
         console.log 'error inserting user'
         res.send(error)
 
-
+        

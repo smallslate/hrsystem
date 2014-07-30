@@ -9,7 +9,9 @@
 		"mysql":"*",
 		"express-session":"*",
 		"body-parser":"*",
-		"nodemailer":"*"
+		"nodemailer":"*",
+		"string":"*",
+		"node-uuid":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",
