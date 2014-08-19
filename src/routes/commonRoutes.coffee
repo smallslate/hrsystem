@@ -1,10 +1,7 @@
-CommonController = require('../controllers/commonController')
-
+CommonCtrl = require('../controllers/commonCtrl')
 module.exports = (app)->
   server = app.server
-  commonControllerObj = new CommonController(app)
+  commonCtrl = new CommonCtrl(app)
 
-  server.all '/:companyId/*',commonControllerObj.updateCompanyInSession
+  server.all '/c/:companyId/*',commonCtrl.updateCompanyInSession
 
-  server.get '/:companyId/signin',(req,res)->
-    res.render("company/signin")

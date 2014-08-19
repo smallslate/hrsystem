@@ -3,8 +3,6 @@ express = require 'express'
 path = require 'path'
 session = require('express-session')
 bodyParser = require('body-parser')
-factory = require("./factory")()
-
 class Application
   constructor: ->
     @app = @
@@ -24,14 +22,14 @@ class Application
       secret: 'kqsdjfmlksdhfhzirzeoibrzecrbzuzefcuercazeafxzeokwdfzeijfxcerig',
       name:'mysystem',
       rolling :true,
+      resave: true,
+      saveUninitialized: true,
       cookie:
         secure: false
-    @server.use bodyParser() 
+    @server.use bodyParser.json()
+    @server.use(bodyParser.urlencoded({extended: false}))
     @server.use express.static __dirname+'/public'
     @server.locals.basedir = path.join __dirname, 'views'
-    @namespaces =
-      models: factory.db.models
-      mail: factory.mail 
     require('./routes')(@app)
 module.exports = new Application()      
     

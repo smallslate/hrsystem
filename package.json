@@ -11,7 +11,9 @@
 		"body-parser":"*",
 		"nodemailer":"*",
 		"string":"*",
-		"node-uuid":"*"
+		"node-uuid":"*",
+		"q":"*",
+		"bcrypt-nodejs":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",

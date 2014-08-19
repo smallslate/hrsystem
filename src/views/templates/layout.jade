@@ -15,6 +15,14 @@ html
     title Welcome
   body
     include menu
-    div.container(style='margin-top:50px;')
+    .container(style='margin-top:50px;')
+      if message && message.successMsg
+        .container.paddingTop5
+          .alert.alert-success.alignCenter 
+            b #{message.successMsg}
+      if message && message.errMsg
+        .container.paddingTop5
+          .alert.alert-danger.alignCenter 
+            b #{message.errMsg}
       block content
     include footer

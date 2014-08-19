@@ -15,9 +15,8 @@ dbConfig =
     maxIdleTime: 30
 
 dbModels = [{'name':'Companies','path':'../models/companies'},
-            {'name':'Users','path':'../models/users'},
-            {'name':'UserVerifications','path':'../models/userVerifications'}
-           ]    
+            {'name':'Employees','path':'../models/employee'},
+            {'name':'Verification','path':'../models/verification'}]    
 
 class DB
   constructor:->
