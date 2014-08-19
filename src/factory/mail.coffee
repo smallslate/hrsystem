@@ -7,8 +7,7 @@ class Mail
     @transporter = nodemailer.createTransport
       service: 'Gmail'
       auth:
-        user: 'support@smallslate.com'
-        pass: 'facebooksathya' 
+        user: 'support@smallslate.com' 
     return @mail
 
   getNewUserEmailObj: (valuesObj)->
