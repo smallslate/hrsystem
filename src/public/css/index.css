@@ -18,3 +18,7 @@ body {
 .noscreen {
   display: none;
 }
+
+.breadcrumb {
+  margin-bottom: 5px;	
+}

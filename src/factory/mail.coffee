@@ -8,6 +8,7 @@ class Mail
       service: 'Gmail'
       auth:
         user: 'support@smallslate.com'
+ 
     return @mail
 
   getNewUserEmailObj: (valuesObj)->
@@ -24,12 +25,12 @@ class Mail
                     <div>Your {{companyName}} account has been created.</div>
                     <div>User Id : <b>{{userId}}</b></div>
                     <div>Employee Id : <b>{{emplId}}</b></div>
-                    <p>Use above mentioned User Id to signin and maintain all your information including your time sheets and other important day to day activities at {{companyName}}</p>
+                    <p>Use above mentioned User Id to Sign in and maintain all your information including time sheets and other important day to day activities at {{companyName}}</p>
                     <p>Click <a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword">Here </a> or below button to verify your account</p>
                     <div><a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:10px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b> Verify My Account</a></b></div>
                     <br/>
                     Sincerely,
-                    <div>Teknest Team</div>
+                    <div>{{companyName}} Team</div>
                   </div>  
                 </div>
               </body>

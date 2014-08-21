@@ -23,7 +23,7 @@ class EmployeeCtrl
       valuesObj = 
         'to':empObj.email
         'companyName':empObj.companyName
-        'userName':empObj.firstName
+        'userName':empObj.firstName.toUpperCase()
         'userId':empObj.signInId
         'companyId':empObj.companyId
         'emplId':empObj.emplId

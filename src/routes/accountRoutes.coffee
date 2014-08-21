@@ -18,10 +18,7 @@ module.exports = (app)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)
     .then (verificationObj)->
       verificationObj.firstName = verificationObj.firstName.toUpperCase()
-      if req.params.type == 'new'
-        res.render("common/createPassword",{verificationObj:verificationObj,isNewUser:true})
-      else
-        res.render("common/createPassword",{verificationObj:verificationObj,isNewUser:false})    
+      res.render("common/createPassword",{verificationObj:verificationObj})    
     ,(err) ->
       if err.message =='password.link.invalid'
         res.render("common/signin",{message:messages[err.message]})
