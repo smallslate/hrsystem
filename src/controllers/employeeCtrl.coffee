@@ -23,14 +23,15 @@ class EmployeeCtrl
       valuesObj = 
         'to':empObj.email
         'companyName':empObj.companyName
+        'userName':empObj.firstName
+        'userId':empObj.signInId
         'companyId':empObj.companyId
+        'emplId':empObj.emplId
         'signInId': empObj.signInId
         'verificationId':verificationId
       mailOptions = mail.getNewUserEmailObj(valuesObj)
       mail.transporter.sendMail mailOptions
-      P.invoke(mail.transporter, "sendMail", mailOptions)
-      .then (empObj) ->
-        return empObj
+      return empObj
     ,(err)->
       console.log err    
 

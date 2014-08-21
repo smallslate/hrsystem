@@ -7,6 +7,14 @@ body {
   text-align:center;
 }
 
+.paddingTop10 {
+  padding-top: 10px;
+}
+
 .paddingTop5 {
   padding-top: 5px;
+}
+
+.noscreen {
+  display: none;
 }

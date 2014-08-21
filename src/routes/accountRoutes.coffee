@@ -5,19 +5,29 @@ messages = require('../utils/messages').code
 module.exports = (app)->
   server = app.server
 
+
+  server.get "/c/:companyId/signin",(req,res)->
+    res.render("common/signin")
+
+
+  server.get "/c/:companyId/recovery",(req,res)->
+    res.render("common/accountRecovery")
+
+
   server.get "/c/:companyId/:signInId/:verificationId/:type/createPassword",(req,res)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)
     .then (verificationObj)->
       verificationObj.firstName = verificationObj.firstName.toUpperCase()
       if req.params.type == 'new'
-        res.render("common/createPassword",{verificationObj:verificationObj})
+        res.render("common/createPassword",{verificationObj:verificationObj,isNewUser:true})
       else
-        res.render("common/createPassword",{verificationObj:verificationObj})    
+        res.render("common/createPassword",{verificationObj:verificationObj,isNewUser:false})    
     ,(err) ->
       if err.message =='password.link.invalid'
-        res.render("common/signin",{message:messages['password.link.invalid']})
+        res.render("common/signin",{message:messages[err.message]})
       else
         res.render("common/createPassword",{message:messages['server.error']})
+
 
   server.post "/c/:companyId/:signInId/:verificationId/setNewPassword",(req,res)->
     P.invoke(accountCtrl, "setNewPassword",req.params.verificationId,req.params.signInId,req.params.companyId,req.body.newPassword,req.body.reEnterNewPassword)
@@ -25,7 +35,22 @@ module.exports = (app)->
       res.render("common/signin",{message:messages['password.success']}) 
     ,(err) ->
       if err.message =='password.link.invalid'
-        res.render("common/signin",{message:messages['password.link.invalid']})
+        res.render("common/signin",{message:messages[err.message]})
       else   
-        res.render("common/createPassword",{message:messages['server.error']})   
+        res.render("common/createPassword",{message:messages['server.error']}) 
+
+
+  server.post "/c/:companyId/accountRecovery",(req,res)->
+    P.invoke(accountCtrl, "accountRecovery",req.params,req.body)
+    .then (obj)->
+      if req.body.recovery =='forgotPassword'
+        res.render("common/signin",{message:messages['password.recovery.email.sent']})
+      else
+        res.render("common/signin",{message:messages['user.recovery.email.sent']})   
+    ,(err) ->
+      if err.message in ['password.recovery.userid.notvalid','password.recovery.useremail.notvalid','password.recovery.option.notvalid']
+        res.render("common/accountRecovery",{message:messages[err.message]})
+      else 
+        console.log err  
+        res.render("common/accountRecovery",{message:messages['server.error']})        
     

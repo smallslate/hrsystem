@@ -32,7 +32,7 @@ module.exports = (sequelize,DataTypes)->
     isAccountLocked:
       type: DataTypes.BOOLEAN
       defaultValue: true   
-    companyuid:
-      type:DataTypes.BIGINT
+    companyId:
+      type: DataTypes.STRING(20)
       allowNull: false  
   })	

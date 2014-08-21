@@ -1,0 +1,59 @@
+extends /templates/layout
+block head
+  link(href="/css/signin.css" rel="stylesheet")
+  title Account Recovery
+  script(type='text/javascript').
+    function onForgotPasswordClick() {
+      $("#forgotPassword").show(300);
+      $("#forgotUserId").hide(300);
+      $("#continue").show();
+    }
+
+    function onForgotUserIdClick() {
+      $("#forgotPassword").hide(300);
+      $("#forgotUserId").show(300);
+      $("#continue").show();
+    }
+
+    function onContinueClick() {
+      selectedVal = $('input:radio[name=recovery]:checked').val();
+      if(selectedVal =='forgotPassword') {
+        userIdVal = $("#userId").val()
+        if(!userIdVal || userIdVal.length<4) {
+          alert("Please enter valid user id");
+          return false;
+        }
+      } else if(selectedVal =='forgotUserId') {
+        emailVal = $("#emailAddress").val()
+        if(!emailVal || emailVal.length<5) {
+          alert("Please enter valid email address");
+          return false;
+        }
+      } else {
+        alert("Please select valid option");
+        return false;
+      }
+      return true;
+    }
+
+block content
+  .container
+    .panel.panel-primary
+      .panel-heading Having trouble signing in?
+      .panel-body
+        form(action="/c/#{company.companyId}/accountRecovery" method="post")
+          div
+            input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()") 
+            label.small I don't know my password
+            div.noscreen#forgotPassword
+              div.small To reset your password, enter the user id you use to sign in.
+              input#userId(placeholder="User Id" name="userId")
+          div
+            input(type="radio" name="recovery" value="forgotUserId" onClick="onForgotUserIdClick()") 
+            label.small I don't know my user id
+            div.noscreen#forgotUserId
+              div.small Enter the email address associated with your account. 
+              input#emailAddress(placeholder="Email Address" type="email" name="emailAddress")
+            div.paddingTop10.noscreen#continue
+              button.btn.btn-primary.btn-sm(type="submit" onClick="return onContinueClick()") Continue
+

@@ -10,7 +10,6 @@ module.exports = (app)->
 
   server.post "/u/addEmployee",(req,res)->
   	emplObj = req.body.empObj
-  	emplObj.companyuid = req.session.company.companyuid
   	emplObj.companyId = req.session.company.companyId
   	emplObj.companyName = req.session.company.companyName
 
