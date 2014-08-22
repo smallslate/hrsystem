@@ -38,7 +38,7 @@ module.exports = (app)->
 
 
   server.post "/c/:companyId/accountRecovery",(req,res)->
-    P.invoke(accountCtrl, "accountRecovery",req.params,req.body)
+    P.invoke(accountCtrl, "accountRecovery",req.params,req.body,req.session.company.companyName)
     .then (obj)->
       if req.body.recovery =='forgotPassword'
         res.render("common/signin",{message:messages['password.recovery.email.sent']})

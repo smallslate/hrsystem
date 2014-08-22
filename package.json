@@ -13,7 +13,8 @@
 		"string":"*",
 		"node-uuid":"*",
 		"q":"*",
-		"bcrypt-nodejs":"*"
+		"bcrypt-nodejs":"*",
+		"moment":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",

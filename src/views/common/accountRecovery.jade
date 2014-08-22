@@ -36,24 +36,33 @@ block head
       return true;
     }
 
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/signin") Home
+    li.active Account Recovery
+
 block content
-  .container
     .panel.panel-primary
-      .panel-heading Having trouble signing in?
+      .panel-heading 
+        b Having trouble signing in?
       .panel-body
         form(action="/c/#{company.companyId}/accountRecovery" method="post")
           div
-            input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()") 
-            label.small I don't know my password
+            label
+              input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()")
+              span I don't know my password
             div.noscreen#forgotPassword
               div.small To reset your password, enter the user id you use to sign in.
               input#userId(placeholder="User Id" name="userId")
           div
-            input(type="radio" name="recovery" value="forgotUserId" onClick="onForgotUserIdClick()") 
-            label.small I don't know my user id
+            label
+              input(type="radio" name="recovery" value="forgotUserId" onClick="onForgotUserIdClick()") 
+              span I don't know my user id
             div.noscreen#forgotUserId
               div.small Enter the email address associated with your account. 
               input#emailAddress(placeholder="Email Address" type="email" name="emailAddress")
             div.paddingTop10.noscreen#continue
               button.btn.btn-primary.btn-sm(type="submit" onClick="return onContinueClick()") Continue
+        a(href="/c/#{company.companyId}/signin") Back Home      
 

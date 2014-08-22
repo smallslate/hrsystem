@@ -16,6 +16,7 @@ html
   body
     include menu
     .container(style='margin-top:50px;')
+      block breadcrumbs
       if message && message.successMsg
         .alert.alert-success.alignCenter 
           b #{message.successMsg}

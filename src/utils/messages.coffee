@@ -8,4 +8,4 @@ module.exports =
     'password.recovery.userid.notvalid':{'errMsg':'User id entered cannot be found. Please enter valid user id.'}
     'password.recovery.useremail.notvalid':{'errMsg':'Email address entered cannot be found. Please enter valid email address.'}
     'password.recovery.email.sent':{'successMsg':'Verification email is sent to your primary email id associated with your account. Please click on verifiction link to reset your password.'}
-    'user.recovery.email.sent':{'successMsg':'Your user id details are sent to email id associated with your account. Please check your email for details'}
+    'user.recovery.email.sent':{'successMsg':'Your account details are sent to email id associated with your account. Please check your email for details'}

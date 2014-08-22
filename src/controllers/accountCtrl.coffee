@@ -3,6 +3,7 @@ accountDao = require('../dao/accountDao')
 bcrypt = require("bcrypt-nodejs")
 mail = require('../factory/mail')
 uuid = require("node-uuid")
+moment = require("moment")
 
 class AccountCtrl
 
@@ -10,7 +11,12 @@ class AccountCtrl
     P.invoke(accountDao,"getResetPasswordVerificationObj",verificationId,signInId,companyId)
     .then (verificationObj) ->
       if verificationObj?.dataValues
-        return verificationObj.dataValues
+        expireDate = moment(verificationObj.dataValues.createdAt).add('days', 7)
+        if expireDate.isAfter(moment())
+          return verificationObj.dataValues
+        else  
+          verificationObj.destroy() 
+          throw new Error('password.link.invalid')
       else
         throw new Error('password.link.invalid')
 
@@ -35,7 +41,7 @@ class AccountCtrl
       throw new Error('password.not.match') 
 
 
-  accountRecovery: (params,body)->
+  accountRecovery: (params,body,companyName)->
     if body.recovery =='forgotPassword'
       P.invoke(accountDao,"getUserBySigninIdAndCompanyId",body.userId,params.companyId)
       .then (empObj)->
@@ -46,6 +52,7 @@ class AccountCtrl
             valuesObj = 
               'to':empObj.email
               'companyId':empObj.companyId
+              'companyName': companyName
               'signInId': empObj.signInId
               'verificationId':verificationId
             mailOptions = mail.getForgotPasswordObj(valuesObj)
@@ -59,7 +66,8 @@ class AccountCtrl
         if empObj
           valuesObj = 
               'to':empObj.email
-              'signInId': empObj.signInId
+              'userId': empObj.signInId
+              'companyName': companyName
           mailOptions = mail.getForgotUserIdObj(valuesObj)
           mail.transporter.sendMail mailOptions 
           return true
