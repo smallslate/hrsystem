@@ -1,0 +1,16 @@
+extends /templates/authLayout
+block head
+  title Account Settings
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li.active Account Settings
+block content
+  .container
+    .row
+      .col-xs-12.col-sm-6
+        .panel.panel-primary
+          .panel-heading Password
+          .panel-body
+            a(href="/c/#{company.companyId}/a/changePassword") Change Password

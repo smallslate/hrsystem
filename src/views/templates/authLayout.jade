@@ -15,14 +15,14 @@ html
     title Welcome
   body
     div#wrap
-      include menu
+      include authMenu
       .container
         block breadcrumbs
         if message && message.successMsg
-          .alert.alert-success.alignCenter 
+          .alert.alert-success.alignCenter.container 
             b #{message.successMsg}
         if message && message.errMsg
-          .alert.alert-danger.alignCenter 
+          .alert.alert-danger.alignCenter.container 
             b #{message.errMsg}
-        block content
+      block content
     include footer

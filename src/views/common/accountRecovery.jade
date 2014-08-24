@@ -5,25 +5,25 @@ block head
   script(type='text/javascript').
     function onForgotPasswordClick() {
       $("#forgotPassword").show(300);
-      $("#forgotUserId").hide(300);
+      $("#forgotSignInId").hide(300);
       $("#continue").show();
     }
 
-    function onForgotUserIdClick() {
+    function onForgotSignInIdClick() {
       $("#forgotPassword").hide(300);
-      $("#forgotUserId").show(300);
+      $("#forgotSignInId").show(300);
       $("#continue").show();
     }
 
     function onContinueClick() {
       selectedVal = $('input:radio[name=recovery]:checked').val();
       if(selectedVal =='forgotPassword') {
-        userIdVal = $("#userId").val()
-        if(!userIdVal || userIdVal.length<4) {
-          alert("Please enter valid user id");
+        signInIdVal = $("#signInId").val()
+        if(!signInIdVal || signInIdVal.length<4) {
+          alert("Please enter valid SignIn id");
           return false;
         }
-      } else if(selectedVal =='forgotUserId') {
+      } else if(selectedVal =='forgotSignInId') {
         emailVal = $("#emailAddress").val()
         if(!emailVal || emailVal.length<5) {
           alert("Please enter valid email address");
@@ -53,13 +53,13 @@ block content
               input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()")
               span I don't know my password
             div.noscreen#forgotPassword
-              div.small To reset your password, enter the user id you use to sign in.
-              input#userId(placeholder="User Id" name="userId")
+              div.small To reset your password, enter the SignIn id you use to sign in.
+              input#signInId(placeholder="SignIn Id" name="signInId")
           div
             label
-              input(type="radio" name="recovery" value="forgotUserId" onClick="onForgotUserIdClick()") 
-              span I don't know my user id
-            div.noscreen#forgotUserId
+              input(type="radio" name="recovery" value="forgotSignInId" onClick="onForgotSignInIdClick()") 
+              span I don't know my SignIn id
+            div.noscreen#forgotSignInId
               div.small Enter the email address associated with your account. 
               input#emailAddress(placeholder="Email Address" type="email" name="emailAddress")
             div.paddingTop10.noscreen#continue

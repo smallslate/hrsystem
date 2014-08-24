@@ -2,12 +2,26 @@ extends /templates/layout
 block head
   link(href="/css/signin.css" rel="stylesheet")
   title Welcome to #{company.companyName}
+  script(type='text/javascript').
+    function validateForm() {
+      userNameVal = $("#username").val();
+      passwordVal = $("#password").val();
+      if(!userNameVal || userNameVal.length<4) {
+        alert('Please enter valid SignIn Id');
+        return false;
+      } else if(!passwordVal || passwordVal.length<4) {
+        alert('Please enter valid Password');
+        return false;
+      } 
+      return true;
+    }
+
 block content
   .container
     h2.form.form-signin-heading.alignCenter One account. All your data @ #{company.companyName}
-    form.form-signin(role="form")
-      input.form-control(placeholder="User Id" required autofocus)
-      input.form-control(type="password" placeholder="Password" required)
-      button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign in
+    form.form-signin(action="/c/#{company.companyId}/signIn" method="post")
+      input.form-control#username(placeholder="SignIn Id" required autofocus name="username")
+      input.form-control#password(type="password" name="password" placeholder="Password" required)
+      button.btn.btn-lg.btn-primary.btn-block(type="submit" onClick="validateForm()") Sign in
       a.small(href="/c/#{company.companyId}/recovery") 
         h6 Having trouble signing in?

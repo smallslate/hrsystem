@@ -14,7 +14,10 @@
 		"node-uuid":"*",
 		"q":"*",
 		"bcrypt-nodejs":"*",
-		"moment":"*"
+		"moment":"*",
+		"passport":"*",
+		"passport-local":"*",
+		"cookie-parser":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",

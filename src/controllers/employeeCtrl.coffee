@@ -19,12 +19,11 @@ class EmployeeCtrl
   sendVerificationEmail: (empObj)->
     verificationId = uuid.v4()
     P.invoke(@employeeDao, "saveNewVerification",{'firstName':empObj.firstName,'verificationId':verificationId,'signInId':empObj.signInId,'companyId':empObj.companyId})
-    .then (verificationObj) =>
+    .then (verificationObj) ->
       valuesObj = 
         'to':empObj.email
         'companyName':empObj.companyName
         'userName':empObj.firstName.toUpperCase()
-        'userId':empObj.signInId
         'companyId':empObj.companyId
         'emplId':empObj.emplId
         'signInId': empObj.signInId
