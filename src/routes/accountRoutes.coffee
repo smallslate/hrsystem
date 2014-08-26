@@ -52,7 +52,8 @@ module.exports = (app)->
           if err then  res.render("common/signin",message:messages['user.password.error'])
           req.session.emp= {}
           req.session.emp.name = user.firstName
-          req.session.emp.signInId = user.signInId
+          #req.session.emp.signInId = user.signInId
+          req.session.emp.employeeuid = user.employeeuid
           res.redirect("/c/#{req.session.company.companyId}/a/home")
     authenticate(req, res, next)
 
@@ -70,7 +71,16 @@ module.exports = (app)->
     res.render("common/changePassword")
 
   server.post "/c/:companyId/a/changePassword",(req,res)->
-    P.invoke(accountCtrl, "changePassword",req.session.emp.signInId,req.params.companyId,req.body)
+    P.invoke(accountCtrl, "changePassword",req.session.emp.employeeuid,req.body.currentPassword,req.body.newPassword,req.body.reEnterNewPassword)
+    .then (obj)->
+      res.render("common/accountSetting",{message:messages['password.success']})
+    ,(err) ->
+      req.session.destroy()
+      req.logout()
+      if err?.message?
+        res.render("common/signin",{message:messages[err.message]})
+      else   
+        res.render("common/signin",{message:messages['server.error']})  
 
   server.get "/c/:companyId/:signInId/:verificationId/:type/createPassword",(req,res)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)

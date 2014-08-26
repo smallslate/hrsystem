@@ -10,6 +10,7 @@ module.exports =
     'password.recovery.email.sent':{'successMsg':'Verification email is sent to your primary email id associated with your account. Please click on verifiction link to reset your password'}
     'user.recovery.email.sent':{'successMsg':'Your account details are sent to email id associated with your account. Please check your email for details'}
     'user.password.error':{'errMsg':'SignIn Id or Password did not match'}
+    'user.old.password.incorrect':{'errMsg':'Old Password is incorrect'}
     'user.login.error':{'errMsg':'Please signin again to access your account'}
     'user.signin.required':{'errMsg':'Please Sign in to access this page'}
     'url.not.authorize':{'errMsg':'You do not have access to this page.Please login again to access your account'}

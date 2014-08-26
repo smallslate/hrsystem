@@ -20,7 +20,7 @@ class AccountCtrl
         P.nfcall(bcrypt.compare,password,userObj.hashPassword)
         .then (res)->
           return if res then userObj else null
-    P.invoke(accountDao,"getUserBySigninId",signInId)
+    P.invoke(accountDao,"getAllUserAttributesBySigninId",signInId)
     .then(comparePassword)
 
 
@@ -71,6 +71,27 @@ class AccountCtrl
     else
       throw new Error('password.not.match') 
 
+  changePassword: (employeeuid,oldPassword,newPassword,reenteredPassword)->
+    console.log 'employeeuid=',employeeuid
+    savePasswordHash = (hash)->
+      P.invoke(accountDao,"updateUserPasswordByUid",employeeuid,hash)
+    generateHash = (userObj)->
+      P.nfcall(bcrypt.hash,newPassword,null,null)
+    comparePassword = (userObj)->
+      if !userObj 
+        throw new Error('server.error')
+      else   
+        P.nfcall(bcrypt.compare,oldPassword,userObj.hashPassword)
+        .then (res)->
+          return if res then userObj else throw new Error('user.old.password.incorrect')
+
+    if newPassword == reenteredPassword 
+      P.invoke(accountDao,"getAllUserAttributesByUid",employeeuid)
+      .then(comparePassword)
+      .then(generateHash)
+      .then(savePasswordHash)
+    else
+      throw new Error('password.not.match')
 
   accountRecovery: (params,body,companyName)->
     if body.recovery =='forgotPassword'
@@ -146,7 +167,7 @@ class AccountCtrl
         #replace with common login
         res.render("common/signin",message:messages['user.login.error'])
     else
-      accountDao.getCompanyById(req.params.companyId,true,['companyId','companyName','companyImg'])
+      accountDao.getCompanyById(req.params.companyId,true)
       .then (company)->
         if company 
           req.session.company = res.locals.company = company
