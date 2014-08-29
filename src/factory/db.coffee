@@ -14,9 +14,11 @@ dbConfig =
     maxConnections: 5
     maxIdleTime: 30
 
-dbModels = [{'name':'Companies','path':'../models/companies'},
-            {'name':'Employees','path':'../models/employee'},
-            {'name':'Verification','path':'../models/verification'}]    
+dbModels = [{'name':'Company','path':'../models/company'},
+            {'name':'User','path':'../models/user'},
+            {'name':'Verification','path':'../models/verification'},
+            {'name':'Role','path':'../models/role'},
+            {'name':'PageAccess','path':'../models/pageAccess'}]    
 
 class DB
   constructor:->
@@ -24,12 +26,25 @@ class DB
     @models = {}
     @sequelize = new Sequelize 'hrsystem', 'root', 'sysadm',dbConfig
     @initModels()
+    @initAssociations()
+    @syncModels()
     return @db     
 
   initModels:->
     dbModels.forEach (modelObj) =>
       @models[modelObj.name] = @sequelize.import(modelObj.path)
 
+     
+  initAssociations:->
+    @models['Company'].hasMany(@models['User'])
+    @models['Company'].hasMany(@models['PageAccess'])
+    @models['Company'].hasMany(@models['Role'])
+    @models['User'].hasMany(@models['Role'])
+    @models['Role'].hasMany(@models['User'])
+    @models['Role'].hasMany(@models['PageAccess'])
+    @models['PageAccess'].hasMany(@models['Role'])
+    
+  syncModels:->
     @sequelize.sync()
       .success -> 
         console.log('All tables are created')

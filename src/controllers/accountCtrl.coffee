@@ -71,10 +71,9 @@ class AccountCtrl
     else
       throw new Error('password.not.match') 
 
-  changePassword: (employeeuid,oldPassword,newPassword,reenteredPassword)->
-    console.log 'employeeuid=',employeeuid
+  changePassword: (uuid,oldPassword,newPassword,reenteredPassword)->
     savePasswordHash = (hash)->
-      P.invoke(accountDao,"updateUserPasswordByUid",employeeuid,hash)
+      P.invoke(accountDao,"updateUserPasswordByUid",uuid,hash)
     generateHash = (userObj)->
       P.nfcall(bcrypt.hash,newPassword,null,null)
     comparePassword = (userObj)->
@@ -86,7 +85,7 @@ class AccountCtrl
           return if res then userObj else throw new Error('user.old.password.incorrect')
 
     if newPassword == reenteredPassword 
-      P.invoke(accountDao,"getAllUserAttributesByUid",employeeuid)
+      P.invoke(accountDao,"getAllUserAttributesByUid",uuid)
       .then(comparePassword)
       .then(generateHash)
       .then(savePasswordHash)
@@ -96,16 +95,16 @@ class AccountCtrl
   accountRecovery: (params,body,companyName)->
     if body.recovery =='forgotPassword'
       P.invoke(accountDao,"getUserBySigninIdAndCompanyId",body.signInId,params.companyId)
-      .then (empObj)->
-        if empObj
+      .then (userObj)->
+        if userObj
           verificationId = uuid.v4()
-          P.invoke(accountDao,"saveNewVerification",{'firstName':empObj.firstName,'verificationId':verificationId,'signInId':empObj.signInId,'companyId':empObj.companyId})
+          P.invoke(accountDao,"saveNewVerification",{'displayName':userObj.displayName,'verificationId':verificationId,'signInId':userObj.signInId,'companyId':userObj.companyId})
           .then (verificationObj)->
             valuesObj = 
-              'to':empObj.email
-              'companyId':empObj.companyId
+              'to':userObj.email
+              'companyId':userObj.companyId
               'companyName': companyName
-              'signInId': empObj.signInId
+              'signInId': userObj.signInId
               'verificationId':verificationId
             mailOptions = mail.getForgotPasswordObj(valuesObj)
             mail.transporter.sendMail mailOptions
@@ -114,11 +113,11 @@ class AccountCtrl
           throw new Error('password.recovery.signInId.notvalid')    
     else if body.recovery =='forgotSignInId'
       P.invoke(accountDao,"getUserByEmailIdAndCompanyId",body.emailAddress,params.companyId)
-      .then (empObj)->
-        if empObj
+      .then (userObj)->
+        if userObj
           valuesObj = 
-              'to':empObj.email
-              'signInId': empObj.signInId
+              'to':userObj.email
+              'signInId': userObj.signInId
               'companyName': companyName
           mailOptions = mail.getForgotSignInIdObj(valuesObj)
           mail.transporter.sendMail mailOptions 
@@ -145,7 +144,7 @@ class AccountCtrl
         req.logout()
         res.render("common/signin",message:messages['url.not.authorize'])
 
-      res.locals.emp = req.session.emp
+      res.locals.user.name = req.session.user.displayName
       if previousUrl?
         res.redirect(previousUrl)
       else
@@ -156,7 +155,7 @@ class AccountCtrl
 
 
   updateCompanyInSession:(req,res,next)->
-    if req.session?.company?.companyId
+    if req.session?.company
       if req.params.companyId == req.session.company.companyId
         res.locals.company = req.session.company
         next()
@@ -167,6 +166,9 @@ class AccountCtrl
         #replace with common login
         res.render("common/signin",message:messages['user.login.error'])
     else
+      res.locals= {}
+      req.session.user = null
+      req.logout()
       accountDao.getCompanyById(req.params.companyId,true)
       .then (company)->
         if company 

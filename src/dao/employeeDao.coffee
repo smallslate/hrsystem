@@ -5,7 +5,7 @@ class EmployeeDao
     @models = db.models
 
   saveNewEmployee: (emplObj) ->
-    @models['Employees'].create(emplObj)  
+    @models['User'].create(emplObj)  
 
   saveNewVerification: (verificationObj) ->
     @models['Verification'].create(verificationObj)     	

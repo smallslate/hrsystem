@@ -23,7 +23,6 @@ class Mail
                     <h3>Welcome to {{companyName}}</h3>
                     <div>Your {{companyName}} account has been created.</div>
                     <div>SignIn Id : <b>{{signInId}}</b></div>
-                    <div>Employee Id : <b>{{emplId}}</b></div>
                     <p>Use your SignIn Id to access your account and maintain all your information including timesheets and other important day to day activities at {{companyName}}</p>
                     <p>Click <a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword">Here </a> or below button to verify your account</p>
                     <div><a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:10px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b> Verify My Account</b></a></div>

@@ -5,40 +5,40 @@ class AccountDao
     models['Verification'].find({ where: {verificationId: verificationId,signInId:signInId,companyId:companyId}})    	
 
   updateUserPassword : (signInId,passwordHash) ->
-    models['Employees'].find({ where: {signInId: signInId}})
-    .success (empObj)->
-      empObj.hashPassword = passwordHash
-      empObj.save(['hashPassword'])
+    models['User'].find({ where: {signInId: signInId}})
+    .success (userObj)->
+      userObj.hashPassword = passwordHash
+      userObj.save(['hashPassword'])
 
-  updateUserPasswordByUid : (employeeuid,passwordHash) ->
-    models['Employees'].find({ where: {employeeuid: employeeuid}})
-    .success (empObj)->
-      empObj.hashPassword = passwordHash
-      empObj.save(['hashPassword'])
+  updateUserPasswordByUid : (uuid,passwordHash) ->
+    models['User'].find({ where: {uuid: uuid}})
+    .success (userObj)->
+      userObj.hashPassword = passwordHash
+      userObj.save(['hashPassword'])
 
   getUserBySigninId: (signInId) ->
-    models['Employees'].find({ where: {signInId: signInId},attributes:['employeeuid','firstName','signInId','companyId','email']})
+    models['User'].find({ where: {signInId: signInId},attributes:['uuid','displayName','signInId','companyId','email']})
 
   getAllUserAttributesBySigninId: (signInId) ->
-    models['Employees'].find({ where: {signInId: signInId},attributes:['employeeuid','firstName','signInId','companyId','email','hashPassword']})
+    models['User'].find({ where: {signInId: signInId},attributes:['uuid','displayName','signInId','companyId','email','hashPassword']})
 
-  getAllUserAttributesByUid: (employeeuid) ->
-    models['Employees'].find({ where: {employeeuid: employeeuid},attributes:['employeeuid','firstName','signInId','companyId','email','hashPassword']})
+  getAllUserAttributesByUid: (uuid) ->
+    models['User'].find({ where: {uuid: uuid},attributes:['uuid','displayName','signInId','companyId','email','hashPassword']})
 
   getUserBySigninIdAndCompanyId: (signInId,companyId) ->
-    models['Employees'].find({ where: {signInId: signInId,companyId:companyId},attributes:['employeeuid','firstName','signInId','companyId','email']})
+    models['User'].find({ where: {signInId: signInId,companyId:companyId},attributes:['uuid','displayName','signInId','companyId','email']})
 
   getUserByEmailIdAndCompanyId: (emailAddress,companyId) ->
-    models['Employees'].find({ where: {email: emailAddress,companyId:companyId},attributes:['employeeuid','email','signInId']})
+    models['User'].find({ where: {email: emailAddress,companyId:companyId},attributes:['uuid','email','signInId']})
 
   saveNewVerification: (verificationObj) ->
     models['Verification'].create(verificationObj) 
 
   getCompanyById: (companyId,isActive=true) ->
-    models['Companies'].find 
+    models['Company'].find 
       where:
         companyId:companyId
         isActive:isActive
-      attributes:['companyId','companyName','companyImg']
+      attributes:['companyuid','companyId','companyName','companyImg']
 
 module.exports = new AccountDao()

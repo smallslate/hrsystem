@@ -15,21 +15,11 @@
           ul.nav.navbar-nav
             li
               a(href="/c/#{company.companyId}/a/home") Home
-            li.dropdown
-              a.dropdown-toggle(href="#" data-toggle="dropdown") My Info 
-                span.caret
-              ul.dropdown-menu(role="menu")
-                li
-                  a(href="#") Timesheets
-            li.dropdown
-              a.dropdown-toggle(href="#" data-toggle="dropdown") My Org 
-                span.caret
-              ul.dropdown-menu(role="menu")
-                li
-                  a(href="#") Timesheets
+            li
+              a(href="/c/#{company.companyId}/a/home") HR Management
           ul.nav.navbar-nav.navbar-right
             li.dropdown
-              a.dropdown-toggle(href="#" data-toggle="dropdown") #{emp.name}
+              a.dropdown-toggle(href="#" data-toggle="dropdown") #{user.name}
                 span.caret
               ul.dropdown-menu(role="menu")
                 li

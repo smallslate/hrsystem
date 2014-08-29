@@ -50,11 +50,16 @@ module.exports = (app)->
         if !user then return res.render("common/signin",message:messages['user.password.error'])
         req.logIn user,(err)->
           if err then  res.render("common/signin",message:messages['user.password.error'])
-          req.session.emp= {}
-          req.session.emp.name = user.firstName
-          #req.session.emp.signInId = user.signInId
-          req.session.emp.employeeuid = user.employeeuid
-          res.redirect("/c/#{req.session.company.companyId}/a/home")
+          if user.dataValues.companyId == req.session.company.companyuid
+            req.session.user= {}
+            req.session.user.displayName = user.dataValues.displayName
+            req.session.user.uuid = user.dataValues.uuid
+            res.locals.user.name = req.session.user.displayName
+            res.redirect("/c/#{req.session.company.companyId}/a/home")
+          else
+            req.session.destroy()
+            req.logout()
+            res.render("common/signin",message:messages['user.password.error'])    
     authenticate(req, res, next)
 
 
@@ -71,7 +76,7 @@ module.exports = (app)->
     res.render("common/changePassword")
 
   server.post "/c/:companyId/a/changePassword",(req,res)->
-    P.invoke(accountCtrl, "changePassword",req.session.emp.employeeuid,req.body.currentPassword,req.body.newPassword,req.body.reEnterNewPassword)
+    P.invoke(accountCtrl, "changePassword",req.session.user.uuid,req.body.currentPassword,req.body.newPassword,req.body.reEnterNewPassword)
     .then (obj)->
       res.render("common/accountSetting",{message:messages['password.success']})
     ,(err) ->
@@ -85,7 +90,7 @@ module.exports = (app)->
   server.get "/c/:companyId/:signInId/:verificationId/:type/createPassword",(req,res)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)
     .then (verificationObj)->
-      verificationObj.firstName = verificationObj.firstName.toUpperCase()
+      verificationObj.displayName = verificationObj.displayName.toUpperCase()
       res.render("common/createPassword",{verificationObj:verificationObj})    
     ,(err) ->
       if err.message =='password.link.invalid'
