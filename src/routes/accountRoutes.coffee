@@ -19,16 +19,16 @@ module.exports = (app)->
     .catch (err) ->
       done(err,null)
 
-  passport.use(new LocalStrategy(
-      (username, password, done)->
-        P.invoke(accountCtrl,"authenticateUser",username,password)
-        .then (userObj)->
-          if !userObj 
-            return done(null, false)
-          return done(null, userObj)
-        .catch (err) ->
-          done(null, false)
-    ))
+  passport.use(new LocalStrategy((username, password, done)->
+    P.invoke(accountCtrl,"authenticateUser",username,password)
+    .then (userObj)->
+      if !userObj
+        return done(null, false)
+      else
+        return done(null, userObj)
+    .catch (err) ->
+      done(null, false)
+  ))
 
   server.all '/c/:companyId/*',accountCtrl.updateCompanyInSession
   server.all '/c/:companyId/a/*',accountCtrl.authorizeRequest
@@ -46,20 +46,20 @@ module.exports = (app)->
 
   server.post "/c/:companyId/signin",(req, res,next)->
     authenticate = passport.authenticate 'local',(err, user, info)->
-        if err then res.render("common/signin")
-        if !user then return res.render("common/signin",message:messages['user.password.error'])
+      if err then res.render("common/signin")
+      if !user then return res.render("common/signin",message:messages['user.password.error'])
+
+      if user.dataValues.companyId == req.session.company.companyuid
         req.logIn user,(err)->
           if err then  res.render("common/signin",message:messages['user.password.error'])
-          if user.dataValues.companyId == req.session.company.companyuid
-            req.session.user= {}
-            req.session.user.displayName = user.dataValues.displayName
-            req.session.user.uuid = user.dataValues.uuid
-            res.locals.user.name = req.session.user.displayName
-            res.redirect("/c/#{req.session.company.companyId}/a/home")
-          else
-            req.session.destroy()
-            req.logout()
-            res.render("common/signin",message:messages['user.password.error'])    
+          req.session.user = {}
+          req.session.user.name = user.dataValues.displayName
+          req.session.user.uuid = user.dataValues.uuid
+          res.redirect("/c/#{req.session.company.companyId}/a/home")    
+      else
+        req.session.destroy()
+        req.logout()
+        return res.render("common/signin",message:messages['user.password.error'])     
     authenticate(req, res, next)
 
 
@@ -111,16 +111,16 @@ module.exports = (app)->
 
 
   server.post "/c/:companyId/accountRecovery",(req,res)->
-    P.invoke(accountCtrl, "accountRecovery",req.params,req.body,req.session.company.companyName)
+    P.invoke(accountCtrl, "accountRecovery",req.session.company.companyuid,req.body,req.session.company.companyName)
     .then (obj)->
       if req.body.recovery =='forgotPassword'
         res.render("common/signin",{message:messages['password.recovery.email.sent']})
       else
         res.render("common/signin",{message:messages['user.recovery.email.sent']})   
     ,(err) ->
+      console.log err
       if err.message in ['password.recovery.signInId.notvalid','password.recovery.useremail.notvalid','password.recovery.option.notvalid']
         res.render("common/accountRecovery",{message:messages[err.message]})
-      else 
-        console.log err  
+      else  
         res.render("common/accountRecovery",{message:messages['server.error']})        
     

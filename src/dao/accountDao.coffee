@@ -41,4 +41,10 @@ class AccountDao
         isActive:isActive
       attributes:['companyuid','companyId','companyName','companyImg']
 
+  getCompanyByuid: (companyuid,isActive=true) ->
+    models['Company'].find 
+      where:
+        companyuid:companyuid
+        isActive:isActive
+      attributes:['companyuid','companyId','companyName','companyImg']
 module.exports = new AccountDao()

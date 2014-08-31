@@ -92,27 +92,29 @@ class AccountCtrl
     else
       throw new Error('password.not.match')
 
-  accountRecovery: (params,body,companyName)->
+  accountRecovery: (companyuid,body,companyName)->
     if body.recovery =='forgotPassword'
-      P.invoke(accountDao,"getUserBySigninIdAndCompanyId",body.signInId,params.companyId)
+      P.invoke(accountDao,"getUserBySigninIdAndCompanyId",body.signInId,companyuid)
       .then (userObj)->
         if userObj
-          verificationId = uuid.v4()
-          P.invoke(accountDao,"saveNewVerification",{'displayName':userObj.displayName,'verificationId':verificationId,'signInId':userObj.signInId,'companyId':userObj.companyId})
-          .then (verificationObj)->
-            valuesObj = 
-              'to':userObj.email
-              'companyId':userObj.companyId
-              'companyName': companyName
-              'signInId': userObj.signInId
-              'verificationId':verificationId
-            mailOptions = mail.getForgotPasswordObj(valuesObj)
-            mail.transporter.sendMail mailOptions
-            return true
+          accountDao.getCompanyByuid(userObj.dataValues.companyId,true)
+          .then (company)->
+            verificationId = uuid.v4()
+            P.invoke(accountDao,"saveNewVerification",{'displayName':userObj.displayName,'verificationId':verificationId,'signInId':userObj.signInId,'companyId':company.companyId})
+            .then (verificationObj)->
+              valuesObj = 
+                'to':userObj.email
+                'companyId':company.companyId
+                'companyName': companyName
+                'signInId': userObj.signInId
+                'verificationId':verificationId
+              mailOptions = mail.getForgotPasswordObj(valuesObj)
+              mail.transporter.sendMail mailOptions
+              return true
         else  
           throw new Error('password.recovery.signInId.notvalid')    
     else if body.recovery =='forgotSignInId'
-      P.invoke(accountDao,"getUserByEmailIdAndCompanyId",body.emailAddress,params.companyId)
+      P.invoke(accountDao,"getUserByEmailIdAndCompanyId",body.emailAddress,companyuid)
       .then (userObj)->
         if userObj
           valuesObj = 
@@ -144,7 +146,7 @@ class AccountCtrl
         req.logout()
         res.render("common/signin",message:messages['url.not.authorize'])
 
-      res.locals.user.name = req.session.user.displayName
+      res.locals.user = req.session.user
       if previousUrl?
         res.redirect(previousUrl)
       else
