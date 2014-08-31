@@ -20,7 +20,7 @@ class AccountDao
     models['User'].find({ where: {signInId: signInId},attributes:['uuid','displayName','signInId','companyId','email']})
 
   getAllUserAttributesBySigninId: (signInId) ->
-    models['User'].find({ where: {signInId: signInId},attributes:['uuid','displayName','signInId','companyId','email','hashPassword']})
+    models['User'].findAll({ where: {signInId: signInId},include: [{model: models['Role'], include: [models['PageAccess']]}],attributes:['uuid','displayName','signInId','companyId','email','hashPassword']})
 
   getAllUserAttributesByUid: (uuid) ->
     models['User'].find({ where: {uuid: uuid},attributes:['uuid','displayName','signInId','companyId','email','hashPassword']})

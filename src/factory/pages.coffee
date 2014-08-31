@@ -1,4 +1,6 @@
 module.exports = 
+  authorizedUrl : ['/a/home','/a/signOut','/a/accountSetting','/a/changePassword']
   pages:
-    1      : {'type':'hrManagement','name':'HR Management Home','url':['/a/hrHome'],'descr':'HR Management Home Page'}
-    2      : {'type':'hrManagement','parentId':1,'name':'Add/Edit Employee','url':['/a/updateEmployee'],'descr':'Add/Edit employee details'}
+    hr:
+      1      : {'type':'hrManagement','name':'HR Management Home','url':['/hr/hrHome'],'descr':'HR Management Home Page','parent':true}
+      2      : {'type':'hrManagement','name':'Add/Edit Employee','url':['/hr/updateEmployee'],'descr':'Add/Edit employee details'}

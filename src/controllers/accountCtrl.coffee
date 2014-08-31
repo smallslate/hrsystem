@@ -5,15 +5,16 @@ mail = require('../factory/mail')
 uuid = require("node-uuid")
 moment = require("moment")
 messages = require('../utils/messages').code
-authorizedUrl = ['/a/home','/a/signOut','/a/accountSetting','/a/changePassword']
+authorizedUrl = require('../factory/pages').authorizedUrl
+hrPageAccess =  require('../factory/pages').pages.hr
 
 class AccountCtrl
   getUserBySigninId: (signInId)->
     accountDao.getUserBySigninId(signInId)
 
-
   authenticateUser: (signInId,password)->
-    comparePassword = (userObj)->
+    comparePassword = (userObjList)->
+      userObj = userObjList[0]
       if !userObj 
         return null
       else   
@@ -22,6 +23,8 @@ class AccountCtrl
           return if res then userObj else null
     P.invoke(accountDao,"getAllUserAttributesBySigninId",signInId)
     .then(comparePassword)
+    .catch (err) ->
+      console.log err
 
 
 
@@ -129,28 +132,48 @@ class AccountCtrl
     else
      throw new Error('password.recovery.option.notvalid')
 
+  authorizeHRRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/hr/',hrPageAccess,next)
 
-  authorizeRequest:(req,res,next)->
+  authorizeAccountRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/a/',null,next)
+
+  authorizeRequest:(req,res,type,pageAccess,next)->
     if req.isAuthenticated()
-      isAuthorized = false
-      accessUrl = req.url
-      previousUrl = req.session.previousUrl 
-      reqUrl = accessUrl.substring(accessUrl.indexOf('/a/'),accessUrl.length)
-      if previousUrl? 
-        req.session.previousUrl = null
-        reqUrl = previousUrl.substring(previousUrl.indexOf('/a/'),previousUrl.length)
-      if reqUrl in authorizedUrl 
-        isAuthorized = true
+      if req.session.company.companyuid = req.session.user.companyuid
+        isAuthorized = false
+        accessUrl = req.url
+        previousUrl = req.session.previousUrl 
+        reqUrl = accessUrl.substring(accessUrl.indexOf(type),accessUrl.length)
+        if previousUrl? 
+          req.session.previousUrl = null
+          reqUrl = previousUrl.substring(previousUrl.indexOf(type),previousUrl.length)
+
+        if reqUrl in authorizedUrl 
+          isAuthorized = true
+        else
+          userPageAccessIds = req.session.user?.pid
+          for userPageId in userPageAccessIds
+            if reqUrl in pageAccess[userPageId]?.url
+              isAuthorized = true
+              break;
+
+        if !isAuthorized
+          req.session.destroy()
+          req.logout()
+          res.render("common/signin",message:messages['url.not.authorize'])
+        else  
+          res.locals.user = req.session.user
+          res.locals.user.pid = req.session.user?.pid
+          if previousUrl?
+            res.redirect(previousUrl)
+          else
+            next()
       else
+        res.locals= null
         req.session.destroy()
         req.logout()
-        res.render("common/signin",message:messages['url.not.authorize'])
-
-      res.locals.user = req.session.user
-      if previousUrl?
-        res.redirect(previousUrl)
-      else
-        next()
+        res.render("common/signin",message:messages['user.signin.required'])  
     else
       req.session.previousUrl = req.url
       res.render("common/signin",message:messages['user.signin.required'])    
@@ -158,7 +181,7 @@ class AccountCtrl
 
   updateCompanyInSession:(req,res,next)->
     if req.session?.company
-      if req.params.companyId == req.session.company.companyId
+      if req.session.company.companyId == req.params.companyId
         res.locals.company = req.session.company
         next()
       else

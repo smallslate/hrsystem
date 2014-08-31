@@ -3,6 +3,7 @@ accountCtrl = require('../controllers/accountCtrl')
 messages = require('../utils/messages').code
 passport = require('passport')
 LocalStrategy = require('passport-local').Strategy
+models = require('../factory/db').models
 
 module.exports = (app)->
   server = app.server
@@ -31,7 +32,8 @@ module.exports = (app)->
   ))
 
   server.all '/c/:companyId/*',accountCtrl.updateCompanyInSession
-  server.all '/c/:companyId/a/*',accountCtrl.authorizeRequest
+  server.all '/c/:companyId/a/*',accountCtrl.authorizeAccountRequest
+  server.all '/c/:companyId/hr/*',accountCtrl.authorizeHRRequest
 
   server.get "/c/:companyId/signin",(req,res)->
     if req.isAuthenticated()
@@ -52,9 +54,15 @@ module.exports = (app)->
       if user.dataValues.companyId == req.session.company.companyuid
         req.logIn user,(err)->
           if err then  res.render("common/signin",message:messages['user.password.error'])
+          pid = []
+          for role in user.roles
+            for pageAccess in role.pageAccesses
+              pid.push pageAccess.pageId
           req.session.user = {}
           req.session.user.name = user.dataValues.displayName
           req.session.user.uuid = user.dataValues.uuid
+          req.session.user.companyuid = user.dataValues.companyId
+          req.session.user.pid = pid
           res.redirect("/c/#{req.session.company.companyId}/a/home")    
       else
         req.session.destroy()
@@ -118,7 +126,6 @@ module.exports = (app)->
       else
         res.render("common/signin",{message:messages['user.recovery.email.sent']})   
     ,(err) ->
-      console.log err
       if err.message in ['password.recovery.signInId.notvalid','password.recovery.useremail.notvalid','password.recovery.option.notvalid']
         res.render("common/accountRecovery",{message:messages[err.message]})
       else  

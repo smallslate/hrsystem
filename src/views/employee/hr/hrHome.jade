@@ -1,0 +1,18 @@
+extends /templates/authLayout
+block head
+  title HR Home
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li.active HR
+block content
+  .container
+    .row
+      if user.pid.indexOf(2)>=0
+        .col-xs-12.col-sm-6.col-md-4
+          .panel.panel-primary
+            .panel-heading New Hire
+            .panel-body
+              if user.pid.indexOf(2)>=0
+                a(href="/c/#{company.companyId}/hr/changePassword") Add New Employee
