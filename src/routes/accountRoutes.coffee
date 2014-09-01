@@ -3,7 +3,6 @@ accountCtrl = require('../controllers/accountCtrl')
 messages = require('../utils/messages').code
 passport = require('passport')
 LocalStrategy = require('passport-local').Strategy
-models = require('../factory/db').models
 
 module.exports = (app)->
   server = app.server
@@ -34,6 +33,7 @@ module.exports = (app)->
   server.all '/c/:companyId/*',accountCtrl.updateCompanyInSession
   server.all '/c/:companyId/a/*',accountCtrl.authorizeAccountRequest
   server.all '/c/:companyId/hr/*',accountCtrl.authorizeHRRequest
+  server.all '/rest/hr/*',accountCtrl.authorizeHRRestAccountRequest
 
   server.get "/c/:companyId/signin",(req,res)->
     if req.isAuthenticated()
@@ -45,6 +45,11 @@ module.exports = (app)->
     req.session.destroy()
     req.logout()
     res.render("common/signin",message:messages['signout.success'])
+
+  server.post "/rest/hr/checkSigninIdAvailability",(req,res)->
+    P.invoke(accountCtrl, "checkSigninIdAvailability",req.body.signInId)
+    .then (obj)->
+      res.send(obj) 
 
   server.post "/c/:companyId/signin",(req, res,next)->
     authenticate = passport.authenticate 'local',(err, user, info)->
@@ -59,7 +64,7 @@ module.exports = (app)->
             for pageAccess in role.pageAccesses
               pid.push pageAccess.pageId
           req.session.user = {}
-          req.session.user.name = user.dataValues.displayName
+          req.session.user.name = user.dataValues.lastName
           req.session.user.uuid = user.dataValues.uuid
           req.session.user.companyuid = user.dataValues.companyId
           req.session.user.pid = pid
@@ -98,7 +103,7 @@ module.exports = (app)->
   server.get "/c/:companyId/:signInId/:verificationId/:type/createPassword",(req,res)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)
     .then (verificationObj)->
-      verificationObj.displayName = verificationObj.displayName.toUpperCase()
+      verificationObj.lastName = verificationObj.lastName.toUpperCase()
       res.render("common/createPassword",{verificationObj:verificationObj})    
     ,(err) ->
       if err.message =='password.link.invalid'

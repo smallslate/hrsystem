@@ -11,18 +11,19 @@ module.exports = (sequelize,DataTypes)->
       validate:
         notEmpty: true
         notNull: true
-    displayName:
-      type: DataTypes.STRING(300)   
     email:
       type: DataTypes.STRING(200)
       validate:
-        isEmail: true
+        isEmail: true    
+    firstName:
+      type: DataTypes.STRING(500) 
+    middleName:
+      type: DataTypes.STRING(500)   
+    lastName:
+      type: DataTypes.STRING(500)
     hashPassword:
       type: DataTypes.STRING(1000)
     isAccountActive:
       type: DataTypes.BOOLEAN
-      defaultValue: false
-    isAccountLocked:
-      type: DataTypes.BOOLEAN
-      defaultValue: false     
+      defaultValue: false    
   })	

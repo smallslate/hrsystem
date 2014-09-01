@@ -12,10 +12,18 @@ class AccountCtrl
   getUserBySigninId: (signInId)->
     accountDao.getUserBySigninId(signInId)
 
+  checkSigninIdAvailability: (signInId)->
+    P.invoke(accountDao,"getSigninIdCount",signInId)
+    .then (count) ->
+      if count > 0
+        return messages['user.signin.not.available']
+      else 
+        return messages['user.signin.available']
+
   authenticateUser: (signInId,password)->
     comparePassword = (userObjList)->
       userObj = userObjList[0]
-      if !userObj 
+      if !userObj || !userObj.hashPassword || userObj.hashPassword.length<8
         return null
       else   
         P.nfcall(bcrypt.compare,password,userObj.hashPassword)
@@ -103,7 +111,7 @@ class AccountCtrl
           accountDao.getCompanyByuid(userObj.dataValues.companyId,true)
           .then (company)->
             verificationId = uuid.v4()
-            P.invoke(accountDao,"saveNewVerification",{'displayName':userObj.displayName,'verificationId':verificationId,'signInId':userObj.signInId,'companyId':company.companyId})
+            P.invoke(accountDao,"saveNewVerification",{'lastName':userObj.lastName,'verificationId':verificationId,'signInId':userObj.signInId,'companyId':company.companyId})
             .then (verificationObj)->
               valuesObj = 
                 'to':userObj.email
@@ -138,6 +146,9 @@ class AccountCtrl
   authorizeAccountRequest:(req,res,next)=>
     @authorizeRequest(req,res,'/a/',null,next)
 
+  authorizeHRRestAccountRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/rest/',hrPageAccess,next)  
+
   authorizeRequest:(req,res,type,pageAccess,next)->
     if req.isAuthenticated()
       if req.session.company.companyuid = req.session.user.companyuid
@@ -148,10 +159,9 @@ class AccountCtrl
         if previousUrl? 
           req.session.previousUrl = null
           reqUrl = previousUrl.substring(previousUrl.indexOf(type),previousUrl.length)
-
         if reqUrl in authorizedUrl 
           isAuthorized = true
-        else
+        else if pageAccess?
           userPageAccessIds = req.session.user?.pid
           for userPageId in userPageAccessIds
             if reqUrl in pageAccess[userPageId]?.url

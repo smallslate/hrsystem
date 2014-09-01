@@ -13,5 +13,7 @@ module.exports =
     'user.old.password.incorrect':{'errMsg':'Old Password is incorrect'}
     'user.login.error':{'errMsg':'Please signin again to access your account'}
     'user.signin.required':{'errMsg':'Please Sign in to access this page'}
+    'user.signin.available':{'successMsg':'Signin Id is available'}
+    'user.signin.not.available':{'errMsg':'Signin Id is already used. Please use different id.'}
     'url.not.authorize':{'errMsg':'You do not have access to this page.Please login again to access your account'}
     'signout.success':{'successMsg':'You have successfully signed out'}

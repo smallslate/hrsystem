@@ -18,7 +18,8 @@ dbModels = [{'name':'Company','path':'../models/company'},
             {'name':'User','path':'../models/user'},
             {'name':'Verification','path':'../models/verification'},
             {'name':'Role','path':'../models/role'},
-            {'name':'PageAccess','path':'../models/pageAccess'}]    
+            {'name':'PageAccess','path':'../models/pageAccess'},
+            {'name':'Employee','path':'../models/employee/employee'}]    
 
 class DB
   constructor:->
@@ -36,13 +37,11 @@ class DB
 
      
   initAssociations:->
-    @models['Company'].hasMany(@models['User'])
-    @models['Company'].hasMany(@models['PageAccess'])
-    @models['Company'].hasMany(@models['Role'])
-    @models['User'].hasMany(@models['Role'])
-    @models['Role'].hasMany(@models['User'])
-    @models['Role'].hasMany(@models['PageAccess'])
+    @models['Company'].hasMany(@models['User']).hasMany(@models['PageAccess']).hasMany(@models['Role']).hasOne(@models['Employee'])
+    @models['User'].hasMany(@models['Role']).hasOne(@models['Employee'])
+    @models['Role'].hasMany(@models['User']).hasMany(@models['PageAccess'])
     @models['PageAccess'].hasMany(@models['Role'])
+    @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'})
     
   syncModels:->
     @sequelize.sync()

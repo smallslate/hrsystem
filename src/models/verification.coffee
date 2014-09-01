@@ -14,6 +14,6 @@ module.exports = (sequelize,DataTypes)->
     companyId:
       type: DataTypes.STRING(20)
       allowNull: false
-    displayName:
+    lastName:
       type: DataTypes.STRING(300)  
   })
