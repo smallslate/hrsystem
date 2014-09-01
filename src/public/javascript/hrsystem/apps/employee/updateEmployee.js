@@ -18,7 +18,9 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	  } else if(!$scope.empObj.emplId || $scope.empObj.emplId.length<1) {
 	  	alert('Please enter valid employee id')
 	  } else {
-	  	console.log($scope.empObj);	
+	  	employeeHrService.addNewEmployee($scope.empObj,function(result) {
+		  console.log(result);
+		});
 	  }
 	}
 
@@ -95,7 +97,8 @@ updateEmployeeApp.factory('employeeHrService',['$resource', function($resource) 
 	return $resource('#', {}, {
 		checkSigninIdAvailability : {method : 'POST',url:'/rest/hr/checkSigninIdAvailability'},
 		getNextEmplid : {method : 'POST',url:'/rest/hr/getNextEmplid'},
-		getCompanyRoles : {method : 'POST',url:'/rest/hr/getCompanyRoles',isArray:true}
+		getCompanyRoles : {method : 'POST',url:'/rest/hr/getCompanyRoles',isArray:true},
+		addNewEmployee : {method : 'POST',url:'/rest/hr/addNewEmployee'}
 	});
 }]);
 

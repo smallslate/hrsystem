@@ -17,3 +17,5 @@ module.exports =
     'user.signin.not.available':{'errMsg':'Signin Id is already used. Please use different id.'}
     'url.not.authorize':{'errMsg':'You do not have access to this page.Please login again to access your account'}
     'signout.success':{'successMsg':'You have successfully signed out'}
+    'employee.exist.with.emplid':{'errMsg':'Employee already exist with given employee id.Please generate new emplid.'}
+    'supervisor.emplid.invalid':{'errMsg':'Supervisor employee id is invalid.'}

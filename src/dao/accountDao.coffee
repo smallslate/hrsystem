@@ -37,6 +37,9 @@ class AccountDao
   saveNewVerification: (verificationObj) ->
     models['Verification'].create(verificationObj) 
 
+  createNewAccount: (newUserObj) ->
+    models['User'].create(newUserObj)   
+
   getCompanyById: (companyId,isActive=true) ->
     models['Company'].find 
       where:

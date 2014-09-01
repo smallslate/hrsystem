@@ -19,5 +19,16 @@ module.exports = (app)->
   server.post "/rest/hr/getCompanyRoles",(req,res)->
     P.invoke(hrCtrl,"getCompanyRoles",req.session.user.companyuid)
     .then (roleList)->
-      res.send(roleList)     
+      res.send(roleList) 
+
+  server.post "/rest/hr/addNewEmployee",(req,res)->
+    P.invoke(hrCtrl,"addNewEmployee",req.session.user.companyuid,req.body)
+    .then (userObj)->
+      res.send(userObj)
+    ,(err) ->
+      console.log err
+      res.send({"err":"falied to save employee"})   
+
+
+
     
