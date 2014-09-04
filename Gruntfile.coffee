@@ -30,6 +30,7 @@ module.exports = (grunt) ->
         script: 'app/server.js'
         options:
           watch: ['app']
+          ignore: ['public/**'],
           ext: 'js'
           delay: 3
     watch:

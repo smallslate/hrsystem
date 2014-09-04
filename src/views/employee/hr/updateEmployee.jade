@@ -8,55 +8,61 @@ block breadcrumbs
       a(href="/c/#{company.companyId}/a/home") Home
     li
       a(href="/c/#{company.companyId}/hr/hrHome") HR  
-    li.active Update Employee
+    li.active Update Employee    
 block content
   .container(ng-app="updateEmployee",ng-controller="updateEmployeeCtrl")
-    form.jumbotron.form-horizontal(ng-submit="updateEmployee()")
+    form.form-horizontal(ng-submit="updateEmployee()")
+      .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
+        b {{errMsg}}
+      .alert.alert-success.alignCenter.container(ng-show="successMsg") 
+        b {{successMsg}}
       .form-group
         label.col-sm-2.control-label(for="firstName") First Name
-        .col-sm-10
+        .col-sm-6
           input.form-control#firstName(type="text" placeholder="Employee First Name" required ng-model="empObj.firstName")
       .form-group
         label.col-sm-2.control-label(for="middleName") Middle Name
-        .col-sm-10
+        .col-sm-6
           input.form-control#middleName(type="text" placeholder="Employee Middle Name" ng-model="empObj.middleName")
       .form-group
         label.col-sm-2.control-label(for="lastName") Last Name
-        .col-sm-10
+        .col-sm-6
           input.form-control#lastName(type="text" placeholder="Employee Last Name" required ng-model="empObj.lastName") 
       .form-group
         label.col-sm-2.control-label(for="signInId") SignIn Id
         .col-sm-6
-          input.form-control#signInId(type="text" placeholder="Employee SignIn Id" required ng-model="empObj.signInId")
+          input.form-control#signInId(type="text" placeholder="Employee SignIn Id" required ng-model="empObj.signInId" ng-disabled="empObj.uuid")
         .col-sm-4
-          button.btn.btn-link.btn-xs(type="button" ng-click="checkSigninIdAvailability()") Check Availability
+          button.btn.btn-link.btn-xs(type="button" ng-click="checkSigninIdAvailability()" ng-hide="empObj.uuid") Check Availability
       .form-group
         label.col-sm-2.control-label(for="email") Email
-        .col-sm-10
+        .col-sm-6
           input.form-control#email(type="email" placeholder="Employee Email" required ng-model="empObj.email") 
       .form-group
         label.col-sm-2.control-label(for="emplId") Employee Id
         .col-sm-6
-          input.form-control#emplId(type="text" placeholder="Employee Id" required ng-model="empObj.emplId")
+          input.form-control#emplId(type="text" placeholder="Employee Id" required ng-model="empObj.emplId" ng-disabled="empObj.uuid")
         .col-sm-4
-          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()") Generate Next Employee Id
+          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()" ng-hide="empObj.uuid") Generate Next Employee Id
       .form-group
         label.col-sm-2.control-label(for="supervisorId") Supervisor Id
-        .col-sm-10
+        .col-sm-6
           input.form-control#supervisorId(type="text" placeholder="Supervisor Employee Id" ng-model="empObj.supervisorId") 
+      .form-group
+        label.col-sm-2.control-label(for="status") Account Status
+        .col-sm-6
+          label.form-control(ng-hide="empObj.uuid") New Account
+          label.form-control(ng-show="(empObj.uuid && !empObj.isAccountActive)") Account Not Activated 
+          label.form-control(ng-show="(empObj.uuid && empObj.isAccountActive)") Account Active     
       .form-group
         label.col-sm-2.control-label(for="roles") Security Roles
         .col-sm-5
-          select.form-control(size="4" style="width:100%" ng-model="selectedRemoveRoleObj" ng-options="companyRole.roleName for companyRole in empObj.roleList")
-          button.btn.btn-primary.btn-xs(type="button" ng-click="removeRole()") Remove  
+          select.form-control(size="4" style="width:100%" ng-model="selectedRemoveRoleObj" ng-options="companyRole.roleName for companyRole in empRoleList")
+          button.btn.btn-primary.btn-xs(type="button" ng-click="removeRole()") Remove from employee roles  
         .col-sm-5
           select.form-control(size="4" style="width:100%" ng-model="selectedAddRoleObj" ng-options="companyRole.roleName for companyRole in companyRoles")
-          button.btn.btn-primary.btn-xs(type="button" ng-click="addRole()") Add 
-      .form-group
-        label.col-sm-2.control-label(for="status") Status
-        .col-sm-10
-          label.form-control New Employee             
+          button.btn.btn-primary.btn-xs(type="button" ng-click="addRole()") Add to employee roles            
       .form-group
         .col-sm-offset-2.col-sm-10
-          button.btn.btn-primary(type="submit") Save Employee              
+          button.btn.btn-primary(type="submit") Save Employee                 
     

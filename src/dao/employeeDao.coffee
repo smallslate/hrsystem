@@ -7,6 +7,9 @@ class EmployeeDao
   getCompanyRoles: (companyid) ->
     models['Role'].findAll({where: {companyid:companyid},attributes:['roleId','roleName','roleDescr']})
 
+  getCompanyRolesById: (companyid,roleIdList) ->
+    models['Role'].findAll({where: {companyid:companyid,roleId:[roleIdList]},attributes:['roleId','roleName','roleDescr']})
+
   getEmployeeByEmplid: (companyId,emplid) ->
     models['Employee'].find({ where: {companyId: companyId,emplId:emplid}})   
 

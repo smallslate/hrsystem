@@ -17,7 +17,8 @@
 		"moment":"*",
 		"passport":"*",
 		"passport-local":"*",
-		"cookie-parser":"*"
+		"cookie-parser":"*",
+		"lodash":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",

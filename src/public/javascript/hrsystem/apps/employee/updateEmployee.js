@@ -1,32 +1,69 @@
 var updateEmployeeApp = angular.module('updateEmployee',['ngResource']);
 
 updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService', function($scope,employeeHrService) {
+	emplidIndex = location.pathname.indexOf("/emplid/");
+	selectedEmplid = null;
+	if(emplidIndex>5) {
+      selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/updateEmployee"))
+	}
+
 	employeeHrService.getCompanyRoles(function(roleList) {
 	  $scope.companyRoles = roleList;
 	  $scope.selectedAddRoleObj = $scope.companyRoles[0];
+	  if(selectedEmplid) {
+		employeeHrService.getEmpAccountDetails({emplId:selectedEmplid},function(result) {
+          $scope.empObj = result;
+		  $scope.empRoleList =[];
+  	  	  for(var i=0;i<$scope.companyRoles.length;i++) {
+  	  	    if(result.roleIds.indexOf($scope.companyRoles[i].roleId)>=0) {
+			  $scope.empRoleList.push($scope.companyRoles[i]);
+  	  	    }
+  	  	  }
+  	  	  $scope.selectedRemoveRoleObj = $scope.empRoleList[0];
+		});
+	  }
 	});
 
 	$scope.updateEmployee = function() {
 	  if(!$scope.empObj || !$scope.empObj.firstName || $scope.empObj.firstName.length<2) {
-	  	alert('First name must be minimum 2 characters')
+	  	alert('First name must be minimum 2 characters');
 	  } else if(!$scope.empObj.lastName || $scope.empObj.lastName.length<2) {
-	  	alert('Last name must be minimum 2 characters')
+	  	alert('Last name must be minimum 2 characters');
 	  } else if(!$scope.empObj.signInId || $scope.empObj.signInId.length<2) {
-	  	alert('SignIn Id must be minimum 2 characters')
+	  	alert('SignIn Id must be minimum 2 characters');
 	  } else if(!$scope.empObj.email || !IsEmail($scope.empObj.email)) {
-	  	alert('Please enter valid email')
+	  	alert('Please enter valid email');
 	  } else if(!$scope.empObj.emplId || $scope.empObj.emplId.length<1) {
-	  	alert('Please enter valid employee id')
+	  	alert('Please enter valid employee id');
 	  } else {
+	  	$scope.empObj.roleIds = []
+	  	for(var i=0;i<$scope.empRoleList.length;i++) {
+      	  $scope.empObj.roleIds.push($scope.empRoleList[i].roleId)
+        }
 	  	employeeHrService.addNewEmployee($scope.empObj,function(result) {
-		  console.log(result);
+	  	  if(result.errMsg) {
+	  	  	alert(result.errMsg)
+	  	  	$scope.errMsg = result.errMsg;
+	  	  	$scope.successMsg=null;
+	  	  } else {
+	  	  	alert("Employee data saved successfully.")
+	  	  	$scope.successMsg = "Employee data saved successfully.";
+	  	  	$scope.errMsg = null;
+	  	  	$scope.empObj = result;
+			$scope.empRoleList =[];
+	  	  	for(var i=0;i<$scope.companyRoles.length;i++) {
+	  	  	  if(result.roleIds.indexOf($scope.companyRoles[i].roleId)>=0) {
+				$scope.empRoleList.push($scope.companyRoles[i]);
+	  	  	  }
+	  	  	}
+	  	  }
 		});
 	  }
 	}
 
 	$scope.checkSigninIdAvailability = function() {
 	  if(!$scope.empObj || !$scope.empObj.signInId || $scope.empObj.signInId.length<2) {
-	  	alert('SignIn Id must be minimum 2 characters')
+	  	alert('SignIn Id must be minimum 2 characters');
 	  } else {
 		employeeHrService.checkSigninIdAvailability({signInId:$scope.empObj.signInId},function(result) {
 		  if(result.successMsg) {
@@ -56,22 +93,19 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
       if(!$scope.selectedAddRoleObj) {
 		alert('Please select valid role.');
       } else { 	
-	    if(!$scope.empObj) {
-      	  $scope.empObj = new Object();
-      	  $scope.empObj.roleList = new Array();
-        }
-        if(!$scope.empObj.roleList){
-      	  $scope.empObj.roleList = new Array();
+	    if(!$scope.empRoleList) {
+      	  $scope.empRoleList = [];
         }
         var isExist = false;
-        for(i=0;i<$scope.empObj.roleList.length;i++) {
-      	  if($scope.empObj.roleList[i].roleId == $scope.selectedAddRoleObj.roleId) {
+        for(i=0;i<$scope.empRoleList.length;i++) {
+      	  if($scope.empRoleList[i].roleId == $scope.selectedAddRoleObj.roleId) {
       		isExist = true;
       	  }
         }
+  
         if(!isExist) {
-      	  $scope.empObj.roleList.push($scope.selectedAddRoleObj);
-      	  $scope.selectedRemoveRoleObj = $scope.empObj.roleList[0];
+      	  $scope.empRoleList.push($scope.selectedAddRoleObj);
+      	  $scope.selectedRemoveRoleObj = $scope.empRoleList[0];
         } else {
       	  alert('Role already added to employee. Please save employee data if updated.');
         }
@@ -82,10 +116,10 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
       if(!$scope.selectedRemoveRoleObj) {
 		alert('Please select valid role.');
       } else { 	
-        for(i=0;i<$scope.empObj.roleList.length;i++) {
-      	  if($scope.empObj.roleList[i].roleId == $scope.selectedRemoveRoleObj.roleId) {
-      	    $scope.empObj.roleList.splice(i, 1);
-      	    $scope.selectedRemoveRoleObj = $scope.empObj.roleList[0];
+        for(i=0;i<$scope.empRoleList.length;i++) {
+      	  if($scope.empRoleList[i].roleId == $scope.selectedRemoveRoleObj.roleId) {
+      	    $scope.empRoleList.splice(i, 1);
+      	    $scope.selectedRemoveRoleObj = $scope.empRoleList[0];
       	    break;
       	  }
         }
@@ -98,7 +132,8 @@ updateEmployeeApp.factory('employeeHrService',['$resource', function($resource) 
 		checkSigninIdAvailability : {method : 'POST',url:'/rest/hr/checkSigninIdAvailability'},
 		getNextEmplid : {method : 'POST',url:'/rest/hr/getNextEmplid'},
 		getCompanyRoles : {method : 'POST',url:'/rest/hr/getCompanyRoles',isArray:true},
-		addNewEmployee : {method : 'POST',url:'/rest/hr/addNewEmployee'}
+		addNewEmployee : {method : 'POST',url:'/rest/hr/addNewEmployee'},
+		getEmpAccountDetails : {method : 'POST',url:'/rest/hr/getEmpAccountDetails'}
 	});
 }]);
 

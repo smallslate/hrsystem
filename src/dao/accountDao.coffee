@@ -22,6 +22,12 @@ class AccountDao
   getUserBySigninId: (signInId) ->
     models['User'].find({ where: {signInId: signInId,isAccountActive:true},attributes:['uuid','lastName','signInId','companyId','email']})
 
+  getUserByUuid: (uuid,isAccountActive=true) ->
+    if isAccountActive
+      models['User'].find({ where: {uuid: uuid,isAccountActive:true},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive']})
+    else
+      models['User'].find({ where: {uuid: uuid},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive']})
+
   getAllUserAttributesBySigninId: (signInId) ->
     models['User'].findAll({ where: {signInId: signInId,isAccountActive:true},include: [{model: models['Role'], include: [models['PageAccess']]}],attributes:['uuid','lastName','signInId','companyId','email','hashPassword']})
 
