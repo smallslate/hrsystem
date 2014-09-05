@@ -11,8 +11,8 @@ class EmployeeDao
     models['Role'].findAll({where: {companyid:companyid,roleId:[roleIdList]},attributes:['roleId','roleName','roleDescr']})
 
   getEmployeeByEmplid: (companyId,emplid) ->
-    models['Employee'].find({ where: {companyId: companyId,emplId:emplid}})   
-
+    models['Employee'].find({ where: {companyId: companyId,emplId:emplid}})
+   
   saveNewEmployee: (emplObj) ->
     models['Employee'].create(emplObj)  
 

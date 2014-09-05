@@ -24,9 +24,9 @@ class AccountDao
 
   getUserByUuid: (uuid,isAccountActive=true) ->
     if isAccountActive
-      models['User'].find({ where: {uuid: uuid,isAccountActive:true},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive']})
+      models['User'].find({ where: {uuid: uuid,isAccountActive:true},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive','CompanyId']})
     else
-      models['User'].find({ where: {uuid: uuid},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive']})
+      models['User'].find({ where: {uuid: uuid},attributes:['uuid','signInId','email','firstName','middleName','lastName','isAccountActive','CompanyId']})
 
   getAllUserAttributesBySigninId: (signInId) ->
     models['User'].findAll({ where: {signInId: signInId,isAccountActive:true},include: [{model: models['Role'], include: [models['PageAccess']]}],attributes:['uuid','lastName','signInId','companyId','email','hashPassword']})

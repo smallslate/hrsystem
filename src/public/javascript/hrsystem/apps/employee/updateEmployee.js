@@ -40,7 +40,8 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	  	for(var i=0;i<$scope.empRoleList.length;i++) {
       	  $scope.empObj.roleIds.push($scope.empRoleList[i].roleId)
         }
-	  	employeeHrService.addNewEmployee($scope.empObj,function(result) {
+
+	  	employeeHrService.updateEmpAccount($scope.empObj,function(result) {
 	  	  if(result.errMsg) {
 	  	  	alert(result.errMsg)
 	  	  	$scope.errMsg = result.errMsg;
@@ -132,7 +133,7 @@ updateEmployeeApp.factory('employeeHrService',['$resource', function($resource) 
 		checkSigninIdAvailability : {method : 'POST',url:'/rest/hr/checkSigninIdAvailability'},
 		getNextEmplid : {method : 'POST',url:'/rest/hr/getNextEmplid'},
 		getCompanyRoles : {method : 'POST',url:'/rest/hr/getCompanyRoles',isArray:true},
-		addNewEmployee : {method : 'POST',url:'/rest/hr/addNewEmployee'},
+		updateEmpAccount : {method : 'POST',url:'/rest/hr/updateEmpAccount'},
 		getEmpAccountDetails : {method : 'POST',url:'/rest/hr/getEmpAccountDetails'}
 	});
 }]);

@@ -24,8 +24,8 @@ module.exports = (app)->
     .then (roleList)->
       res.send(roleList) 
 
-  server.post "/rest/hr/addNewEmployee",(req,res)->
-    P.invoke(hrCtrl,"addNewEmployee",req.session.user.companyuid,req.body)
+  server.post "/rest/hr/updateEmpAccount",(req,res)->
+    P.invoke(hrCtrl,"updateEmpAccount",req.session.user.companyuid,req.body)
     .then (userObj)->
       res.send(userObj)
     ,(err) ->

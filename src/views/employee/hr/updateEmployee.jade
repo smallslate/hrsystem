@@ -51,18 +51,22 @@ block content
       .form-group
         label.col-sm-2.control-label(for="status") Account Status
         .col-sm-6
-          label.form-control(ng-hide="empObj.uuid") New Account
-          label.form-control(ng-show="(empObj.uuid && !empObj.isAccountActive)") Account Not Activated 
-          label.form-control(ng-show="(empObj.uuid && empObj.isAccountActive)") Account Active     
+          label.form-control.list-group-item-info(ng-hide="empObj.uuid") New
+          label.form-control.list-group-item-danger(ng-show="(empObj.uuid && !empObj.isAccountActive)") Not Activated 
+          label.form-control.list-group-item-success(ng-show="(empObj.uuid && empObj.isAccountActive)") Active
+        .col-sm-4
+          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()" ng-show="(empObj.uuid && !empObj.isAccountActive)") 
+            b Activate account
+          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()" ng-show="(empObj.uuid && empObj.isAccountActive)") De-activation account      
       .form-group
         label.col-sm-2.control-label(for="roles") Security Roles
-        .col-sm-5
+        .col-sm-6
           select.form-control(size="4" style="width:100%" ng-model="selectedRemoveRoleObj" ng-options="companyRole.roleName for companyRole in empRoleList")
           button.btn.btn-primary.btn-xs(type="button" ng-click="removeRole()") Remove from employee roles  
-        .col-sm-5
+        .col-sm-4
           select.form-control(size="4" style="width:100%" ng-model="selectedAddRoleObj" ng-options="companyRole.roleName for companyRole in companyRoles")
           button.btn.btn-primary.btn-xs(type="button" ng-click="addRole()") Add to employee roles            
       .form-group
         .col-sm-offset-2.col-sm-10
-          button.btn.btn-primary(type="submit") Save Employee                 
+          button.btn.btn-primary(type="submit") Save                 
     

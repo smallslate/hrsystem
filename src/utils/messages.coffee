@@ -19,3 +19,4 @@ module.exports =
     'signout.success':{'successMsg':'You have successfully signed out'}
     'employee.exist.with.emplid':{'errMsg':'Employee already exist with given employee id.Please generate new emplid.'}
     'supervisor.emplid.invalid':{'errMsg':'Supervisor employee id is invalid.'}
+    'employee.no.access.change':{'errMsg':'You do not have access to change this employee data.'}
