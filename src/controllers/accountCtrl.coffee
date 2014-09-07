@@ -6,7 +6,8 @@ uuid = require("node-uuid")
 moment = require("moment")
 messages = require('../utils/messages').code
 authorizedUrl = require('../factory/pages').authorizedUrl
-hrPageAccess =  require('../factory/pages').pages.hr
+hrManagementPageAccess =  require('../factory/pages').pages.hrManagement
+empManagementPageAccess =  require('../factory/pages').pages.empManagement
 
 class AccountCtrl
   getUserBySigninId: (signInId)->
@@ -140,14 +141,18 @@ class AccountCtrl
     else
      throw new Error('password.recovery.option.notvalid')
 
-  authorizeHRRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/hr/',hrPageAccess,next)
-
   authorizeAccountRequest:(req,res,next)=>
     @authorizeRequest(req,res,'/a/',null,next)
 
+  authorizeHRRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/hr/',hrManagementPageAccess,next)
+
   authorizeHRRestAccountRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/rest/',hrPageAccess,next)  
+    @authorizeRequest(req,res,'/rest/',hrManagementPageAccess,next)
+
+  authorizeEmpRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/emp/',empManagementPageAccess,next)
+
 
   authorizeRequest:(req,res,type,pageAccess,next)->
     if req.isAuthenticated()
@@ -164,7 +169,7 @@ class AccountCtrl
         else if pageAccess?
           userPageAccessIds = req.session.user?.pid
           for userPageId in userPageAccessIds
-            if reqUrl in pageAccess[userPageId]?.url
+            if pageAccess[userPageId] && reqUrl in pageAccess[userPageId]?.url
               isAuthorized = true
               break;
 

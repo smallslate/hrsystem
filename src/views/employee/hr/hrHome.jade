@@ -15,4 +15,7 @@ block content
             .panel-heading Accounts Management
             .panel-body
               if user.pid.indexOf(2)>=0
-                a(href="/c/#{company.companyId}/hr/updateEmployee") Add New Employee
+                div 
+                  a(href="/c/#{company.companyId}/hr/updateEmployee") Add New Employee
+                div 
+                  a(href="/c/#{company.companyId}/hr/updateEmployee") View Employee Account

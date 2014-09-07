@@ -15,9 +15,12 @@
           ul.nav.navbar-nav
             li
               a(href="/c/#{company.companyId}/a/home") Home
+            if user.pid.indexOf(1000)>=0
+              li
+                a(href="/c/#{company.companyId}/emp/empHome") Employee Management  
             if user.pid.indexOf(1)>=0
               li
-                a(href="/c/#{company.companyId}/hr/hrHome") HR Management
+                a(href="/c/#{company.companyId}/hr/hrHome") HR Management 
           ul.nav.navbar-nav.navbar-right
             li.dropdown
               a.dropdown-toggle(href="#" data-toggle="dropdown") #{user.name}

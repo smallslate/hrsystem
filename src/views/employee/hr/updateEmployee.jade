@@ -55,9 +55,9 @@ block content
           label.form-control.list-group-item-danger(ng-show="(empObj.uuid && !empObj.isAccountActive)") Not Activated 
           label.form-control.list-group-item-success(ng-show="(empObj.uuid && empObj.isAccountActive)") Active
         .col-sm-4
-          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()" ng-show="(empObj.uuid && !empObj.isAccountActive)") 
+          button.btn.btn-link.btn-xs(type="button" ng-click="updateEmployee('activate')" ng-show="(empObj.uuid && !empObj.isAccountActive)") 
             b Activate account
-          button.btn.btn-link.btn-xs(type="button" ng-click="getNextEmplid()" ng-show="(empObj.uuid && empObj.isAccountActive)") De-activation account      
+          button.btn.btn-link.btn-xs(type="button" ng-click="updateEmployee('deActivate')" ng-show="(empObj.uuid && empObj.isAccountActive)") De-activation account      
       .form-group
         label.col-sm-2.control-label(for="roles") Security Roles
         .col-sm-6

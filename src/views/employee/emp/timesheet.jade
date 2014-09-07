@@ -1,0 +1,113 @@
+extends /templates/authLayout
+block head
+  title Timesheets
+  link(href="/css/datepicker.css" rel="stylesheet")
+  script(src="/frameworks/bootstrap-datepicker.js")
+  script(src="/javascript/hrsystem/apps/employee/timesheet.js")
+  style(type='text/css').
+    table input[type="text"] {
+       width: 100%; 
+       box-sizing: border-box;
+       -webkit-box-sizing:border-box;
+       -moz-box-sizing: border-box;
+    }
+
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/emp/empHome") Employee
+    li.active Timesheet
+block content
+  .container(ng-app="timeSheet",ng-controller="timeSheetCtrl")
+    form.form-inline
+      .form-group.paddingRight10
+        .input-group
+          .input-group-addon.width100 
+            b Date
+          input.form-control.datepicker#selectedDate(type="text")
+      .form-group.paddingRight10
+        .input-group
+          .input-group-addon.width100 
+            b Total Hrs
+          label.form-control {{timeSheetObj.totalHrs}}
+      .form-group.paddingRight10
+        .input-group
+          .input-group-addon.width100 
+            b Status
+          label.form-control New    
+
+    form.form-horizontal(role="form") 
+      .form-group   
+        .table-responsive
+          table.table
+            tr
+              th.col-sm-3
+                div Task or Project
+              th.col-sm-1 
+                div Sun 
+                div {{tableHeader[0]}}
+              th.col-sm-1 
+                div Mon 
+                div {{tableHeader[1]}}
+              th.col-sm-1 
+                div Tue 
+                div {{tableHeader[2]}}
+              th.col-sm-1 
+                div Wed 
+                div {{tableHeader[3]}}
+              th.col-sm-1 
+                div Thu 
+                div {{tableHeader[4]}}
+              th.col-sm-1 
+                div Fri 
+                div {{tableHeader[5]}}
+              th.col-sm-1 
+                div Sat 
+                div {{tableHeader[6]}}
+              th.col-sm-1 
+                div  
+            tr(ng-repeat="task in timeSheetObj.tasks")
+              td
+                input(type="text" data-ng-model="task['name']") 
+              td 
+                input(type="text" data-ng-model="task[tableHeader[0]]" ng-change="updateValues()") 
+              td
+                input(type="text" data-ng-model="task[tableHeader[1]]" ng-change="updateValues()")
+              td
+                input(type="text" data-ng-model="task[tableHeader[2]]" ng-change="updateValues()") 
+              td
+                input(type="text" data-ng-model="task[tableHeader[3]]" ng-change="updateValues()") 
+              td
+                input(type="text" data-ng-model="task[tableHeader[4]]" ng-change="updateValues()") 
+              td
+                input(type="text" data-ng-model="task[tableHeader[5]]" ng-change="updateValues()") 
+              td
+                input(type="text" data-ng-model="task[tableHeader[6]]" ng-change="updateValues()")
+              td
+                button.btn.btn-default(type="button" ng-click="removeTask($index)")
+                  span.glyphicon.glyphicon-remove  
+            tr
+              td
+                button.btn.btn-link(ng-click="addNewTask()")
+                  b Add New Row
+              td
+                label {{subTotals[tableHeader[0]]}}
+              td
+                label {{subTotals[tableHeader[1]]}} 
+              td
+                label {{subTotals[tableHeader[2]]}}
+              td
+                label {{subTotals[tableHeader[3]]}}  
+              td
+                label {{subTotals[tableHeader[4]]}} 
+              td
+                label {{subTotals[tableHeader[5]]}}  
+              td
+                label {{subTotals[tableHeader[6]]}}
+              td
+                label   
+      .form-group
+        button.btn.btn-primary(type="submit") Submit Timesheet
+

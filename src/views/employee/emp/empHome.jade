@@ -1,0 +1,19 @@
+extends /templates/authLayout
+block head
+  title Employee Management Home
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li.active Employee
+block content
+  .container
+    .row
+      if user.pid.indexOf(1001)>=0
+        .col-xs-12.col-sm-6.col-md-4
+          .panel.panel-primary
+            .panel-heading Employee Management
+            .panel-body
+              if user.pid.indexOf(1001)>=0
+                div 
+                  a(href="/c/#{company.companyId}/emp/timesheet") Enter Timesheets

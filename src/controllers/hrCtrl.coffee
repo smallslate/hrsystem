@@ -2,6 +2,7 @@ P = require("q")
 _ = require("lodash")
 employeeDao = require('../dao/employeeDao')
 accountDao = require('../dao/accountDao')
+mailUtils = require('../utils/MailUtils')
 
 class HrCtrl
   getNextEmplid: (companyId)->
@@ -44,6 +45,11 @@ class HrCtrl
                   userObj.middleName = emplObj.middleName
                   userObj.lastName = emplObj.lastName
                   userObj.email = emplObj.email
+                  if emplObj.action == 'activate'
+                    emplObj.isAccountActive = userObj.isAccountActive = true
+                    mailUtils.sendAccountActivationEmail(userObj,currentEmplObj)
+                  else if emplObj.action == 'deActivate'
+                    emplObj.isAccountActive = userObj.isAccountActive = false
                   userObj.setRoles(roleList)
                   userObj.save()
                   currentEmplObj.supervisorId= emplObj.supervisorId

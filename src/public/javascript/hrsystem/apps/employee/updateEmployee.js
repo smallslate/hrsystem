@@ -24,7 +24,7 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	  }
 	});
 
-	$scope.updateEmployee = function() {
+	$scope.updateEmployee = function(action) {
 	  if(!$scope.empObj || !$scope.empObj.firstName || $scope.empObj.firstName.length<2) {
 	  	alert('First name must be minimum 2 characters');
 	  } else if(!$scope.empObj.lastName || $scope.empObj.lastName.length<2) {
@@ -40,18 +40,41 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	  	for(var i=0;i<$scope.empRoleList.length;i++) {
       	  $scope.empObj.roleIds.push($scope.empRoleList[i].roleId)
         }
-
+        if(action) {
+          if(action =='activate') {
+          	var r = confirm('Do you want to activate this account? Email will be sent to employee to reset password.');
+			if (!r ) {
+			  return false;
+			} 
+          } else if(action =='deActivate') {
+          	var r = confirm('Do you want to de-activate employee account?.');
+			if (!r ) {
+			  return false;
+			} 
+          }
+          $scope.empObj.action = action;
+        }
 	  	employeeHrService.updateEmpAccount($scope.empObj,function(result) {
 	  	  if(result.errMsg) {
-	  	  	alert(result.errMsg)
 	  	  	$scope.errMsg = result.errMsg;
 	  	  	$scope.successMsg=null;
+	  	  	$scope.empObj.action = null;
+	  	  	alert(result.errMsg)
 	  	  } else {
-	  	  	alert("Employee data saved successfully.")
-	  	  	$scope.successMsg = "Employee data saved successfully.";
 	  	  	$scope.errMsg = null;
+	  	  	if($scope.empObj.action && $scope.empObj.action =='activate') {
+	  	  	  $scope.successMsg = "Employee account activated successfully."; 
+	  	  	  alert("Employee account activated successfully.");
+	  	  	} else if($scope.empObj.action && $scope.empObj.action =='deActivate') {
+	  	  	  $scope.successMsg = "Employee account de-activated successfully.";  
+	  	  	  alert("Employee account de-activated successfully.");
+	  	  	} else {
+	  	  	  $scope.successMsg = "Employee data saved successfully.";
+	  	  	  alert("Employee data saved successfully.");
+	  	  	}
 	  	  	$scope.empObj = result;
 			$scope.empRoleList =[];
+			$scope.empObj.action = null;
 	  	  	for(var i=0;i<$scope.companyRoles.length;i++) {
 	  	  	  if(result.roleIds.indexOf($scope.companyRoles[i].roleId)>=0) {
 				$scope.empRoleList.push($scope.companyRoles[i]);

@@ -17,12 +17,20 @@ body {
   text-align:center;
 }
 
+.padding10 {
+  padding: 10px;
+}
+
 .paddingTop10 {
   padding-top: 10px;
 }
 
 .paddingTop5 {
   padding-top: 5px;
+}
+
+.paddingRight10 {
+  padding-right: 10px;
 }
 
 .noscreen {
@@ -36,4 +44,8 @@ body {
 .contentBackground {
   background-color: #e9eaed;
   height: 100%;
+}
+
+.width100 {
+  width:100px;
 }
