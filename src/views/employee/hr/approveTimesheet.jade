@@ -1,9 +1,9 @@
 extends /templates/authLayout
 block head
-  title Timesheets
+  title Approve Timesheets
   link(href="/css/datepicker.css" rel="stylesheet")
   script(src="/frameworks/bootstrap-datepicker.js")
-  script(src="/javascript/hrsystem/apps/employee/timesheet.js")
+  script(src="/javascript/hrsystem/apps/hr/approveTimesheet.js")
   style(type='text/css').
     table input[type="text"] {
        width: 100%; 
@@ -17,8 +17,10 @@ block breadcrumbs
     li
       a(href="/c/#{company.companyId}/a/home") Home
     li
-      a(href="/c/#{company.companyId}/emp/empHome") My Tasks
-    li.active Timesheet
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listTimesheets") List Timesheets  
+    li.active Approve Timesheet
 block content
   .container(ng-app="timeSheet",ng-controller="timeSheetCtrl")
     form.form-inline
@@ -68,32 +70,26 @@ block content
               th.col-sm-1 
                 div {{days[5]}} 
                 div {{tableHeader[6]}}
-              th.col-sm-1 
-                div  
             tr(ng-repeat="task in timeSheetObj.tasks")
               td
-                input(type="text" data-ng-model="task['name']" ng-disabled="{{timeSheetObj.status=='approved'}}") 
+                label {{task['name']}}
               td 
-                input(type="text" data-ng-model="task[days[0]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[0]]}}
               td
-                input(type="text" data-ng-model="task[days[1]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[1]]}}
               td
-                input(type="text" data-ng-model="task[days[2]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[2]]}}
               td
-                input(type="text" data-ng-model="task[days[3]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[3]]}}
               td
-                input(type="text" data-ng-model="task[days[4]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[4]]}}
               td
-                input(type="text" data-ng-model="task[days[5]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+                label {{task[days[5]]}}
               td
-                input(type="text" data-ng-model="task[days[6]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
-              td(ng-if="timeSheetObj.status!='approved'")
-                button.btn.btn-default(type="button" ng-click="removeTask($index)")
-                  span.glyphicon.glyphicon-remove  
-            tr
+                label {{task[days[6]]}} 
+            tr.success
               td
-                button.btn.btn-link(ng-click="addNewTask()" ng-if="timeSheetObj.status!='approved'")
-                  b Add New Row
+                label Total 
               td
                 label {{subTotals[days[0]]}}
               td
@@ -112,6 +108,5 @@ block content
                 label
       .alert.alert-success.alignCenter(role="alert" ng-if="timeSheetObj.status=='approved'") 
         b This Timesheet is approved.             
-      .form-group(ng-if="timeSheetObj.status!='approved'")
-        button.btn.btn-primary(type="submit" ng-click="saveTimeSheet()") Submit Timesheet
-
+      .form-group(ng-if="timeSheetObj.status=='submit'")
+        button.btn.btn-primary(type="submit" ng-click="approveTimeSheet()") Approve Timesheet

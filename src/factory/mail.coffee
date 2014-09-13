@@ -1,5 +1,6 @@
 S = require('string')
 nodemailer = require('nodemailer')
+config = require('./config')
 
 class Mail
   constructor:->
@@ -7,7 +8,8 @@ class Mail
     @transporter = nodemailer.createTransport
       service: 'Gmail'
       auth:
-        user: 'support@smallslate.com'
+        user: config.mail.user
+        pass: config.mail.pass
     return @mail
 
   getNewUserEmailObj: (valuesObj)->
@@ -24,8 +26,8 @@ class Mail
                     <div>Your {{companyName}} account has been created.</div>
                     <div>SignIn Id : <b>{{signInId}}</b></div>
                     <p>Use your SignIn Id to access your account and maintain all your information including timesheets and other important day to day activities at {{companyName}}</p>
-                    <p>Click <a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword">Here </a> or below button to verify your account</p>
-                    <div><a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:10px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b> Verify My Account</b></a></div>
+                    <p>Click <a href="'+config.server.serverUrl+'/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword">Here </a> or below button to verify your account</p>
+                    <div><a href="'+config.server.serverUrl+'/c/{{companyId}}/{{signInId}}/{{verificationId}}/new/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:15px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b> Verify My Account</b></a></div>
                     <br/>
                     Sincerely,
                     <div>{{companyName}} Team</div>
@@ -49,7 +51,7 @@ class Mail
                   <div style="margin:10px;"> 
                     <h3>Dear User,</h3>
                     <p>To initiate the password reset process for your {{companyName}} Account, click the link below.</p>
-                    <div><a href="http://localhost:3000/c/{{companyId}}/{{signInId}}/{{verificationId}}/reset/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:10px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b>Reset Password</b></a></div>
+                    <div><a href="'+config.server.serverUrl+'/c/{{companyId}}/{{signInId}}/{{verificationId}}/reset/createPassword" style="text-align:center;color:black;text-decoration: none;padding-top:15px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b>Reset Password</b></a></div>
                     <p>If you\'ve received this mail in error, it\'s likely that another user entered your SignIn Id by mistake while trying to reset a password. If you didn\'t initiate the request, you don\'t need to take any further action and can safely disregard this email.</p>
                     <br/>
                     Sincerely,

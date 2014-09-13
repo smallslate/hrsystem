@@ -32,10 +32,11 @@ module.exports = (app)->
 
   server.all '/c/:companyId/*',accountCtrl.updateCompanyInSession
   server.all '/c/:companyId/a/*',accountCtrl.authorizeAccountRequest
-  server.all '/c/:companyId/emplid/:emplid/hr/*',accountCtrl.authorizeHRRequest
   server.all '/c/:companyId/hr/*',accountCtrl.authorizeHRRequest
+  server.all '/c/:companyId/emplid/:emplid/hr/*',accountCtrl.authorizeHRRequest
   server.all '/rest/hr/*',accountCtrl.authorizeHRRestAccountRequest
   server.all '/c/:companyId/emp/*',accountCtrl.authorizeEmpRequest
+  server.all '/rest/emp/*',accountCtrl.authorizeEmpRestRequest
 
   server.get "/c/:companyId/signin",(req,res)->
     if req.isAuthenticated()

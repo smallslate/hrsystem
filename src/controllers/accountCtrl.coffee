@@ -153,6 +153,8 @@ class AccountCtrl
   authorizeEmpRequest:(req,res,next)=>
     @authorizeRequest(req,res,'/emp/',empManagementPageAccess,next)
 
+  authorizeEmpRestRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/rest/',empManagementPageAccess,next)
 
   authorizeRequest:(req,res,type,pageAccess,next)->
     if req.isAuthenticated()

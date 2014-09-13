@@ -1,0 +1,56 @@
+extends /templates/authLayout
+block head
+  title List Accounts
+  script(src="/javascript/hrsystem/apps/hr/employeeList.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li.active List Accounts  
+block content
+  .container(ng-app="employeeList",ng-controller="employeeListCtrl")
+    .table-responsive
+      table.table.table-bordered.table-hover
+        tr.info
+          th.col-sm-2
+            div Employee Id
+          th.col-sm-2
+            div First Name
+          th.col-sm-2
+            div Last Name
+          th.col-sm-2
+            div Signin Id
+          th.col-sm-2
+            div Supervisor Id
+          th.col-sm-2
+            div Status
+        tr(ng-repeat="emp in empList")
+          td(ng-if="emp.isAccountActive==1")
+            div 
+              a(href="/c/#{company.companyId}/emplid/{{emp.emplid}}/hr/updateEmployee") {{emp.emplid}}
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div 
+              a(href="/c/#{company.companyId}/emplid/{{emp.emplid}}/hr/updateEmployee") {{emp.emplid}}    
+          td(ng-if="emp.isAccountActive==1")
+            div {{emp.firstName}}
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div {{emp.firstName}}  
+          td(ng-if="emp.isAccountActive==1")
+            div {{emp.lastName}}
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div {{emp.lastName}}  
+          td(ng-if="emp.isAccountActive==1")
+            div {{emp.signInId}}
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div {{emp.signInId}}  
+          td(ng-if="emp.isAccountActive==1")
+            div {{emp.supervisorId}}
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div {{emp.supervisorId}}  
+          td(ng-if="emp.isAccountActive==1")
+            div Active
+          td.alert-danger(ng-if="emp.isAccountActive!=1")
+            div Not Active
+                   

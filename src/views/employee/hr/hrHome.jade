@@ -9,13 +9,24 @@ block breadcrumbs
 block content
   .container
     .row
-      if user.pid.indexOf(2)>=0
+      if user.pid.indexOf(2)>=0 || user.pid.indexOf(3)>=0
         .col-xs-12.col-sm-6.col-md-4
           .panel.panel-primary
-            .panel-heading Accounts Management
+            .panel-heading 
+              b Accounts
             .panel-body
               if user.pid.indexOf(2)>=0
-                div 
-                  a(href="/c/#{company.companyId}/hr/updateEmployee") Add New Employee
-                div 
-                  a(href="/c/#{company.companyId}/hr/updateEmployee") View Employee Account
+                div.padding5 
+                  a(href="/c/#{company.companyId}/hr/updateEmployee") New Account
+              if user.pid.indexOf(3)>=0    
+                div.padding5
+                  a(href="/c/#{company.companyId}/hr/listAccounts") List Accounts
+      if user.pid.indexOf(4)>=0
+        .col-xs-12.col-sm-6.col-md-4
+          .panel.panel-primary
+            .panel-heading 
+              b Tasks
+            .panel-body
+              if user.pid.indexOf(4)>=0
+                div.padding5 
+                  a(href="/c/#{company.companyId}/hr/listTimesheets") List Timesheets         

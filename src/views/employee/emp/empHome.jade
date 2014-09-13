@@ -5,15 +5,16 @@ block breadcrumbs
   ol.breadcrumb
     li
       a(href="/c/#{company.companyId}/a/home") Home
-    li.active Employee
+    li.active My Tasks
 block content
   .container
     .row
       if user.pid.indexOf(1001)>=0
         .col-xs-12.col-sm-6.col-md-4
           .panel.panel-primary
-            .panel-heading Employee Management
+            .panel-heading 
+              b Tasks
             .panel-body
               if user.pid.indexOf(1001)>=0
-                div 
-                  a(href="/c/#{company.companyId}/emp/timesheet") Enter Timesheets
+                div.padding5 
+                  a(href="/c/#{company.companyId}/emp/timesheet") Timesheets

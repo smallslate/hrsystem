@@ -23,6 +23,12 @@ class HrCtrl
           newEmpObj = {firstName:userObj.firstName,middleName:userObj.middleName,lastName:userObj.lastName,signInId:userObj.signInId,email:userObj.email,emplId:emplObj.emplId,supervisorId:emplObj.supervisorId,isAccountActive:userObj.isAccountActive,uuid:userObj.uuid,roleIds:_.pluck(rolesObj,'roleId')}
           return newEmpObj
 
+  getAllEmployeeList: (companyId)->
+    return employeeDao.getAllEmployeeList(companyId)
+
+  getAllActiveEmployeeList: (companyId)->
+    return employeeDao.getAllActiveEmployeeList(companyId)
+
   updateEmpAccount: (companyId,emplObj)->
     if !emplObj?.roleIds || emplObj?.roleIds?.length<1
       emplObj.roleIds = [0]
@@ -75,5 +81,61 @@ class HrCtrl
                     .then (addedRoleList) ->
                       newEmpObj = {firstName:newUser.firstName,middleName:newUser.middleName,lastName:newUser.lastName,signInId:newUser.signInId,email:newUser.email,emplId:newEmplObj.emplId,supervisorId:newEmplObj.supervisorId,isAccountActive:newUser.isAccountActive,uuid:newUser.uuid,roleIds:_.pluck(addedRoleList,'roleId')}
                       return newEmpObj
+
+  getEmpTimesheet: (companyId,emplid,weekId) ->
+    employeeDao.getEmployeeByEmplid(companyId,emplid)
+    .then (emplObj) ->
+      emplObj.getTimesheets({where:{weekId:weekId}})
+      .then (savedTimesheetObjList) ->
+        if savedTimesheetObjList?.length > 0
+          dbTimeSheetObj = savedTimesheetObjList[0]
+          dbTimeSheetObj.getTimesheetTasks()
+          .then (taskList) ->
+            savedTimeSheet = {}
+            savedTimeSheet.id = dbTimeSheetObj.id
+            savedTimeSheet.weekId = dbTimeSheetObj.weekId
+            savedTimeSheet.status = dbTimeSheetObj.status
+            savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
+            savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
+            savedTimeSheet.approvedBy = dbTimeSheetObj.approvedBy
+            savedTimeSheet.tasks = []
+            for taskObj in taskList
+              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+            return savedTimeSheet
+        else
+          savedTimeSheet = {}
+          savedTimeSheet.status = 'new'
+          savedTimeSheet.weekId = weekId
+          return savedTimeSheet
+
+  approveTimeSheet: (companyId,approverId,emplid,weekId) ->
+    employeeDao.getEmployeeByEmplid(companyId,emplid)
+    .then (emplObj) ->
+      emplObj.getTimesheets({where:{weekId:weekId}})
+      .then (savedTimesheetObjList) ->
+        if savedTimesheetObjList?.length > 0
+          dbTimeSheetObj = savedTimesheetObjList[0]
+          dbTimeSheetObj.approvedOn = new Date()
+          dbTimeSheetObj.approvedBy = approverId
+          dbTimeSheetObj.status = 'approved'
+          dbTimeSheetObj.save()
+          dbTimeSheetObj.getTimesheetTasks()
+          .then (taskList) ->
+            savedTimeSheet = {}
+            savedTimeSheet.id = dbTimeSheetObj.id
+            savedTimeSheet.weekId = dbTimeSheetObj.weekId
+            savedTimeSheet.status = dbTimeSheetObj.status
+            savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
+            savedTimeSheet.approvedBy = dbTimeSheetObj.approvedBy
+            savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
+            savedTimeSheet.tasks = []
+            for taskObj in taskList
+              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+            return savedTimeSheet
+        else
+          savedTimeSheet = {}
+          savedTimeSheet.status = 'new'
+          savedTimeSheet.weekId = weekId
+          return savedTimeSheet
 
 module.exports = new HrCtrl() 

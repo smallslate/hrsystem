@@ -1,14 +1,16 @@
 extends /templates/authLayout
 block head
   title Update Employee
-  script(src="/javascript/hrsystem/apps/employee/updateEmployee.js")
+  script(src="/javascript/hrsystem/apps/hr/updateEmployee.js")
 block breadcrumbs
   ol.breadcrumb
     li
       a(href="/c/#{company.companyId}/a/home") Home
     li
-      a(href="/c/#{company.companyId}/hr/hrHome") HR  
-    li.active Update Employee    
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listAccounts") List Accounts      
+    li.active Update    
 block content
   .container(ng-app="updateEmployee",ng-controller="updateEmployeeCtrl")
     form.form-horizontal(ng-submit="updateEmployee()")

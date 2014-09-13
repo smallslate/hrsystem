@@ -8,10 +8,16 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     autoclose:true,
     todayBtn:'linked'
   })
+
+  emplidIndex = location.pathname.indexOf("/emplid/");
+  $scope.selectedEmplid = null;
+  if(emplidIndex>5) {
+      $scope.selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/approveTimesheet"))
+  }
+
   $scope.timeSheetObj = {};
   $('#selectedDate').datepicker('setDate',(new Date().getMonth()+1)+'/'+new Date().getDate()+'/'+new Date().getFullYear());
   
-
   $scope.updateTableHeader = function() {
   	var selectedDate = $('#selectedDate').datepicker('getDate');
   	if(selectedDate && selectedDate!='Invalid Date') {
@@ -51,62 +57,45 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   	}
   };
 
-  $scope.addNewTask = function() {
-    task = {};
-    task["name"] = ' ';
-    for(var i=0;i<7;i++) {
-      task[$scope.days[i]] = 0;
-	}
-	$scope.timeSheetObj.tasks.push(task);
-	$scope.updateValues();
-  };
-
-  $scope.removeTask = function(index) {
-  	if($scope.timeSheetObj.tasks.length < 2) {
-  	  alert('You cannot remove all tasks.');
-  	} else {
-  	  $scope.timeSheetObj.tasks.splice(index,1);
-	  $scope.updateValues();
-  	}
-  };
-
-  $scope.saveTimeSheet = function() {
-  	timesheetService.saveTimeSheet($scope.timeSheetObj, function(result) {
-		$scope.timeSheetObj = result;
-		$scope.updateValues();
-		alert('Timesheet saved successfully.');
-	});
-  };
-
   $scope.setEmptyTimesheet = function() {
   	$scope.timeSheetObj.tasks = [];
   	$scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0});
   }; 
 
-  $scope.getTimeSheet = function() {
-  	timesheetService.getTimeSheet({weekId:$scope.timeSheetObj.weekId}, function(result) {
+  $scope.getEmpTimesheet = function() {
+  	timesheetService.getEmpTimesheet({weekId:$scope.timeSheetObj.weekId,emplid:$scope.selectedEmplid}, function(result) {
   	  $scope.timeSheetObj = result;
   	  if(!(result && result.tasks && result.tasks.length>0)) {
   		$scope.setEmptyTimesheet();
   	  }
   	  $scope.updateValues();
-	});
+	  });
   };  
+
+  $scope.approveTimeSheet = function() {
+    timesheetService.approveTimeSheet({weekId:$scope.timeSheetObj.weekId,emplid:$scope.selectedEmplid}, function(result) {
+      $scope.timeSheetObj = result;
+      if(!(result && result.tasks && result.tasks.length>0)) {
+        $scope.setEmptyTimesheet();
+      }
+      $scope.updateValues();
+    });
+  };
 
   $('.datepicker').datepicker().on('changeDate', function(e) {
   	$scope.$apply(function() {
       $scope.updateTableHeader();
-      $scope.getTimeSheet();
+      $scope.getEmpTimesheet();
     });
    });
   $scope.updateTableHeader();
-  $scope.getTimeSheet();
+  $scope.getEmpTimesheet();
 }]);
 
 
 timeSheetApp.factory('timesheetService',['$resource', function($resource) {
 	return $resource('#', {}, {
-		saveTimeSheet : {method : 'POST',url:'/rest/emp/saveTimeSheet'},
-		getTimeSheet : {method : 'POST',url:'/rest/emp/getTimeSheet'}
+		getEmpTimesheet : {method : 'POST',url:'/rest/hr/getEmpTimesheet'},
+    approveTimeSheet : {method : 'POST',url:'/rest/hr/approveTimeSheet'}
 	});
 }]);

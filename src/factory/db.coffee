@@ -1,8 +1,9 @@
 Sequelize = require 'sequelize'
+config = require('./config')
 
 dbConfig =
-  host: 'localhost'
-  port: 3306
+  host: config.db.host
+  port: config.db.port
   maxConcurrentQueries: 100
   dialect: 'mysql'
   define:
@@ -19,13 +20,16 @@ dbModels = [{'name':'Company','path':'../models/company'},
             {'name':'Verification','path':'../models/verification'},
             {'name':'Role','path':'../models/role'},
             {'name':'PageAccess','path':'../models/pageAccess'},
-            {'name':'Employee','path':'../models/employee/employee'}]    
+            {'name':'Employee','path':'../models/employee/employee'},
+            {'name':'Timesheet','path':'../models/employee/timesheet'},
+            {'name':'TimesheetTask','path':'../models/employee/timesheetTask'}
+          ]    
 
 class DB
   constructor:->
     @db = @
     @models = {}
-    @sequelize = new Sequelize 'hrsystem', 'root', 'sysadm',dbConfig
+    @sequelize = new Sequelize config.db.dbName, config.db.userName, config.db.password,dbConfig
     @initModels()
     @initAssociations()
     @syncModels()
@@ -41,7 +45,8 @@ class DB
     @models['User'].hasMany(@models['Role']).hasOne(@models['Employee'])
     @models['Role'].hasMany(@models['User']).hasMany(@models['PageAccess'])
     @models['PageAccess'].hasMany(@models['Role'])
-    @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'})
+    @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'}).hasMany(@models['Timesheet'])
+    @models['Timesheet'].hasMany(@models['TimesheetTask'])
     
   syncModels:->
     @sequelize.sync()
