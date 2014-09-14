@@ -12,7 +12,7 @@ block breadcrumbs
       a(href="/c/#{company.companyId}/hr/listAccounts") List Accounts      
     li.active Update    
 block content
-  .container(ng-app="updateEmployee",ng-controller="updateEmployeeCtrl")
+  .container(ng-app="updateEmployee",ng-controller="updateEmployeeCtrl" ng-cloak)
     form.form-horizontal(ng-submit="updateEmployee()")
       .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
         b {{errMsg}}

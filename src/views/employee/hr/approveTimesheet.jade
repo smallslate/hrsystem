@@ -22,7 +22,7 @@ block breadcrumbs
       a(href="/c/#{company.companyId}/hr/listTimesheets") List Timesheets  
     li.active Approve Timesheet
 block content
-  .container(ng-app="timeSheet",ng-controller="timeSheetCtrl")
+  .container(ng-app="timeSheet",ng-controller="timeSheetCtrl" ng-cloak)
     form.form-inline
       .form-group.paddingRight10
         .input-group

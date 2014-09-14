@@ -46,11 +46,11 @@ class EmployeeDao
 
   getAllEmployeeList: (companyId) ->
     sequelize.query("SELECT us.uuid,us.signInId,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId,
-      us.isAccountActive FROM users us,employees emp where us.uuid = emp.UserId and us.CompanyId ="+companyId)   
+      us.isAccountActive FROM Users us,Employees emp where us.uuid = emp.UserId and us.CompanyId ="+companyId)   
 
   getAllActiveEmployeeList: (companyId) ->
     sequelize.query("SELECT us.uuid,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId
-       FROM users us,employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)   
+       FROM Users us,Employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)   
 
 
 

@@ -10,7 +10,7 @@ block breadcrumbs
       a(href="/c/#{company.companyId}/hr/hrHome") HR
     li.active List Timesheets  
 block content
-  .container(ng-app="timesheetList",ng-controller="timesheetListCtrl")
+  .container(ng-app="timesheetList",ng-controller="timesheetListCtrl" ng-cloak)
     .table-responsive
       table.table.table-bordered.table-hover
         tr.info

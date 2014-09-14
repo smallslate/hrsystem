@@ -13,7 +13,8 @@ class Application
     @startServer()
 
   startServer: -> 
-    http.createServer(@server).listen 3000,->
+    port = process.env.PORT || 3000
+    http.createServer(@server).listen port,->
   	  console.log "server started"
 
   initServer: ->

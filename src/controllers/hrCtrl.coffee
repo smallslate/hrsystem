@@ -2,7 +2,7 @@ P = require("q")
 _ = require("lodash")
 employeeDao = require('../dao/employeeDao')
 accountDao = require('../dao/accountDao')
-mailUtils = require('../utils/MailUtils')
+mailUtils = require('../utils/mailUtils')
 
 class HrCtrl
   getNextEmplid: (companyId)->

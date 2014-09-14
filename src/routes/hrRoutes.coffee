@@ -58,6 +58,7 @@ module.exports = (app)->
     .then (allEmployeeList) ->
       res.send(allEmployeeList)
     ,(err) ->
+      console.log err
       res.send(messages['server.error']) 
 
   server.post "/rest/hr/getAllActiveEmployeeList",(req,res)->

@@ -1,12 +1,11 @@
 module.exports =
   server:	
-    serverUrl : 'http://localhost:3000'
+    serverUrl : 'http://hrsystem.elasticbeanstalk.com'
   db:
-    host: 'localhost'
+    host: 'aa1xtsgnwnh1qzg.cndorxuubkhh.us-east-1.rds.amazonaws.com'
     port: 3306
     dbName: 'hrsystem'
     userName: 'root'
-    password: 'sysadm'
+    password: '$S3sysadm'
   mail:
-    user: 'support@smallslate.com'
-  
+    user: 'support@smallslate.com' 
