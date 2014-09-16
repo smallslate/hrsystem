@@ -6,8 +6,7 @@ uuid = require("node-uuid")
 moment = require("moment")
 messages = require('../utils/messages').code
 authorizedUrl = require('../factory/pages').authorizedUrl
-hrManagementPageAccess =  require('../factory/pages').pages.hrManagement
-empManagementPageAccess =  require('../factory/pages').pages.empManagement
+pages =  require('../factory/pages').pages
 
 class AccountCtrl
   getUserBySigninId: (signInId)->
@@ -142,36 +141,29 @@ class AccountCtrl
      throw new Error('password.recovery.option.notvalid')
 
   authorizeAccountRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/a/',null,next)
+    @authorizeRequest(req,res,'/a/',next)
 
   authorizeHRRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/hr/',hrManagementPageAccess,next)
-
-  authorizeHRRestAccountRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/rest/',hrManagementPageAccess,next)
+    @authorizeRequest(req,res,'/hr/',next)
 
   authorizeEmpRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/emp/',empManagementPageAccess,next)
+    @authorizeRequest(req,res,'/emp/',next)
 
-  authorizeEmpRestRequest:(req,res,next)=>
-    @authorizeRequest(req,res,'/rest/',empManagementPageAccess,next)
+  authorizeRestRequest:(req,res,next)=>
+    @authorizeRequest(req,res,'/rest/',next)
 
-  authorizeRequest:(req,res,type,pageAccess,next)->
+  authorizeRequest:(req,res,type,next)->
     if req.isAuthenticated()
-      if req.session.company.companyuid = req.session.user.companyuid
+      if req.session.company.companyuid == req.session.user.companyuid
         isAuthorized = false
         accessUrl = req.url
-        previousUrl = req.session.previousUrl 
         reqUrl = accessUrl.substring(accessUrl.indexOf(type),accessUrl.length)
-        if previousUrl? 
-          req.session.previousUrl = null
-          reqUrl = previousUrl.substring(previousUrl.indexOf(type),previousUrl.length)
         if reqUrl in authorizedUrl 
           isAuthorized = true
-        else if pageAccess?
+        else
           userPageAccessIds = req.session.user?.pid
           for userPageId in userPageAccessIds
-            if pageAccess[userPageId] && reqUrl in pageAccess[userPageId]?.url
+            if pages[userPageId] && reqUrl in pages[userPageId]?.url
               isAuthorized = true
               break;
 
@@ -182,7 +174,9 @@ class AccountCtrl
         else  
           res.locals.user = req.session.user
           res.locals.user.pid = req.session.user?.pid
+          previousUrl = req.session.previousUrl 
           if previousUrl?
+            req.session.previousUrl = null
             res.redirect(previousUrl)
           else
             next()

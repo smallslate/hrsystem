@@ -35,19 +35,20 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   	$scope.subTotals = {};
   	for(var i=0;i<$scope.timeSheetObj.tasks.length;i++) {
   		task = $scope.timeSheetObj.tasks[i];
-		for(var j=0;j<$scope.days.length;j++) {
-			cValue = parseFloat(task[$scope.days[j]]);
-			if(!isNaN(cValue)) {
-				$scope.totalHrs =  $scope.totalHrs+cValue;
-			} else {
-				task[$scope.days[j]] = cValue = 0;
-				alert('Please enter valid value');
-			}
-			if(!$scope.subTotals[$scope.days[j]]) {
-			  $scope.subTotals[$scope.days[j]] = 0;
-			}
-			$scope.subTotals[$scope.days[j]] = $scope.subTotals[$scope.days[j]]+cValue;
-	  	}
+  		for(var j=0;j<$scope.days.length;j++) {
+  			cValue = parseFloat(task[$scope.days[j]]);
+  			if(isNaN(cValue)) {
+  				task[$scope.days[j]] = cValue = 0;
+          //alert('Please enter valid value');
+  			} else {
+          $scope.totalHrs =  $scope.totalHrs+parseFloat(cValue);
+          task[$scope.days[j]] = cValue;
+  			}
+  			if(!$scope.subTotals[$scope.days[j]]) {
+  			  $scope.subTotals[$scope.days[j]] = 0;
+  			}
+  			$scope.subTotals[$scope.days[j]] = $scope.subTotals[$scope.days[j]]+cValue; 
+  	  }
   	}
   };
 
@@ -55,7 +56,11 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     task = {};
     task["name"] = ' ';
     for(var i=0;i<7;i++) {
-      task[$scope.days[i]] = 0;
+      if(i==0 || i==6) {
+        task[$scope.days[i]] = 0;
+      } else {
+        task[$scope.days[i]] = 8;
+      } 
 	}
 	$scope.timeSheetObj.tasks.push(task);
 	$scope.updateValues();
@@ -80,7 +85,7 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
 
   $scope.setEmptyTimesheet = function() {
   	$scope.timeSheetObj.tasks = [];
-  	$scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0});
+  	$scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0});
   }; 
 
   $scope.getTimeSheet = function() {

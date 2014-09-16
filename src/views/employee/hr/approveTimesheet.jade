@@ -68,7 +68,7 @@ block content
                 div {{days[5]}}  
                 div {{tableHeader[5]}}
               th.col-sm-1 
-                div {{days[5]}} 
+                div {{days[6]}} 
                 div {{tableHeader[6]}}
             tr(ng-repeat="task in timeSheetObj.tasks")
               td
@@ -105,8 +105,11 @@ block content
               td
                 label {{subTotals[days[6]]}}
               td
-                label
-      .alert.alert-success.alignCenter(role="alert" ng-if="timeSheetObj.status=='approved'") 
-        b This Timesheet is approved.             
+                label            
       .form-group(ng-if="timeSheetObj.status=='submit'")
         button.btn.btn-primary(type="submit" ng-click="approveTimeSheet()") Approve Timesheet
+      .alert.alert-success.col-sm-4(ng-if="timeSheetObj.status!='new'")
+        b(ng-if="timeSheetObj.status=='approved'") Timesheet approved.
+        div Submitted On : {{timeSheetObj.submittedOn | date : 'M/d/yy h:mm a'}} 
+        div(ng-if="timeSheetObj.status=='approved'") Approved On : {{timeSheetObj.approvedOn | date : 'M/d/yy h:mm a'}} 
+        div(ng-if="timeSheetObj.status=='approved'") Approved By : {{timeSheetObj.approvedBy}}  

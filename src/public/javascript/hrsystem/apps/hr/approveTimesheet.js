@@ -73,13 +73,16 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   };  
 
   $scope.approveTimeSheet = function() {
-    timesheetService.approveTimeSheet({weekId:$scope.timeSheetObj.weekId,emplid:$scope.selectedEmplid}, function(result) {
-      $scope.timeSheetObj = result;
-      if(!(result && result.tasks && result.tasks.length>0)) {
-        $scope.setEmptyTimesheet();
-      }
-      $scope.updateValues();
-    });
+    var r = confirm("Do you want to approve timesheet?");
+    if (r == true) {
+      timesheetService.approveTimeSheet({weekId:$scope.timeSheetObj.weekId,emplid:$scope.selectedEmplid}, function(result) {
+        $scope.timeSheetObj = result;
+        if(!(result && result.tasks && result.tasks.length>0)) {
+          $scope.setEmptyTimesheet();
+        }
+        $scope.updateValues();
+      });
+    } 
   };
 
   $('.datepicker').datepicker().on('changeDate', function(e) {

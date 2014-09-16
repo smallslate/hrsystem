@@ -22,7 +22,7 @@ class EmployeeDao
     models['Employee'].create(emplObj)  
 
   createTimeSheet: (timesheetObj) ->
-    models['Timesheet'].create({weekId:timesheetObj.weekId,EmployeeId:timesheetObj.EmployeeId})
+    models['Timesheet'].create({weekId:timesheetObj.weekId,EmployeeId:timesheetObj.EmployeeId,submittedOn:new Date()})
     .then (dbTimeSheetObj) ->
       for task in timesheetObj.tasks
         task.TimesheetId = dbTimeSheetObj.id
@@ -50,7 +50,7 @@ class EmployeeDao
 
   getAllActiveEmployeeList: (companyId) ->
     sequelize.query("SELECT us.uuid,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId
-       FROM Users us,Employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)   
+       FROM Users us,Employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)     
 
 
 

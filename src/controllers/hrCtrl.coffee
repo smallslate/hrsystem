@@ -3,6 +3,7 @@ _ = require("lodash")
 employeeDao = require('../dao/employeeDao')
 accountDao = require('../dao/accountDao')
 mailUtils = require('../utils/mailUtils')
+commonUtils = require('../utils/common')
 
 class HrCtrl
   getNextEmplid: (companyId)->
@@ -97,11 +98,16 @@ class HrCtrl
             savedTimeSheet.status = dbTimeSheetObj.status
             savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
             savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
-            savedTimeSheet.approvedBy = dbTimeSheetObj.approvedBy
             savedTimeSheet.tasks = []
             for taskObj in taskList
               savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
-            return savedTimeSheet
+            if dbTimeSheetObj.approvedBy
+              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
+              .then (userNameObj) ->
+                savedTimeSheet.approvedBy = commonUtils.getFullName(userNameObj)
+                return savedTimeSheet
+            else    
+              return savedTimeSheet
         else
           savedTimeSheet = {}
           savedTimeSheet.status = 'new'
@@ -126,12 +132,17 @@ class HrCtrl
             savedTimeSheet.weekId = dbTimeSheetObj.weekId
             savedTimeSheet.status = dbTimeSheetObj.status
             savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
-            savedTimeSheet.approvedBy = dbTimeSheetObj.approvedBy
             savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
             savedTimeSheet.tasks = []
             for taskObj in taskList
               savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
-            return savedTimeSheet
+            if dbTimeSheetObj.approvedBy
+              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
+              .then (userNameObj) ->
+                savedTimeSheet.approvedBy = commonUtils.getFullName(userNameObj)
+                return savedTimeSheet
+            else    
+              return savedTimeSheet
         else
           savedTimeSheet = {}
           savedTimeSheet.status = 'new'
