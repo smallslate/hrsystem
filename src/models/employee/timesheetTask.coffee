@@ -5,6 +5,8 @@ module.exports = (sequelize,DataTypes)->
       autoIncrement : true
       primaryKey : true
       unique: true
+    uuid:
+      type: DataTypes.STRING(1000)  
     name:
       type: DataTypes.STRING(1000)
     Sun:

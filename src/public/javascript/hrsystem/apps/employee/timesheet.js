@@ -9,6 +9,7 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     todayBtn:'linked'
   })
   $scope.timeSheetObj = {};
+  $scope.timeSheetDocs = [];
   $('#selectedDate').datepicker('setDate',(new Date().getMonth()+1)+'/'+new Date().getDate()+'/'+new Date().getFullYear());
   
 
@@ -39,7 +40,6 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   			cValue = parseFloat(task[$scope.days[j]]);
   			if(isNaN(cValue)) {
   				task[$scope.days[j]] = cValue = 0;
-          //alert('Please enter valid value');
   			} else {
           $scope.totalHrs =  $scope.totalHrs+parseFloat(cValue);
           task[$scope.days[j]] = cValue;
@@ -56,14 +56,10 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     task = {};
     task["name"] = ' ';
     for(var i=0;i<7;i++) {
-      if(i==0 || i==6) {
-        task[$scope.days[i]] = 0;
-      } else {
-        task[$scope.days[i]] = 8;
-      } 
-	}
-	$scope.timeSheetObj.tasks.push(task);
-	$scope.updateValues();
+      task[$scope.days[i]] = 0;
+	  }
+	  $scope.timeSheetObj.tasks.push(task);
+	  $scope.updateValues();
   };
 
   $scope.removeTask = function(index) {
@@ -85,33 +81,82 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
 
   $scope.setEmptyTimesheet = function() {
   	$scope.timeSheetObj.tasks = [];
-  	$scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0});
+    if($scope.timeSheetObj.status == 'new') {
+      $scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0});
+    } else {
+      $scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0});
+    }
   }; 
 
   $scope.getTimeSheet = function() {
   	timesheetService.getTimeSheet({weekId:$scope.timeSheetObj.weekId}, function(result) {
   	  $scope.timeSheetObj = result;
   	  if(!(result && result.tasks && result.tasks.length>0)) {
-  		$scope.setEmptyTimesheet();
+  		  $scope.setEmptyTimesheet();
   	  }
   	  $scope.updateValues();
-	});
+	  });
   };  
 
-  $('.datepicker').datepicker().on('changeDate', function(e) {
-  	$scope.$apply(function() {
-      $scope.updateTableHeader();
-      $scope.getTimeSheet();
+  $scope.getTimesheetDocs = function() {
+    $scope.timeSheetDocs = [];
+    timesheetService.getTimesheetDocs({weekId:$scope.timeSheetObj.weekId}, function(result) {
+      $scope.timeSheetDocs = result;
     });
-   });
+  }; 
+
+  $scope.deleteTimesheetDoc = function(timesheetDocId) {
+    var r = confirm("Delete this timesheet document?");
+    if (r == true) {
+      timesheetService.deleteTimesheetDoc({weekId:$scope.timeSheetObj.weekId,timesheetDocId:timesheetDocId}, function(result) {
+        $scope.timeSheetDocs = result;
+      });
+    } 
+  }; 
+
   $scope.updateTableHeader();
   $scope.getTimeSheet();
-}]);
+  $scope.getTimesheetDocs();
 
+  $('.datepicker').datepicker().on('changeDate', function(e) {
+    $scope.$apply(function() {
+      $scope.updateTableHeader();
+      $scope.getTimeSheet();
+      $scope.getTimesheetDocs();
+    });
+  });
+
+  $('#fileupload').fileupload({
+    dataType: 'json',
+    url: '/rest/emp/uploadTimeSheetDoc',
+    done: function (e, data) {
+      $scope.$apply(function() {
+        if(data.result && data.result.length >0 && data.result[0].message) {
+          alert(data.result[0].message.errMsg);
+        } else {
+          $scope.timeSheetDocs = data.result;
+        }
+      });
+    },
+    progressall: function (e, data) {
+      var progress = parseInt(data.loaded / data.total * 100, 10);
+      $('#progress .bar').css('width',progress + '%');
+    }
+  });
+
+  $('#fileupload').bind('fileuploadsubmit', function (e, data) {
+     $scope.$apply(function() {
+      data.formData = {weekId: $scope.timeSheetObj.weekId};
+    });
+  });
+
+}]);
 
 timeSheetApp.factory('timesheetService',['$resource', function($resource) {
 	return $resource('#', {}, {
 		saveTimeSheet : {method : 'POST',url:'/rest/emp/saveTimeSheet'},
-		getTimeSheet : {method : 'POST',url:'/rest/emp/getTimeSheet'}
+		getTimeSheet : {method : 'POST',url:'/rest/emp/getTimeSheet'},
+    getTimesheetDocs : {method : 'POST',url:'/rest/emp/getTimesheetDocs',isArray:true},
+    deleteTimesheetDoc : {method : 'POST',url:'/rest/emp/deleteTimesheetDoc',isArray:true}
 	});
 }]);

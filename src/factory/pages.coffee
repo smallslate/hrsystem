@@ -7,7 +7,7 @@ module.exports =
     4      : {'type':'hrManagement','name':'View All Timesheets','url':['/hr/listTimesheets','/rest/hr/getAllActiveEmployeeList'],'descr':'View All Timesheets'}
     5      : {'type':'hrManagement','name':'Approve Timesheets','url':['/hr/approveTimesheet','/rest/hr/getEmpTimesheet','/rest/hr/approveTimeSheet'],'descr':'Approve Timesheets'}
     1000   : {'type':'empManagement','name':'My Tasks Home','url':['/emp/empHome'],'descr':'My Tasks Home','parent':true}
-    1001   : {'type':'empManagement','name':'Enter Time Sheets','url':['/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/getTimeSheet'],'descr':'Enter Time Sheet'}
+    1001   : {'type':'empManagement','name':'Enter Time Sheets','url':['/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet'],'descr':'Enter Time Sheet'}
   
 
 

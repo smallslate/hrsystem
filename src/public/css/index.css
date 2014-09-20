@@ -37,6 +37,10 @@ body {
   padding-right: 10px;
 }
 
+.marginRight10 {
+  margin-right: 10px;
+}
+
 .noscreen {
   display: none;
 }

@@ -50,20 +50,6 @@ class AccountCtrl
         throw new Error('password.link.invalid')
 
 
-  verifyResetPasswordLink: (verificationId,signInId,companyId)->
-    P.invoke(accountDao,"getResetPasswordVerificationObj",verificationId,signInId,companyId)
-    .then (verificationObj) ->
-      if verificationObj?.dataValues
-        expireDate = moment(verificationObj.dataValues.createdAt).add('days', 7)
-        if expireDate.isAfter(moment())
-          return verificationObj.dataValues
-        else  
-          verificationObj.destroy() 
-          throw new Error('password.link.invalid')
-      else
-        throw new Error('password.link.invalid')
-
-
   setNewPassword: (verificationId,signInId,companyId,newPassword,reenteredPassword)->
     savePasswordHash = (hash)->
       P.invoke(accountDao,"updateUserPassword",signInId,hash)
@@ -157,6 +143,8 @@ class AccountCtrl
       if req.session.company.companyuid == req.session.user.companyuid
         isAuthorized = false
         accessUrl = req.url
+        if accessUrl.indexOf('?docId=') > -1
+          accessUrl = accessUrl.substring(0,accessUrl.indexOf('?docId='))
         reqUrl = accessUrl.substring(accessUrl.indexOf(type),accessUrl.length)
         if reqUrl in authorizedUrl 
           isAuthorized = true
@@ -166,12 +154,11 @@ class AccountCtrl
             if pages[userPageId] && reqUrl in pages[userPageId]?.url
               isAuthorized = true
               break;
-
         if !isAuthorized
           req.session.destroy()
           req.logout()
           res.render("common/signin",message:messages['url.not.authorize'])
-        else  
+        else
           res.locals.user = req.session.user
           res.locals.user.pid = req.session.user?.pid
           previousUrl = req.session.previousUrl 

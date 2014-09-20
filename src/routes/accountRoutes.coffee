@@ -31,6 +31,7 @@ module.exports = (app)->
   ))
 
   server.all '/c/:companyId/*',accountCtrl.updateCompanyInSession
+  
   server.all '/c/:companyId/a/*',accountCtrl.authorizeAccountRequest
   
   server.all '/c/:companyId/hr/*',accountCtrl.authorizeHRRequest

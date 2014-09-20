@@ -20,3 +20,4 @@ module.exports =
     'employee.exist.with.emplid':{'errMsg':'Employee already exist with given employee id.Please generate new emplid.'}
     'supervisor.emplid.invalid':{'errMsg':'Supervisor employee id is invalid.'}
     'employee.no.access.change':{'errMsg':'You do not have access to change this employee data.'}
+    'upload.file.size.1mb':{'errMsg':'File size cannot be greater than 1MB.'}

@@ -3,8 +3,84 @@ moment = require("moment")
 commonUtils = require('../utils/common')
 employeeDao = require('../dao/employeeDao')
 accountDao = require('../dao/accountDao')
+fs = require('fs')
+messages = require('../utils/messages').code
+cloudStore = require('../factory/cloudStore')
 
 class EmpCtrl
+
+  uploadTimeSheetDoc: (companyId,uuid,body,files) =>
+    file = files.files
+    if file.size > 1000000
+      fs.unlink(file.path)
+      throw new Error('upload.file.size.1mb')
+    else
+      employeeDao.getEmployeeByUUid(companyId,uuid)
+      .then (emplObj) =>
+        emplObj.getTimesheets({where:{weekId:body.weekId}})
+        .then (savedTimesheetObjList) =>
+          if savedTimesheetObjList?.length > 0
+            return @saveTimeSheetDoc(savedTimesheetObjList[0],file,uuid) 
+          else
+            timesheetObj = {}
+            timesheetObj['EmployeeId'] = emplObj.id
+            timesheetObj['weekId'] = body.weekId
+            timesheetObj['submittedOn'] =  new Date()
+            timesheetObj['tasks'] = []
+            employeeDao.createTimeSheet(timesheetObj)
+            .then (dbTimeSheetObj) =>
+              return @saveTimeSheetDoc(dbTimeSheetObj,file,uuid) 
+
+  saveTimeSheetDoc: (timesheetObj,file,uuid) ->
+    P.invoke(cloudStore,"uploadTimesheetToStore",file,uuid,timesheetObj.weekId)
+    .then (fileNameOnCloud) ->
+      timesheetDoc = {orginalName:file.originalname,cloudName:fileNameOnCloud,mimeType:file.mimetype,extension:file.extension,TimesheetId:timesheetObj.id}
+      employeeDao.createTimeSheetDoc(timesheetDoc)
+      .then (dbTimesheetDoc) ->
+        timesheetObj.getTimesheetDocs()
+        .then (timesheetDocsList) ->
+          return timesheetDocsList
+
+  deleteTimesheetDoc: (companyId,uuid,weekId,timesheetDocId) ->
+    employeeDao.getEmployeeByUUid(companyId,uuid)
+    .then (emplObj) ->
+      emplObj.getTimesheets({where:{weekId:weekId}})
+      .then (savedTimesheetObjList) ->
+        if savedTimesheetObjList?.length > 0
+          employeeDao.getTimeSheetDoc(savedTimesheetObjList[0].id,timesheetDocId)
+          .then (timeSheetDoc) ->
+            cloudStore.deleteTimesheetFromStore(timeSheetDoc.cloudName)
+            timeSheetDoc.destroy()
+            .then () ->
+              return savedTimesheetObjList[0].getTimesheetDocs()
+        else 
+          return []
+
+  getTimesheetDocs: (companyId,uuid,weekId) ->
+    employeeDao.getEmployeeByUUid(companyId,uuid)
+    .then (emplObj) ->
+      emplObj.getTimesheets({where:{weekId:weekId}})
+      .then (savedTimesheetObjList) ->
+        if savedTimesheetObjList?.length > 0
+          return savedTimesheetObjList[0].getTimesheetDocs()
+        else 
+          return []  
+
+  downloadTimesheetDoc: (companyId,uuid,params) ->
+    console.log 'companyId,uuid,params',companyId,uuid,params
+    employeeDao.getEmployeeByUUid(companyId,uuid)
+    .then (emplObj) ->
+      employeeDao.getTimeSheetDocById(params.docId)
+      .then (timesheetDoc) ->
+        employeeDao.getTimesheetById(timesheetDoc.TimesheetId)
+        .then (savedTimesheetObjList) ->
+          cloudStore.downloadTimesheetFromStore(timesheetDoc.cloudName)
+          .then (fileData) ->
+            fileObj = {}
+            fileObj.fileData = fileData
+            fileObj.timeSheetDoc = timesheetDoc
+            return fileObj
+
   saveTimeSheet: (companyId,uuid,timesheetObj) ->
     employeeDao.getEmployeeByUUid(companyId,uuid)
     .then (emplObj) ->

@@ -4,6 +4,10 @@ block head
   link(href="/css/datepicker.css" rel="stylesheet")
   script(src="/frameworks/bootstrap-datepicker.js")
   script(src="/javascript/hrsystem/apps/employee/timesheet.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.ui.widget.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.iframe-transport.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.fileupload.js")
+
   style(type='text/css').
     table input[type="text"] {
        width: 100%; 
@@ -109,11 +113,21 @@ block content
               td
                 label {{subTotals[days[6]]}}
               td
-                label       
+                label
+      div(ng-repeat="timeSheetDoc in timeSheetDocs")
+        a.marginRight10(href="/rest/emp/downloadTimesheetDoc?docId={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
+        button.btn.btn-link(ng-click="deleteTimesheetDoc(timeSheetDoc.id)" ng-if="timeSheetObj.status!='approved'")
+          span.glyphicon.glyphicon-trash.btn-link
+
+      input#fileupload(type="file" name="files" ng-disabled="timeSheetObj.status=='approved'")
+      div#progress
+        div.bar(style="width: 0%;")
+
       .form-group(ng-if="timeSheetObj.status!='approved'")
+        br
         button.btn.btn-primary(type="submit" ng-click="saveTimeSheet()") Submit Timesheet
 
-    .alert.alert-success.col-sm-4(ng-if="timeSheetObj.status!='new'")
+    div(ng-if="timeSheetObj.status!='new'")
       b(ng-if="timeSheetObj.status=='approved'") Timesheet approved.
       div Submitted On : {{timeSheetObj.submittedOn | date : 'M/d/yy h:mm a'}} 
       div(ng-if="timeSheetObj.status=='approved'") Approved On : {{timeSheetObj.approvedOn | date : 'M/d/yy h:mm a'}} 

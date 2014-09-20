@@ -5,6 +5,7 @@ session = require('express-session')
 bodyParser = require('body-parser')
 passport = require('passport')
 cookieParser = require('cookie-parser')
+multer  = require('multer')
 
 class Application
   constructor: ->
@@ -27,6 +28,7 @@ class Application
     @server.use(cookieParser())
     @server.use bodyParser.json()
     @server.use(bodyParser.urlencoded({extended: false}))
+    @server.use(multer({ dest: './uploads/'}))
     @server.use session
       secret: 'kqsdjfmlksdhfhzirzeoibrzecrbzuzefcuercazeafxzeokwdfzeijfxcerig',
       name:'mysystem',

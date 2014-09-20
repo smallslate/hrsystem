@@ -11,6 +11,43 @@ module.exports = (app)->
   server.get "/c/:companyId/emp/timesheet",(req,res)->
     res.render("employee/emp/timesheet")  
 
+  server.post "/rest/emp/getTimesheetDocs",(req,res)->
+    P.invoke(empCtrl,"getTimesheetDocs",req.session.user.companyuid,req.session.user.uuid,req.body.weekId)
+    .then (timeSheetDocList) ->
+      res.send(timeSheetDocList)
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
+
+  server.get "/rest/emp/downloadTimesheetDoc",(req,res)->
+    P.invoke(empCtrl,"downloadTimesheetDoc",req.session.user.companyuid,req.session.user.uuid,req.query)
+    .then (fileObj) ->
+      res.setHeader('Content-disposition', 'attachment; filename=' + fileObj.timeSheetDoc.orginalName)
+      res.setHeader('Content-type', fileObj.timeSheetDoc.mimeType)
+      res.end(fileObj.fileData, "binary")
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
+
+  server.post "/rest/emp/deleteTimesheetDoc",(req,res)->
+    P.invoke(empCtrl,"deleteTimesheetDoc",req.session.user.companyuid,req.session.user.uuid,req.body.weekId,req.body.timesheetDocId)
+    .then (timeSheetDocList) ->
+      res.send(timeSheetDocList)
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
+
+  server.post "/rest/emp/uploadTimeSheetDoc",(req,res)->
+    P.invoke(empCtrl,"uploadTimeSheetDoc",req.session.user.companyuid,req.session.user.uuid,req.body,req.files)
+    .then (timeSheetDocList) ->
+      res.send(timeSheetDocList)
+    ,(err) -> 
+      console.log 'err=',err
+      if err?.message
+        res.send([{message:messages[err.message]}])
+      else   
+        res.send(messages['server.error'])
+
   server.post "/rest/emp/saveTimeSheet",(req,res)->
     P.invoke(empCtrl,"saveTimeSheet",req.session.user.companyuid,req.session.user.uuid,req.body)
     .then (timeSheetObj) ->

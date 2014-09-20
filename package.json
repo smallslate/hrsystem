@@ -18,7 +18,9 @@
 		"passport":"*",
 		"passport-local":"*",
 		"cookie-parser":"*",
-		"lodash":"*"
+		"lodash":"*",
+		"multer":"*",
+		"aws-sdk":"*"
 	},
 	"devDependencies": {
 	    "grunt": "*",

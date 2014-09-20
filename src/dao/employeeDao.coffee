@@ -21,17 +21,38 @@ class EmployeeDao
   saveNewEmployee: (emplObj) ->
     models['Employee'].create(emplObj)  
 
+  createTimeSheetDoc: (timesheetDocObj) ->
+    models['TimesheetDoc'].create(timesheetDocObj) 
+
+  getTimeSheetDoc: (timesheetId,timesheetDocId) ->
+    models['TimesheetDoc'].find({where:{TimesheetId:timesheetId,id:timesheetDocId}}) 
+
+  getTimeSheetDocById: (timesheetDocId) ->
+    models['TimesheetDoc'].find({where:{id:timesheetDocId}}) 
+
+  deleteTimeSheetDoc: (timesheetId,timesheetDocId) ->
+    models['TimesheetDoc'].destroy({TimesheetId:timesheetId,id:timesheetDocId})   
+
   createTimeSheet: (timesheetObj) ->
     models['Timesheet'].create({weekId:timesheetObj.weekId,EmployeeId:timesheetObj.EmployeeId,submittedOn:new Date()})
     .then (dbTimeSheetObj) ->
-      for task in timesheetObj.tasks
-        task.TimesheetId = dbTimeSheetObj.id
-      models['TimesheetTask'].bulkCreate(timesheetObj.tasks)
-      .then ()->
-        dbTimeSheetObj.getTimesheetTasks()
-        .then (timesheetTasks) ->
-          dbTimeSheetObj.tasks = timesheetTasks
-          return dbTimeSheetObj
+      if timesheetObj.tasks && timesheetObj.tasks.length > 0
+        for task in timesheetObj.tasks
+          task.TimesheetId = dbTimeSheetObj.id
+        models['TimesheetTask'].bulkCreate(timesheetObj.tasks)
+        .then ()->
+          dbTimeSheetObj.getTimesheetTasks()
+          .then (timesheetTasks) ->
+            dbTimeSheetObj.tasks = timesheetTasks
+            return dbTimeSheetObj
+      else  
+        dbTimeSheetObj.tasks = []    
+        return dbTimeSheetObj
+  getTimesheetByEmplidAndWeekId: (emplId,weekId) ->
+    models['Timesheet'].find({where: {EmployeeId: emplId,weekId:weekId}})
+
+  getTimesheetById: (timesheetId) ->
+    models['Timesheet'].find({where: {id: timesheetId}})  
 
   deleteTimeSheetTasks: (timeSheetId) ->
     models['TimesheetTask'].destroy({TimesheetId:timeSheetId})
