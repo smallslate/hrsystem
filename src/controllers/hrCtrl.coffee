@@ -4,6 +4,7 @@ employeeDao = require('../dao/employeeDao')
 accountDao = require('../dao/accountDao')
 mailUtils = require('../utils/mailUtils')
 commonUtils = require('../utils/common')
+cloudStore = require('../factory/cloudStore')
 
 class HrCtrl
   getNextEmplid: (companyId)->
@@ -11,8 +12,15 @@ class HrCtrl
     .then (maxEmplid) ->
       return maxEmplid+1
 
+  getEmployeeHeader: (companyId,emplid)->
+    console.log 'companyId,emplid=',companyId,emplid
+    P.invoke(employeeDao,"getEmployeeHeader",companyId,emplid)
+    .fail (err) ->
+      console.log 'catch block',err
+      return null
+
   getCompanyRoles: (companyId)->
-  	P.invoke(employeeDao,"getCompanyRoles",companyId)
+    P.invoke(employeeDao,"getCompanyRoles",companyId)
 
   getEmpAccountDetails: (companyId,emplid)->
     P.invoke(employeeDao,"getEmployeeByEmplid",companyId,emplid)
@@ -83,6 +91,33 @@ class HrCtrl
                       newEmpObj = {firstName:newUser.firstName,middleName:newUser.middleName,lastName:newUser.lastName,signInId:newUser.signInId,email:newUser.email,emplId:newEmplObj.emplId,supervisorId:newEmplObj.supervisorId,isAccountActive:newUser.isAccountActive,uuid:newUser.uuid,roleIds:_.pluck(addedRoleList,'roleId')}
                       return newEmpObj
 
+  getEmpTimesheetDocs: (companyId,emplid,weekId) ->
+    employeeDao.getEmployeeByEmplid(companyId,emplid)
+    .then (emplObj) ->
+      emplObj.getTimesheets({where:{weekId:weekId}})
+      .then (savedTimesheetObjList) ->
+        if savedTimesheetObjList?.length > 0
+          return savedTimesheetObjList[0].getTimesheetDocs()
+        else 
+          return []
+
+  downloadEmpTimesheetDoc: (companyId,params) ->
+    employeeDao.getTimeSheetDocById(params.docId)
+    .then (timesheetDoc) ->
+      employeeDao.getTimesheetById(timesheetDoc.TimesheetId)
+      .then (savedTimesheetObj) ->
+        employeeDao.getEmployeeById(companyId,savedTimesheetObj.EmployeeId)
+        .then (empObj) ->
+          if empObj && empObj.id > 0
+            cloudStore.downloadTimesheetFromStore(timesheetDoc.cloudName)
+            .then (fileData) ->
+              fileObj = {}
+              fileObj.fileData = fileData
+              fileObj.timeSheetDoc = timesheetDoc
+              return fileObj
+          else
+            return null
+
   getEmpTimesheet: (companyId,emplid,weekId) ->
     employeeDao.getEmployeeByEmplid(companyId,emplid)
     .then (emplObj) ->
@@ -100,7 +135,7 @@ class HrCtrl
             savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
             savedTimeSheet.tasks = []
             for taskObj in taskList
-              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+              savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             if dbTimeSheetObj.approvedBy
               accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
               .then (userNameObj) ->
@@ -135,7 +170,7 @@ class HrCtrl
             savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
             savedTimeSheet.tasks = []
             for taskObj in taskList
-              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+              savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             if dbTimeSheetObj.approvedBy
               accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
               .then (userNameObj) ->

@@ -6,7 +6,7 @@ module.exports = (sequelize,DataTypes)->
       primaryKey : true
       unique: true 
     name:
-      type: DataTypes.STRING(1000)
+      type:DataTypes.BIGINT
     comments:
       type: DataTypes.STRING(2000)  
     Sun:

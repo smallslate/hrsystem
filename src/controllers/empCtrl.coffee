@@ -67,19 +67,21 @@ class EmpCtrl
           return []  
 
   downloadTimesheetDoc: (companyId,uuid,params) ->
-    console.log 'companyId,uuid,params',companyId,uuid,params
     employeeDao.getEmployeeByUUid(companyId,uuid)
     .then (emplObj) ->
       employeeDao.getTimeSheetDocById(params.docId)
       .then (timesheetDoc) ->
         employeeDao.getTimesheetById(timesheetDoc.TimesheetId)
-        .then (savedTimesheetObjList) ->
-          cloudStore.downloadTimesheetFromStore(timesheetDoc.cloudName)
-          .then (fileData) ->
-            fileObj = {}
-            fileObj.fileData = fileData
-            fileObj.timeSheetDoc = timesheetDoc
-            return fileObj
+        .then (savedTimesheetObj) ->
+          if savedTimesheetObj?.EmployeeId == emplObj.id
+            cloudStore.downloadTimesheetFromStore(timesheetDoc.cloudName)
+            .then (fileData) ->
+              fileObj = {}
+              fileObj.fileData = fileData
+              fileObj.timeSheetDoc = timesheetDoc
+              return fileObj
+          else
+            return null    
 
   saveTimeSheet: (companyId,uuid,timesheetObj) ->
     employeeDao.getEmployeeByUUid(companyId,uuid)
@@ -97,7 +99,7 @@ class EmpCtrl
             savedTimeSheet.submittedOn = dbTimeSheetObj.submittedOn
             savedTimeSheet.tasks = []
             for taskObj in dbTimeSheetObj.tasks
-              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+              savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             return savedTimeSheet
         else if savedTimesheetObjList?.length > 0 
           savedTimesheetObj = savedTimesheetObjList[0]
@@ -129,7 +131,7 @@ class EmpCtrl
             savedTimeSheet.approvedOn = dbTimeSheetObj.approvedOn
             savedTimeSheet.tasks = []
             for taskObj in taskList
-              savedTimeSheet.tasks.push({name:taskObj.name,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
+              savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             if dbTimeSheetObj.approvedBy
               accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
               .then (userNameObj) ->
@@ -143,7 +145,8 @@ class EmpCtrl
           savedTimeSheet.weekId = weekId
           return savedTimeSheet
 
-
+  getCompanyTasks: (companyId) ->
+    return employeeDao.getCompanyTasks(companyId)
 
 
 module.exports = new EmpCtrl()      

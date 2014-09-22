@@ -15,6 +15,9 @@ class EmployeeDao
   getEmployeeByEmplid: (companyId,emplid) ->
     models['Employee'].find({ where: {companyId: companyId,emplId:emplid}})
 
+  getEmployeeById: (companyId,emplid) ->
+    models['Employee'].find({ where: {companyId: companyId,id:emplid}})
+
   getEmployeeByUUid: (companyId,uuid) ->
     models['Employee'].find({where: {CompanyId: companyId,UserId:uuid}})  
    
@@ -39,6 +42,8 @@ class EmployeeDao
       if timesheetObj.tasks && timesheetObj.tasks.length > 0
         for task in timesheetObj.tasks
           task.TimesheetId = dbTimeSheetObj.id
+          if !(task.name) || isNaN(task.name) || task.name <1
+            task.name = 0
         models['TimesheetTask'].bulkCreate(timesheetObj.tasks)
         .then ()->
           dbTimeSheetObj.getTimesheetTasks()
@@ -60,6 +65,9 @@ class EmployeeDao
   getTimeSheetTasks: (timeSheetId) ->
     models['TimesheetTask'].destroy({TimesheetId:timeSheetId})
 
+  getCompanyTasks: (companyId) ->
+    models['CompanyTask'].findAll({where: {CompanyId:companyId,isActive:true},attributes:['id','name']})
+
   createTimeSheetTasks: (taskList,timesheetId) ->
     for task in taskList
         task.TimesheetId = timesheetId
@@ -73,6 +81,10 @@ class EmployeeDao
     sequelize.query("SELECT us.uuid,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId
        FROM Users us,Employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)     
 
+  getEmployeeHeader: (companyId,emplid) ->
+    console.log 'query companyId,emplid=',companyId,emplid
+    sequelize.query("select us.firstName,us.middleName,us.lastName,emp.emplId,emp.supervisorId
+      from Users us, Employees emp where us.uuid = emp.UserId and us.CompanyId ="+ companyId +" and emp.emplId ="+emplid) 
 
 
 

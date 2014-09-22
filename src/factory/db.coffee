@@ -21,9 +21,10 @@ dbModels = [{'name':'Company','path':'../models/company'},
             {'name':'Role','path':'../models/role'},
             {'name':'PageAccess','path':'../models/pageAccess'},
             {'name':'Employee','path':'../models/employee/employee'},
-            {'name':'Timesheet','path':'../models/employee/timesheet'},
-            {'name':'TimesheetTask','path':'../models/employee/timesheetTask'}
-            {'name':'TimesheetDoc','path':'../models/employee/timesheetDoc'}
+            {'name':'Timesheet','path':'../models/employee/timesheet/timesheet'},
+            {'name':'TimesheetTask','path':'../models/employee/timesheet/timesheetTask'},
+            {'name':'TimesheetDoc','path':'../models/employee/timesheet/timesheetDoc'},
+            {'name':'CompanyTask','path':'../models/employee/timesheet/companyTask'}
           ]    
 
 class DB
@@ -42,7 +43,7 @@ class DB
 
      
   initAssociations:->
-    @models['Company'].hasMany(@models['User']).hasMany(@models['PageAccess']).hasMany(@models['Role']).hasOne(@models['Employee'])
+    @models['Company'].hasMany(@models['User']).hasMany(@models['PageAccess']).hasMany(@models['Role']).hasOne(@models['Employee']).hasOne(@models['CompanyTask'])
     @models['User'].hasMany(@models['Role']).hasOne(@models['Employee'])
     @models['Role'].hasMany(@models['User']).hasMany(@models['PageAccess'])
     @models['PageAccess'].hasMany(@models['Role'])

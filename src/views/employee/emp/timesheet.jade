@@ -49,7 +49,7 @@ block content
         .table-responsive
           table.table
             tr
-              th.col-sm-3
+              th.col-sm-2
                 div Task or Project
               th.col-sm-1 
                 div {{days[0]}} 
@@ -72,11 +72,13 @@ block content
               th.col-sm-1 
                 div {{days[6]}} 
                 div {{tableHeader[6]}}
+              th.col-sm-2 
+                div Comments
               th.col-sm-1 
                 div  
             tr(ng-repeat="task in timeSheetObj.tasks")
               td
-                input(type="text" data-ng-model="task['name']" ng-disabled="{{timeSheetObj.status=='approved'}}") 
+                select(ng-disabled="{{timeSheetObj.status=='approved'}}" ng-options="companyTask.id as companyTask.name for companyTask in companyTasks" data-ng-model="task['name']" style="width:100%;")
               td 
                 input(type="text" data-ng-model="task[days[0]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
               td
@@ -91,6 +93,8 @@ block content
                 input(type="text" data-ng-model="task[days[5]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
               td
                 input(type="text" data-ng-model="task[days[6]]" ng-change="updateValues()" ng-disabled="{{timeSheetObj.status=='approved'}}")
+              td
+                input(type="text" data-ng-model="task['comments']" ng-disabled="{{timeSheetObj.status=='approved'}}")   
               td(ng-if="timeSheetObj.status!='approved'")
                 button.btn.btn-default(type="button" ng-click="removeTask($index)")
                   span.glyphicon.glyphicon-remove  
@@ -123,7 +127,7 @@ block content
       div#progress
         div.bar(style="width: 0%;")
 
-      .form-group(ng-if="timeSheetObj.status!='approved'")
+      .div(ng-if="timeSheetObj.status!='approved'")
         br
         button.btn.btn-primary(type="submit" ng-click="saveTimeSheet()") Submit Timesheet
 

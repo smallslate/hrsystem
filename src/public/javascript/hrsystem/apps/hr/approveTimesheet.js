@@ -72,6 +72,12 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
 	  });
   };  
 
+  $scope.getCompanyTasks = function() {
+    timesheetService.getCompanyTasks(function(result) {
+      $scope.companyTasks = result;
+    });
+  }; 
+
   $scope.approveTimeSheet = function() {
     var r = confirm("Do you want to approve timesheet?");
     if (r == true) {
@@ -85,20 +91,46 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     } 
   };
 
+  $scope.getEmpTimesheetDocs = function() {
+    $scope.timeSheetDocs = [];
+    timesheetService.getEmpTimesheetDocs({weekId:$scope.timeSheetObj.weekId,emplid:$scope.selectedEmplid}, function(result) {
+      $scope.timeSheetDocs = result;
+    });
+  }; 
+
+  $scope.getEmployeeHeader = function() {
+    $scope.timeSheetDocs = [];
+    timesheetService.getEmployeeHeader({emplid:$scope.selectedEmplid}, function(result) {
+      $scope.employeeHeader = result;
+    });
+  }; 
+
+  $scope.initPage = function() {
+    $scope.getCompanyTasks();
+    $scope.getEmployeeHeader();
+    $scope.updateTableHeader();
+    $scope.getEmpTimesheet();
+    $scope.getEmpTimesheetDocs();  
+  }
+
   $('.datepicker').datepicker().on('changeDate', function(e) {
   	$scope.$apply(function() {
       $scope.updateTableHeader();
       $scope.getEmpTimesheet();
+      $scope.getEmpTimesheetDocs();
     });
    });
-  $scope.updateTableHeader();
-  $scope.getEmpTimesheet();
+
+  $scope.initPage();
 }]);
 
 
 timeSheetApp.factory('timesheetService',['$resource', function($resource) {
 	return $resource('#', {}, {
 		getEmpTimesheet : {method : 'POST',url:'/rest/hr/getEmpTimesheet'},
-    approveTimeSheet : {method : 'POST',url:'/rest/hr/approveTimeSheet'}
+    approveTimeSheet : {method : 'POST',url:'/rest/hr/approveTimeSheet'},
+    getCompanyTasks : {method : 'POST',url:'/rest/emp/getCompanyTasks',isArray:true},
+    getEmpTimesheetDocs : {method : 'POST',url:'/rest/hr/getEmpTimesheetDocs',isArray:true},
+    getEmployeeHeader : {method : 'POST',url:'/rest/hr/getEmployeeHeader'}
 	});
 }]);

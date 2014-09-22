@@ -55,6 +55,7 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   $scope.addNewTask = function() {
     task = {};
     task["name"] = ' ';
+    task["comments"] = ' ';
     for(var i=0;i<7;i++) {
       task[$scope.days[i]] = 0;
 	  }
@@ -82,9 +83,9 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   $scope.setEmptyTimesheet = function() {
   	$scope.timeSheetObj.tasks = [];
     if($scope.timeSheetObj.status == 'new') {
-      $scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0});
+      $scope.timeSheetObj.tasks.push({name:'',comments:'',Sun:0,Mon:8,Tue:8,Wed:8,Thu:8,Fri:8,Sat:0});
     } else {
-      $scope.timeSheetObj.tasks.push({name:'',Sun:0,Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0});
+      $scope.timeSheetObj.tasks.push({name:'',comments:'',Sun:0,Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0});
     }
   }; 
 
@@ -95,6 +96,11 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   		  $scope.setEmptyTimesheet();
   	  }
   	  $scope.updateValues();
+      if($scope.timeSheetObj.status=='approved') {
+        $('#fileupload').hide();
+      } else {
+        $('#fileupload').show();
+      }
 	  });
   };  
 
@@ -114,9 +120,20 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
     } 
   }; 
 
-  $scope.updateTableHeader();
-  $scope.getTimeSheet();
-  $scope.getTimesheetDocs();
+  $scope.getCompanyTasks = function() {
+    timesheetService.getCompanyTasks(function(result) {
+      $scope.companyTasks = result;
+    });
+  }; 
+
+  $scope.initPage = function() {
+    $scope.getCompanyTasks();
+    $scope.updateTableHeader();
+    $scope.getTimeSheet();
+    $scope.getTimesheetDocs();
+  }
+
+  $scope.initPage();
 
   $('.datepicker').datepicker().on('changeDate', function(e) {
     $scope.$apply(function() {
@@ -157,6 +174,7 @@ timeSheetApp.factory('timesheetService',['$resource', function($resource) {
 		saveTimeSheet : {method : 'POST',url:'/rest/emp/saveTimeSheet'},
 		getTimeSheet : {method : 'POST',url:'/rest/emp/getTimeSheet'},
     getTimesheetDocs : {method : 'POST',url:'/rest/emp/getTimesheetDocs',isArray:true},
-    deleteTimesheetDoc : {method : 'POST',url:'/rest/emp/deleteTimesheetDoc',isArray:true}
+    deleteTimesheetDoc : {method : 'POST',url:'/rest/emp/deleteTimesheetDoc',isArray:true},
+    getCompanyTasks : {method : 'POST',url:'/rest/emp/getCompanyTasks',isArray:true}
 	});
 }]);

@@ -62,6 +62,14 @@ module.exports = (app)->
       res.send(timeSheetObj)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])    
+      res.send(messages['server.error'])  
+
+  server.post "/rest/emp/getCompanyTasks",(req,res)->
+    P.invoke(empCtrl,"getCompanyTasks",req.session.user.companyuid)
+    .then (companyTasksList) ->
+      res.send(companyTasksList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])      
 
 

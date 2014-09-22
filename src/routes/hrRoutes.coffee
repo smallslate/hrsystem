@@ -29,6 +29,14 @@ module.exports = (app)->
     .then (nextEmplid)->
       res.send({"nextEmplid":nextEmplid})
 
+  server.post "/rest/hr/getEmployeeHeader",(req,res)->
+    P.invoke(hrCtrl,"getEmployeeHeader",req.session.user.companyuid,req.body.emplid)
+    .then (employeeHeaderDetails) ->
+      res.send(employeeHeaderDetails)
+    ,(err) ->
+      console.log 'err is ',err
+      res.send(null)  
+
   server.post "/rest/hr/getCompanyRoles",(req,res)->
     P.invoke(hrCtrl,"getCompanyRoles",req.session.user.companyuid)
     .then (roleList)->
@@ -75,6 +83,24 @@ module.exports = (app)->
     ,(err) ->
       console.log 'err=',err
       res.send(messages['server.error']) 
+
+  server.post "/rest/hr/getEmpTimesheetDocs",(req,res)->
+    P.invoke(hrCtrl,"getEmpTimesheetDocs",req.session.user.companyuid,req.body.emplid,req.body.weekId)
+    .then (timeSheetDocList) ->
+      res.send(timeSheetDocList)
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
+
+  server.get "/rest/hr/downloadEmpTimesheetDoc",(req,res)->
+    P.invoke(hrCtrl,"downloadEmpTimesheetDoc",req.session.user.companyuid,req.query)
+    .then (fileObj) ->
+      res.setHeader('Content-disposition', 'attachment; filename=' + fileObj.timeSheetDoc.orginalName)
+      res.setHeader('Content-type', fileObj.timeSheetDoc.mimeType)
+      res.end(fileObj.fileData, "binary")
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
 
   server.post "/rest/hr/approveTimeSheet",(req,res)->
     P.invoke(hrCtrl,"approveTimeSheet",req.session.user.companyuid,req.session.user.uuid,req.body.emplid,req.body.weekId)
