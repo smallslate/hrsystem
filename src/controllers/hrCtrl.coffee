@@ -102,7 +102,7 @@ class HrCtrl
           return []
 
   downloadEmpTimesheetDoc: (companyId,params) ->
-    employeeDao.getTimeSheetDocById(params.docId)
+    employeeDao.getTimeSheetDocById(params.id)
     .then (timesheetDoc) ->
       employeeDao.getTimesheetById(timesheetDoc.TimesheetId)
       .then (savedTimesheetObj) ->
@@ -183,5 +183,27 @@ class HrCtrl
           savedTimeSheet.status = 'new'
           savedTimeSheet.weekId = weekId
           return savedTimeSheet
+
+  getDepartmentList: (companyId)->
+    P.invoke(employeeDao,"getDepartmentList",companyId)
+
+  getDeptDetails: (companyId,deptId)->
+    P.invoke(employeeDao,"getDeptDetails",companyId,deptId)
+
+  saveDeptDetails: (companyId,deptObj)->
+    console.log 'deptObj.departmentHead=',deptObj.departmentHead
+    if !deptObj.departmentHead || isNaN(deptObj.departmentHead)
+      deptObj.departmentHead = 0
+
+    if deptObj.id && deptObj.id > 0
+      P.invoke(employeeDao,"getDeptDetails",companyId,deptObj.id)
+      .then (dbDeptObj) ->
+        dbDeptObj.departmentName = deptObj.departmentName
+        dbDeptObj.departmentHead = deptObj.departmentHead
+        dbDeptObj.save()
+        return dbDeptObj
+    else
+      deptObj.CompanyId = companyId
+      P.invoke(employeeDao,"createNewDept",deptObj)
 
 module.exports = new HrCtrl() 

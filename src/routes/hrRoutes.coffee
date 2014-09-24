@@ -15,6 +15,12 @@ module.exports = (app)->
   server.get "/c/:companyId/emplid/:emplid/hr/updateEmployee",(req,res)->
     res.render("employee/hr/updateEmployee")  
 
+  server.get "/c/:companyId/hr/updateDepartment",(req,res)->
+    res.render("employee/hr/company/updateDepartment")
+
+  server.get "/c/:companyId/id/:id/hr/updateDepartment",(req,res)->
+    res.render("employee/hr/company/updateDepartment")
+
   server.get "/c/:companyId/hr/listAccounts",(req,res)->
     res.render("employee/hr/listAccounts")
 
@@ -23,6 +29,9 @@ module.exports = (app)->
 
   server.get "/c/:companyId/emplid/:emplid/hr/approveTimesheet",(req,res)->
     res.render("employee/hr/approveTimesheet")
+
+  server.get "/c/:companyId/hr/listDepartments",(req,res)->
+    res.render("employee/hr/company/listDepartments")
 
   server.post "/rest/hr/getNextEmplid",(req,res)->
     P.invoke(hrCtrl,"getNextEmplid",req.session.user.companyuid)
@@ -108,7 +117,29 @@ module.exports = (app)->
       res.send(timeSheetObj)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])       
+      res.send(messages['server.error'])
+
+  server.post "/rest/hr/getDepartmentList",(req,res)->
+    P.invoke(hrCtrl,"getDepartmentList",req.session.user.companyuid)
+    .then (departmentList) ->
+      res.send(departmentList)
+    ,(err) ->
+      res.send(messages['server.error']) 
+
+  server.post "/rest/hr/getDeptDetails",(req,res)->
+    P.invoke(hrCtrl,"getDeptDetails",req.session.user.companyuid,req.body.deptId)
+    .then (deptDetails) ->
+      res.send(deptDetails)
+    ,(err) ->
+      res.send(messages['server.error']) 
+
+  server.post "/rest/hr/saveDeptDetails",(req,res)->
+    P.invoke(hrCtrl,"saveDeptDetails",req.session.user.companyuid,req.body.deptObj)
+    .then (deptDetails) ->
+      res.send(deptDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])                 
 
 
 

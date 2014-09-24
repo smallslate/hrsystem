@@ -112,7 +112,7 @@ block content
               label 
 
       div(ng-repeat="timeSheetDoc in timeSheetDocs")
-        a.marginRight10(href="/rest/hr/downloadEmpTimesheetDoc?docId={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
+        a.marginRight10(href="/rest/hr/downloadEmpTimesheetDoc?id={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
       br                        
       .div(ng-if="timeSheetObj.status=='submit'")
         button.btn.btn-primary(type="submit" ng-click="approveTimeSheet()") Approve Timesheet

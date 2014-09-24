@@ -36,6 +36,7 @@ module.exports = (app)->
   
   server.all '/c/:companyId/hr/*',accountCtrl.authorizeHRRequest
   server.all '/c/:companyId/emplid/:emplid/hr/*',accountCtrl.authorizeHRRequest
+  server.all '/c/:companyId/id/:id/hr/*',accountCtrl.authorizeHRRequest
   server.all '/rest/hr/*',accountCtrl.authorizeRestRequest
 
   server.all '/c/:companyId/emp/*',accountCtrl.authorizeEmpRequest

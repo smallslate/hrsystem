@@ -118,7 +118,7 @@ block content
             td
               label
       div(ng-repeat="timeSheetDoc in timeSheetDocs")
-        a.marginRight10(href="/rest/emp/downloadTimesheetDoc?docId={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
+        a.marginRight10(href="/rest/emp/downloadTimesheetDoc?id={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
         button.btn.btn-link(ng-click="deleteTimesheetDoc(timeSheetDoc.id)" ng-if="timeSheetObj.status!='approved'")
           span.glyphicon.glyphicon-trash.btn-link
 

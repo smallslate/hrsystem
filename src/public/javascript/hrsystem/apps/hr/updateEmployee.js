@@ -4,7 +4,7 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	emplidIndex = location.pathname.indexOf("/emplid/");
 	selectedEmplid = null;
 	if(emplidIndex>5) {
-      selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/updateEmployee"))
+      selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/updateEmployee"));
 	}
 
 	employeeHrService.getCompanyRoles(function(roleList) {

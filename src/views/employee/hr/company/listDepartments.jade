@@ -1,0 +1,34 @@
+extends /templates/authLayout
+block head
+  title List Departments
+  script(type='text/javascript').
+    var LIST_URL = '/rest/hr/getDepartmentList'
+  script(src="/javascript/hrsystem/apps/hr/list.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li.active List Departments  
+block content
+  .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
+    a.btn.btn-primary.marginBottom10(href="/c/#{company.companyId}/hr/updateDepartment") Add New Department
+    .table-responsive
+      table.table.table-bordered.table-hover
+        tr.info
+          th.col-sm-2
+            div Department Name
+          th.col-sm-2
+            div Status
+        tr(ng-repeat="listObj in lists")
+          td(ng-if="listObj.isActive==1")
+            a(href="/c/#{company.companyId}/id/{{listObj.id}}/hr/updateDepartment") {{listObj.departmentName}}
+          td.alert-danger(ng-if="listObj.isActive!=1")
+            a(href="/c/#{company.companyId}/id/{{listObj.id}}/hr/updateDepartment") {{listObj.departmentName}}   
+          td(ng-if="listObj.isActive==1")
+            div Active
+          td.alert-danger(ng-if="listObj.isActive!=1")
+            div Not Active
+    
+                   

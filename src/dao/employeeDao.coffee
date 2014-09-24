@@ -18,6 +18,15 @@ class EmployeeDao
   getEmployeeById: (companyId,emplid) ->
     models['Employee'].find({ where: {companyId: companyId,id:emplid}})
 
+  getDepartmentList: (companyid) ->
+    models['Department'].findAll({where: {CompanyId:companyid},attributes:['id','departmentName','departmentHead','isActive']})
+
+  getDeptDetails: (companyId,deptId) ->
+    models['Department'].find({where: {CompanyId:companyId,id:deptId},attributes:['id','departmentName','departmentHead','isActive']})
+
+  createNewDept: (deptObj) ->
+    models['Department'].create({departmentName:deptObj.departmentName,departmentHead:deptObj.departmentHead,CompanyId:deptObj.CompanyId})
+    
   getEmployeeByUUid: (companyId,uuid) ->
     models['Employee'].find({where: {CompanyId: companyId,UserId:uuid}})  
    

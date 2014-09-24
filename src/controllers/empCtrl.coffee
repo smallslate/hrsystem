@@ -69,7 +69,7 @@ class EmpCtrl
   downloadTimesheetDoc: (companyId,uuid,params) ->
     employeeDao.getEmployeeByUUid(companyId,uuid)
     .then (emplObj) ->
-      employeeDao.getTimeSheetDocById(params.docId)
+      employeeDao.getTimeSheetDocById(params.id)
       .then (timesheetDoc) ->
         employeeDao.getTimesheetById(timesheetDoc.TimesheetId)
         .then (savedTimesheetObj) ->

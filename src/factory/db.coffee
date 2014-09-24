@@ -15,16 +15,17 @@ dbConfig =
     maxConnections: 5
     maxIdleTime: 30
 
-dbModels = [{'name':'Company','path':'../models/company'},
-            {'name':'User','path':'../models/user'},
-            {'name':'Verification','path':'../models/verification'},
-            {'name':'Role','path':'../models/role'},
-            {'name':'PageAccess','path':'../models/pageAccess'},
+dbModels = [{'name':'Company','path':'../models/company/company'},
+            {'name':'User','path':'../models/company/security/user'},
+            {'name':'Verification','path':'../models/company/security/verification'},
+            {'name':'Role','path':'../models/company/security/role'},
+            {'name':'PageAccess','path':'../models/company/security/pageAccess'},
             {'name':'Employee','path':'../models/employee/employee'},
             {'name':'Timesheet','path':'../models/employee/timesheet/timesheet'},
             {'name':'TimesheetTask','path':'../models/employee/timesheet/timesheetTask'},
             {'name':'TimesheetDoc','path':'../models/employee/timesheet/timesheetDoc'},
-            {'name':'CompanyTask','path':'../models/employee/timesheet/companyTask'}
+            {'name':'CompanyTask','path':'../models/employee/timesheet/companyTask'},
+            {'name':'Department','path':'../models/company/department'}
           ]    
 
 class DB
@@ -43,11 +44,13 @@ class DB
 
      
   initAssociations:->
-    @models['Company'].hasMany(@models['User']).hasMany(@models['PageAccess']).hasMany(@models['Role']).hasOne(@models['Employee']).hasOne(@models['CompanyTask'])
+    @models['Company'].hasMany(@models['User']).hasMany(@models['PageAccess']).hasMany(@models['Role']).hasMany(@models['Employee'])
+      .hasMany(@models['Department']).hasMany(@models['CompanyTask'])
     @models['User'].hasMany(@models['Role']).hasOne(@models['Employee'])
     @models['Role'].hasMany(@models['User']).hasMany(@models['PageAccess'])
     @models['PageAccess'].hasMany(@models['Role'])
     @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'}).hasMany(@models['Timesheet'])
+    @models['Department'].hasMany(@models['Employee'])
     @models['Timesheet'].hasMany(@models['TimesheetTask']).hasMany(@models['TimesheetDoc'])
     
   syncModels:->

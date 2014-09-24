@@ -143,8 +143,8 @@ class AccountCtrl
       if req.session.company.companyuid == req.session.user.companyuid
         isAuthorized = false
         accessUrl = req.url
-        if accessUrl.indexOf('?docId=') > -1
-          accessUrl = accessUrl.substring(0,accessUrl.indexOf('?docId='))
+        if accessUrl.indexOf('?id=') > -1
+          accessUrl = accessUrl.substring(0,accessUrl.indexOf('?id='))
         reqUrl = accessUrl.substring(accessUrl.indexOf(type),accessUrl.length)
         if reqUrl in authorizedUrl 
           isAuthorized = true

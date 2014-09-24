@@ -1,0 +1,32 @@
+extends /templates/authLayout
+block head
+  title Update Department
+  script(src="/javascript/hrsystem/apps/hr/editDept.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listDepartments") List Departments  
+    li.active Edit Department   
+block content
+  .container(ng-app="editDept",ng-controller="editDeptCtrl" ng-cloak)
+    form.form-horizontal(ng-submit="saveDeptDetails()")
+      .form-group
+        label.col-sm-2.control-label(for="departmentName") Department Name
+        .col-sm-6
+          input.form-control#departmentName(type="text" placeholder="Department Name" ng-model="deptObj.departmentName" required)
+      .form-group
+        label.col-sm-2.control-label(for="departmentHead") Department Head
+        .col-sm-6
+          input.form-control#departmentHead(type="text" placeholder="Department Head" ng-model="deptObj.departmentHead")
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type="submit") Save
+      div
+        b Note: 
+        span.small Department once created cannot be deleted, however you can edit details.    
+    
+                   

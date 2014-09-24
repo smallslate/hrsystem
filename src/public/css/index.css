@@ -44,6 +44,10 @@ body {
   margin-right: 10px;
 }
 
+.marginBottom10 {
+  margin-bottom: 10px;
+}
+
 .noscreen {
   display: none;
 }
