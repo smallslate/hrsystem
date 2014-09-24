@@ -1,7 +1,9 @@
-div.alert.alert-success
-  div.media
-    div.media-body
-      h4.media-heading 
-        b Sathya Vikram Chekuri
-      div 
-        b Emplid: 231044
+.col-sm-12(style="margin-left:-15px;")
+  div.alert.alert-info.col-sm-4
+    div.media
+      div.media-body
+        h4.media-heading 
+          b {{employeeHeader.firstName}} {{employeeHeader.lastName}} {{employeeHeader.middleName}} 
+            span.small ({{employeeHeader.emplId}})
+        div 
+          div.small Supervisor Name: {{employeeHeader.supervisorName}} ({{employeeHeader.supervisorId}})

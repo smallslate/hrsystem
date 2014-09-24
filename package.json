@@ -5,7 +5,7 @@
 	"dependencies": {
 		"express": "*",
 		"jade": "*",
-		"sequelize":"*",
+		"sequelize":"1.7.10",
 		"mysql":"*",
 		"express-session":"*",
 		"body-parser":"*",

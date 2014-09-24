@@ -10,10 +10,10 @@ block content
   .container
     .row
       if user.pid.indexOf(2)>=0 || user.pid.indexOf(3)>=0
-        .col-xs-12.col-sm-6.col-md-4
+        .col-xs-12.col-sm-6.col-md-3
           .panel.panel-primary
             .panel-heading 
-              b Accounts
+              b Accounts Management
             .panel-body
               if user.pid.indexOf(2)>=0
                 div.padding5 
@@ -22,11 +22,11 @@ block content
                 div.padding5
                   a(href="/c/#{company.companyId}/hr/listAccounts") List Accounts
       if user.pid.indexOf(4)>=0
-        .col-xs-12.col-sm-6.col-md-4
+        .col-xs-12.col-sm-6.col-md-3
           .panel.panel-primary
             .panel-heading 
-              b Tasks
+              b Timesheets Management
             .panel-body
               if user.pid.indexOf(4)>=0
                 div.padding5 
-                  a(href="/c/#{company.companyId}/hr/listTimesheets") List Timesheets         
+                  a(href="/c/#{company.companyId}/hr/listTimesheets") View Timesheets         

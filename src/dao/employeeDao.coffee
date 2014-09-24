@@ -82,11 +82,13 @@ class EmployeeDao
        FROM Users us,Employees emp where us.uuid = emp.UserId and us.isAccountActive =true and us.CompanyId ="+companyId)     
 
   getEmployeeHeader: (companyId,emplid) ->
-    console.log 'query companyId,emplid=',companyId,emplid
-    sequelize.query("select us.firstName,us.middleName,us.lastName,emp.emplId,emp.supervisorId
-      from Users us, Employees emp where us.uuid = emp.UserId and us.CompanyId ="+ companyId +" and emp.emplId ="+emplid) 
-
-
-
+    query = "select us.firstName,us.middleName,us.lastName,emp.emplId,emp.supervisorId,(select CONCAT(uss.firstName,' ',uss.middleName,' ',uss.lastName) from Users uss,Employees empp where uss.uuid = empp.UserId and uss.CompanyId = us.CompanyId and empp.emplId = emp.supervisorId) supervisorName from Users us, Employees emp where us.uuid = emp.UserId and us.CompanyId ="+ companyId
+    query = query+" and emp.emplId ="+emplid
+    sequelize.query(query)
+    .then (result) ->
+      if result && result.length>0
+        return result[0]
+      else
+        return {}  
 
 module.exports = new EmployeeDao()    

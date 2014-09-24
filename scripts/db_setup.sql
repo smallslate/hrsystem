@@ -7,6 +7,7 @@ insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values 
 insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (3,now(),now(),1);
 insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (4,now(),now(),1);
 insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (5,now(),now(),1);
+insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (6,now(),now(),1);	
 insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (1000,now(),now(),1);
 insert into hrsystem.PageAccesses (pageId,createdAt,updatedAt,CompanyId) values (1001,now(),now(),1);
 
@@ -18,6 +19,7 @@ insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId)
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),3,1);
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),4,1);
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),5,1);
+insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),6,1);
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),1000,2);
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),1001,2);
 

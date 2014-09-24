@@ -43,82 +43,81 @@ block content
           label.form-control.alert-info(ng-if="timeSheetObj.status=='submit'") Submitted  
           label.form-control.alert-success(ng-if="timeSheetObj.status=='approved'") Approved
 
-    form.form-horizontal(role="form") 
-      .form-group   
-        .table-responsive
-          table.table
-            tr
-              th.col-sm-3
-                div Task or Project
-              th.col-sm-1 
-                div {{days[0]}} 
-                div {{tableHeader[0]}}
-              th.col-sm-1 
-                div {{days[1]}}  
-                div {{tableHeader[1]}}
-              th.col-sm-1 
-                div {{days[2]}} 
-                div {{tableHeader[2]}}
-              th.col-sm-1 
-                div {{days[3]}}  
-                div {{tableHeader[3]}}
-              th.col-sm-1 
-                div {{days[4]}}  
-                div {{tableHeader[4]}}
-              th.col-sm-1 
-                div {{days[5]}}  
-                div {{tableHeader[5]}}
-              th.col-sm-1 
-                div {{days[6]}} 
-                div {{tableHeader[6]}}
-              th.col-sm-2 
-                div Comments  
-            tr(ng-repeat="task in timeSheetObj.tasks")
-              td
-                select(ng-disabled="true" ng-options="companyTask.id as companyTask.name for companyTask in companyTasks" data-ng-model="task['name']" style="width:100%;")
-              td 
-                label {{task[days[0]]}}
-              td
-                label {{task[days[1]]}}
-              td
-                label {{task[days[2]]}}
-              td
-                label {{task[days[3]]}}
-              td
-                label {{task[days[4]]}}
-              td
-                label {{task[days[5]]}}
-              td
-                label {{task[days[6]]}}
-              td
-                label {{task['comments']}}   
-            tr.success
-              td
-                label Total 
-              td
-                label {{subTotals[days[0]]}}
-              td
-                label {{subTotals[days[1]]}} 
-              td
-                label {{subTotals[days[2]]}}
-              td
-                label {{subTotals[days[3]]}}  
-              td
-                label {{subTotals[days[4]]}} 
-              td
-                label {{subTotals[days[5]]}}  
-              td
-                label {{subTotals[days[6]]}}
-              td
-                label 
+    form.form-horizontal(role="form")   
+      .table-responsive
+        table.table
+          tr
+            th.col-sm-3
+              div Task or Project
+            th.col-sm-1 
+              div {{days[0]}} 
+              div {{tableHeader[0]}}
+            th.col-sm-1 
+              div {{days[1]}}  
+              div {{tableHeader[1]}}
+            th.col-sm-1 
+              div {{days[2]}} 
+              div {{tableHeader[2]}}
+            th.col-sm-1 
+              div {{days[3]}}  
+              div {{tableHeader[3]}}
+            th.col-sm-1 
+              div {{days[4]}}  
+              div {{tableHeader[4]}}
+            th.col-sm-1 
+              div {{days[5]}}  
+              div {{tableHeader[5]}}
+            th.col-sm-1 
+              div {{days[6]}} 
+              div {{tableHeader[6]}}
+            th.col-sm-2 
+              div Comments  
+          tr(ng-repeat="task in timeSheetObj.tasks")
+            td
+              select(ng-disabled="true" ng-options="companyTask.id as companyTask.name for companyTask in companyTasks" data-ng-model="task['name']" style="width:100%;")
+            td 
+              label {{task[days[0]]}}
+            td
+              label {{task[days[1]]}}
+            td
+              label {{task[days[2]]}}
+            td
+              label {{task[days[3]]}}
+            td
+              label {{task[days[4]]}}
+            td
+              label {{task[days[5]]}}
+            td
+              label {{task[days[6]]}}
+            td
+              label {{task['comments']}}   
+          tr.success
+            td
+              label Total 
+            td
+              label {{subTotals[days[0]]}}
+            td
+              label {{subTotals[days[1]]}} 
+            td
+              label {{subTotals[days[2]]}}
+            td
+              label {{subTotals[days[3]]}}  
+            td
+              label {{subTotals[days[4]]}} 
+            td
+              label {{subTotals[days[5]]}}  
+            td
+              label {{subTotals[days[6]]}}
+            td
+              label 
 
       div(ng-repeat="timeSheetDoc in timeSheetDocs")
         a.marginRight10(href="/rest/hr/downloadEmpTimesheetDoc?docId={{timeSheetDoc.id}}") {{timeSheetDoc.orginalName}}
       br                        
       .div(ng-if="timeSheetObj.status=='submit'")
         button.btn.btn-primary(type="submit" ng-click="approveTimeSheet()") Approve Timesheet
-      br  
-      .alert.alert-success.col-sm-4(ng-if="timeSheetObj.status!='new'")
+
+      div(ng-if="timeSheetObj.status!='new'")
         b(ng-if="timeSheetObj.status=='approved'") Timesheet approved.
         div Submitted On : {{timeSheetObj.submittedOn | date : 'M/d/yy h:mm a'}} 
         div(ng-if="timeSheetObj.status=='approved'") Approved On : {{timeSheetObj.approvedOn | date : 'M/d/yy h:mm a'}} 

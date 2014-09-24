@@ -1,14 +1,17 @@
 module.exports = 
   authorizedUrl : ['/a/home','/a/signOut','/a/accountSetting','/a/changePassword']
   pages:
-    1      : {'type':'hrManagement','name':'HR Management Home','url':['/hr/hrHome'],'descr':'HR Management Home Page','parent':true}
-    2      : {'type':'hrManagement','name':'Add/Edit Accounts','url':['/rest/hr/getEmpAccountDetails','/hr/updateEmployee','/rest/hr/checkSigninIdAvailability','/rest/hr/getNextEmplid','/rest/hr/getCompanyRoles','/rest/hr/updateEmpAccount'],'descr':'Add/Edit employee details'}
-    3      : {'type':'hrManagement','name':'View All Accounts','url':['/hr/listAccounts','/rest/hr/getAllEmployeeList'],'descr':'View All Accounts'}
-    4      : {'type':'hrManagement','name':'View All Timesheets','url':['/hr/listTimesheets','/rest/hr/getAllActiveEmployeeList'],'descr':'View All Timesheets'}
-    5      : {'type':'hrManagement','name':'Approve Timesheets','url':['/rest/hr/getEmployeeHeader','/rest/hr/getEmpTimesheetDocs','/rest/hr/downloadEmpTimesheetDoc','/rest/emp/getCompanyTasks','/hr/approveTimesheet','/rest/hr/getEmpTimesheet','/rest/hr/approveTimeSheet'],'descr':'Approve Timesheets'}
+    1      : {'type':'hrManagement','name':'HR Management Home','url':['/hr/hrHome'],'parent':true}
+    2      : {'type':'hrManagement','name':'Add/Edit Accounts','url':['/rest/hr/getEmpAccountDetails','/hr/updateEmployee','/rest/hr/checkSigninIdAvailability','/rest/hr/getNextEmplid','/rest/hr/getCompanyRoles','/rest/hr/updateEmpAccount']}
+    3      : {'type':'hrManagement','name':'List Accounts','url':['/hr/listAccounts','/rest/hr/getAllEmployeeList']}
+    4      : {'type':'hrManagement','name':'View Timesheets','url':['/hr/listTimesheets','/rest/hr/getAllActiveEmployeeList']}
+    5      : {'type':'hrManagement','name':'Approve Timesheets','url':['/rest/hr/getEmployeeHeader','/rest/hr/getEmpTimesheetDocs','/rest/hr/downloadEmpTimesheetDoc','/rest/emp/getCompanyTasks','/hr/approveTimesheet','/rest/hr/getEmpTimesheet','/rest/hr/approveTimeSheet']}
+    6      : {'type':'hrManagement','name':'Manage Timesheet Tasks','url':['/hr/manageTimesheetTasks']}
 
-    1000   : {'type':'empManagement','name':'My Tasks Home','url':['/emp/empHome'],'descr':'My Tasks Home','parent':true}
-    1001   : {'type':'empManagement','name':'Enter Time Sheets','url':['/rest/emp/getCompanyTasks','/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet'],'descr':'Enter Time Sheet'}
+
+
+    1000   : {'type':'empManagement','name':'My Tasks Home','url':['/emp/empHome'],'parent':true}
+    1001   : {'type':'empManagement','name':'Time Sheets','url':['/rest/emp/getCompanyTasks','/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet']}
   
 
 
