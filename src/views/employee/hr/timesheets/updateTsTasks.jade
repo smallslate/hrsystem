@@ -1,0 +1,43 @@
+extends /templates/authLayout
+block head
+  title Update Timesheet Tasks
+  script(src="/javascript/hrsystem/apps/hr/updateTsTasks.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listTsTasks") List Timesheet Tasks  
+    li.active Update Timesheet Tasks  
+block content
+  .container(ng-app="updateTsTasks",ng-controller="updateTsTasksCtrl" ng-cloak)
+    .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
+      b {{errMsg}}
+    .alert.alert-success.alignCenter.container(ng-show="successMsg") 
+      b {{successMsg}}
+    form.form-horizontal(ng-submit="saveTsTask()")
+      .form-group
+        label.col-sm-2.control-label(for="name") Name
+        .col-sm-6
+          input.form-control#name(type="text" placeholder="Name" ng-model="taskObj.name" required)
+      .form-group
+        label.col-sm-2.control-label(for="description") Description
+        .col-sm-6
+          input.form-control#description(type="text" placeholder="Description" ng-model="taskObj.descr")
+      .form-group
+        label.col-sm-2.control-label Department
+        .col-sm-6
+          select.form-control(size="6" style="width:100%" ng-model="selectedRemoveDeptObj" ng-options="deptObj as deptObj.departmentName for deptObj in taskObj.deptList")
+          span.small ** Department added cannot be removed 
+        .col-sm-4
+          select.form-control(size="6" style="width:100%" data-ng-model="selectedAddDeptObj" ng-options="deptObj as deptObj.departmentName for deptObj in deptList")
+          button.btn.btn-primary.btn-xs(type="button" ng-click="addDept()") Add Department
+
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type="submit") Save
+      div
+        b Note: 
+        span.small Tasks created cannot be deleted, however you can edit it.  

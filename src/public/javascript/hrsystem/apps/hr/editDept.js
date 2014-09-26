@@ -18,7 +18,6 @@ editDeptApp.controller('editDeptCtrl', ['$scope','editDeptService', function($sc
 	}
 
 	$scope.saveDeptDetails = function() {
-	  console.log($scope.deptObj.departmentHead,isNaN($scope.deptObj.departmentHead))
 	  if(!$scope.deptObj || !$scope.deptObj.departmentName || $scope.deptObj.departmentName.length<2) {
 	  	alert('Department Name name must be minimum 2 characters');
 	  } else if(isNaN($scope.deptObj.departmentHead)) {
@@ -27,9 +26,9 @@ editDeptApp.controller('editDeptCtrl', ['$scope','editDeptService', function($sc
 		editDeptService.saveDeptDetails({deptObj:$scope.deptObj},function(result) {
 	  	  if(result && result.id) {
 	  	    $scope.deptObj = result;
-	  	    alert('Department saved successfully');
+	  	     $scope.successMsg = "Department saved successfully.";
 	  	  } else {
-	  	    alert('Failed to save department data. Please try again.');
+	  	  	$scope.errMsg = "Failed to save department data. Please try again.";
 	  	  }
 	    });
 	  }

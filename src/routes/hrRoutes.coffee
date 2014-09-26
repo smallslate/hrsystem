@@ -25,13 +25,22 @@ module.exports = (app)->
     res.render("employee/hr/listAccounts")
 
   server.get "/c/:companyId/hr/listTimesheets",(req,res)->
-    res.render("employee/hr/listTimesheets")  
+    res.render("employee/hr/timesheets/listTimesheets")  
 
   server.get "/c/:companyId/emplid/:emplid/hr/approveTimesheet",(req,res)->
-    res.render("employee/hr/approveTimesheet")
+    res.render("employee/hr/timesheets/approveTimesheet")
+
+  server.get "/c/:companyId/hr/listTsTasks",(req,res)->
+    res.render("employee/hr/timesheets/listTsTasks")
 
   server.get "/c/:companyId/hr/listDepartments",(req,res)->
     res.render("employee/hr/company/listDepartments")
+
+  server.get "/c/:companyId/hr/updateTsTask",(req,res)->
+    res.render("employee/hr/timesheets/updateTsTasks")
+
+  server.get "/c/:companyId/id/:id/hr/updateTsTask",(req,res)->
+    res.render("employee/hr/timesheets/updateTsTasks")
 
   server.post "/rest/hr/getNextEmplid",(req,res)->
     P.invoke(hrCtrl,"getNextEmplid",req.session.user.companyuid)
@@ -139,7 +148,31 @@ module.exports = (app)->
       res.send(deptDetails)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])                 
+      res.send(messages['server.error'])  
+
+  server.post "/rest/hr/getTsTasksList",(req,res)->
+    P.invoke(hrCtrl,"getTsTasksList",req.session.user.companyuid,req.body.deptId)
+    .then (tsTasksList) ->
+      res.send(tsTasksList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error']) 
+
+  server.post "/rest/hr/getTsTaskDetails",(req,res)->
+    P.invoke(hrCtrl,"getTsTaskDetails",req.session.user.companyuid,req.body.taskId)
+    .then (tsTaskDetails) ->
+      res.send(tsTaskDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])  
+
+  server.post "/rest/hr/saveTsTaskDetails",(req,res)->
+    P.invoke(hrCtrl,"saveTsTaskDetails",req.session.user.companyuid,req.body.taskObj)
+    .then (tsTaskDetails) ->
+      res.send(tsTaskDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])                         
 
 
 

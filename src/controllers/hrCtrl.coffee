@@ -206,4 +206,34 @@ class HrCtrl
       deptObj.CompanyId = companyId
       P.invoke(employeeDao,"createNewDept",deptObj)
 
+  getTsTasksList: (companyId,deptId)->
+    if deptId && !isNaN(deptId) && deptId > 0
+      return []
+    else  
+      P.invoke(employeeDao,"getAllTsTasksList",companyId)
+
+  getTsTaskDetails: (companyId,taskId)->
+    P.invoke(employeeDao,"getTsTaskDetails",companyId,taskId)
+    .then (tsTaskDetails) ->
+      tsTaskDetails.getDepartments({attributes:['id','departmentName','departmentHead','isActive']})
+      .then (deptList) ->
+        tsTaskDetailsObj = {id:tsTaskDetails.id,name:tsTaskDetails.name,descr:tsTaskDetails.descr,isActive:tsTaskDetails.isActive}
+        tsTaskDetailsObj.deptList = []
+        tsTaskDetailsObj.deptList = deptList
+        return tsTaskDetailsObj
+
+  saveTsTaskDetails: (companyId,taskObj)->
+    if taskObj?.id
+      P.invoke(employeeDao,"getTsTaskDetails",companyId,taskObj.id)
+      .then (tsTaskDetails) ->
+        tsTaskDetails.name = taskObj.name
+        tsTaskDetails.descr = taskObj.descr
+        tsTaskDetails.save()
+        P.invoke(employeeDao,"deleteTaskDepart",taskObj.id)
+        .then () ->
+          tsTaskDetails.setDepartments(taskObj.deptList)
+          return taskObj
+    else
+                
+
 module.exports = new HrCtrl() 

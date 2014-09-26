@@ -21,6 +21,20 @@ class EmployeeDao
   getDepartmentList: (companyid) ->
     models['Department'].findAll({where: {CompanyId:companyid},attributes:['id','departmentName','departmentHead','isActive']})
 
+  getAllTsTasksList: (companyid) ->
+    models['CompanyTask'].findAll({where: {CompanyId:companyid},attributes:['id','name','descr','isActive']})
+
+  getTsTaskDetails: (companyid,taskId) ->
+    models['CompanyTask'].find({where: {id:taskId,CompanyId:companyid},attributes:['id','name','descr','isActive']})
+
+  getCompanyTasks: (companyId) ->
+    models['CompanyTask'].findAll({where: {CompanyId:companyId,isActive:true},attributes:['id','name']})
+
+  getCompanyTasksByDept: (companyId,deptId) ->
+    models['Department'].find({where: {CompanyId:companyId,id:deptId}})
+    .then (deptObj) ->
+      deptObj.getCompanyTasks()
+
   getDeptDetails: (companyId,deptId) ->
     models['Department'].find({where: {CompanyId:companyId,id:deptId},attributes:['id','departmentName','departmentHead','isActive']})
 
@@ -74,9 +88,6 @@ class EmployeeDao
   getTimeSheetTasks: (timeSheetId) ->
     models['TimesheetTask'].destroy({TimesheetId:timeSheetId})
 
-  getCompanyTasks: (companyId) ->
-    models['CompanyTask'].findAll({where: {CompanyId:companyId,isActive:true},attributes:['id','name']})
-
   createTimeSheetTasks: (taskList,timesheetId) ->
     for task in taskList
         task.TimesheetId = timesheetId
@@ -99,5 +110,8 @@ class EmployeeDao
         return result[0]
       else
         return {}  
+
+  deleteTaskDepart: (taskId) ->
+    sequelize.query("DELETE FROM companytasksdepartments WHERE CompanyTaskId ="+taskId)
 
 module.exports = new EmployeeDao()    

@@ -24,7 +24,7 @@ insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId)
 insert into hrsystem.PageAccessesRoles (createdAt,updatedAt,PageAccessId,RoleId) values (now(),now(),1001,2);
 
 insert into hrsystem.Users (uuid,signInId,email,firstName,middleName,lastName,createdAt,updatedAt,CompanyId,isAccountActive)values(1,'sathya','sathyavikram@gmail.com','sathya','vikram','chekuri',now(),now(),1,true);
-insert into hrsystem.Employees(emplid,createdAt,updatedAt,CompanyId,UserId) values (1,now(),now(),1,1);
+insert into hrsystem.Employees(emplid,createdAt,updatedAt,CompanyId,UserId) values (73,now(),now(),1,1);
 	
 insert into hrsystem.RolesUsers (createdAt,updatedAt,RoleId,UserId) values (now(),now(),1,1);
 

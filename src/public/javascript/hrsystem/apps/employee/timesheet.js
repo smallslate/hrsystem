@@ -154,16 +154,14 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
           $scope.timeSheetDocs = data.result;
         }
       });
-    },
-    progressall: function (e, data) {
-      var progress = parseInt(data.loaded / data.total * 100, 10);
-      $('#progress .bar').css('width',progress + '%');
     }
   });
 
   $('#fileupload').bind('fileuploadsubmit', function (e, data) {
      $scope.$apply(function() {
       data.formData = {weekId: $scope.timeSheetObj.weekId};
+       $('#progress .progress-bar').css('width','0%');
+       $('#progress-bar').text('0%');
     });
   });
 
@@ -175,6 +173,6 @@ timeSheetApp.factory('timesheetService',['$resource', function($resource) {
 		getTimeSheet : {method : 'POST',url:'/rest/emp/getTimeSheet'},
     getTimesheetDocs : {method : 'POST',url:'/rest/emp/getTimesheetDocs',isArray:true},
     deleteTimesheetDoc : {method : 'POST',url:'/rest/emp/deleteTimesheetDoc',isArray:true},
-    getCompanyTasks : {method : 'POST',url:'/rest/emp/getCompanyTasks',isArray:true}
+    getCompanyTasks : {method : 'POST',url:'/rest/emp/getCompanyTasksByDept',isArray:true}
 	});
 }]);

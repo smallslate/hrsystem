@@ -148,5 +148,14 @@ class EmpCtrl
   getCompanyTasks: (companyId) ->
     return employeeDao.getCompanyTasks(companyId)
 
+  getCompanyTasksByDept: (companyId,uuid) ->
+    employeeDao.getEmployeeByUUid(companyId,uuid)
+    .then (emplObj) ->
+      console.log 'emplObj?.DepartmentId=',emplObj?.DepartmentId
+      if emplObj?.DepartmentId
+        return employeeDao.getCompanyTasksByDept(companyId,emplObj.DepartmentId)
+      else
+        return employeeDao.getCompanyTasks(companyId)    
+
 
 module.exports = new EmpCtrl()      

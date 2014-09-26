@@ -70,6 +70,14 @@ module.exports = (app)->
       res.send(companyTasksList)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])      
+      res.send(messages['server.error']) 
+
+  server.post "/rest/emp/getCompanyTasksByDept",(req,res)->
+    P.invoke(empCtrl,"getCompanyTasksByDept",req.session.user.companyuid,req.session.user.uuid)
+    .then (companyTasksList) ->
+      res.send(companyTasksList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])         
 
 

@@ -6,7 +6,9 @@ module.exports = (sequelize,DataTypes)->
       primaryKey : true
       unique: true
     name:
-      type: DataTypes.STRING(1000)
+      type: DataTypes.STRING(500)
+    descr:
+      type: DataTypes.STRING(2000)  
     isActive:
       type: DataTypes.BOOLEAN
       defaultValue: true

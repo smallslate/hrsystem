@@ -29,7 +29,7 @@ block content
         .input-group
           .input-group-addon.width100 
             b Date
-          input.form-control.datepicker#selectedDate(type="text")
+          input.form-control.datepicker#selectedDate(type="text" readonly style="cursor:pointer;")
       .form-group.paddingRight10
         .input-group
           .input-group-addon.width100 
@@ -74,7 +74,7 @@ block content
               div Comments  
           tr(ng-repeat="task in timeSheetObj.tasks")
             td
-              select(ng-disabled="true" ng-options="companyTask.id as companyTask.name for companyTask in companyTasks" data-ng-model="task['name']" style="width:100%;")
+              select.form-control(ng-disabled="true" ng-options="companyTask.id as companyTask.name for companyTask in companyTasks" data-ng-model="task['name']" style="width:100%;")
             td 
               label {{task[days[0]]}}
             td

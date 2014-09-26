@@ -6,7 +6,8 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   $('#selectedDate').datepicker({
   	format: 'mm/dd/yyyy',
     autoclose:true,
-    todayBtn:'linked'
+    todayBtn:'linked',
+    allowDeselection:false
   })
 
   emplidIndex = location.pathname.indexOf("/emplid/");

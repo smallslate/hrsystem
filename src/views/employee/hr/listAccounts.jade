@@ -11,6 +11,7 @@ block breadcrumbs
     li.active List Accounts  
 block content
   .container(ng-app="employeeList",ng-controller="employeeListCtrl" ng-cloak)
+    a.btn.btn-primary.marginBottom10(href="/c/#{company.companyId}/hr/updateEmployee") Add Account
     .table-responsive
       table.table.table-bordered.table-hover
         tr.info

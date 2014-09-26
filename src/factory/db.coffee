@@ -24,8 +24,8 @@ dbModels = [{'name':'Company','path':'../models/company/company'},
             {'name':'Timesheet','path':'../models/employee/timesheet/timesheet'},
             {'name':'TimesheetTask','path':'../models/employee/timesheet/timesheetTask'},
             {'name':'TimesheetDoc','path':'../models/employee/timesheet/timesheetDoc'},
-            {'name':'CompanyTask','path':'../models/employee/timesheet/companyTask'},
-            {'name':'Department','path':'../models/company/department'}
+            {'name':'Department','path':'../models/company/department'},
+            {'name':'CompanyTask','path':'../models/employee/timesheet/companyTask'}
           ]    
 
 class DB
@@ -50,8 +50,9 @@ class DB
     @models['Role'].hasMany(@models['User']).hasMany(@models['PageAccess'])
     @models['PageAccess'].hasMany(@models['Role'])
     @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'}).hasMany(@models['Timesheet'])
-    @models['Department'].hasMany(@models['Employee'])
+    @models['Department'].hasMany(@models['Employee']).hasMany(@models['CompanyTask'])
     @models['Timesheet'].hasMany(@models['TimesheetTask']).hasMany(@models['TimesheetDoc'])
+    @models['CompanyTask'].hasMany(@models['Department'])
     
   syncModels:->
     @sequelize.sync()
