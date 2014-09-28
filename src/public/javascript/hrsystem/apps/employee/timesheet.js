@@ -74,10 +74,10 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
 
   $scope.saveTimeSheet = function() {
   	timesheetService.saveTimeSheet($scope.timeSheetObj, function(result) {
-		$scope.timeSheetObj = result;
-		$scope.updateValues();
-		alert('Timesheet saved successfully.');
-	});
+		  $scope.timeSheetObj = result;
+		  $scope.updateValues();
+		  alert('Timesheet saved successfully.');
+	  });
   };
 
   $scope.setEmptyTimesheet = function() {

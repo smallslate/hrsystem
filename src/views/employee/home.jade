@@ -10,15 +10,21 @@ block content
         .col-xs-12.col-sm-6.col-md-3
           .panel.panel-primary
             .panel-heading 
-              b Tasks
+              b My Tasks
             .panel-body
               if user.pid.indexOf(1001)>=0
                 div.padding5 
                   a(href="/c/#{company.companyId}/emp/timesheet") Timesheets
+              if user.pid.indexOf(1002)>=0
+                div.padding5 
+                  a(href="/c/#{company.companyId}/emp/fileRooms") File Rooms    
       .col-xs-12.col-sm-6.col-md-3
         .panel.panel-primary
           .panel-heading 
-            b Account
+            b Others
           .panel-body
             div.padding5 
-              a(href="/c/#{company.companyId}/a/changePassword") Change Password            
+              a(href="/c/#{company.companyId}/a/changePassword") Change Password
+            if user.pid.indexOf(1)>=0  
+              div.padding5 
+                a(href="/c/#{company.companyId}/hr/hrHome") HR Home             

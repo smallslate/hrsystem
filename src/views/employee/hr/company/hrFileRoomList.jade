@@ -1,0 +1,23 @@
+extends /templates/authLayout
+block head
+  title List File Rooms
+  script(type='text/javascript').
+    var LIST_URL = '/rest/hr/getHrFileRooms'
+  script(src="/javascript/hrsystem/apps/hr/list.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li.active List File Rooms  
+block content
+  .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
+    a.btn.btn-primary.marginBottom10(href="/c/#{company.companyId}/hr/updateFileRoom") Add File Room
+    .row
+      .col-sm-4.col-md-3.marginBottom10(ng-repeat="listObj in lists")
+        a(href="/c/#{company.companyId}/id/{{listObj.id}}/hr/updateFileRoom")
+          div.alignCenter
+            img(src="/images/folder-icon.png")
+            div {{listObj.roomName}}    
+

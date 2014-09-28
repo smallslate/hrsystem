@@ -9,30 +9,28 @@ block breadcrumbs
 block content
   .container
     .row
-      if user.pid.indexOf(2)>=0
+      if user.pid.indexOf(3)>=0
         .col-xs-12.col-sm-6.col-md-3
           .panel.panel-primary
             .panel-heading 
-              b Accounts
-            .panel-body
-              if user.pid.indexOf(2)>=0    
-                div.padding5
-                  a(href="/c/#{company.companyId}/hr/listAccounts") Add/Edit Accounts
-      if user.pid.indexOf(3)>=0 || user.pid.indexOf(4)>=0
-        .col-xs-12.col-sm-6.col-md-3
-          .panel.panel-primary
-            .panel-heading 
-              b Timesheets
+              b Employee Tasks
             .panel-body
               if user.pid.indexOf(3)>=0
                 div.padding5 
                   a(href="/c/#{company.companyId}/hr/listTimesheets") Approve Timesheets
-              if user.pid.indexOf(4)>=0
-                div.padding5 
-                  a(href="/c/#{company.companyId}/hr/listTsTasks") Add/Edit Tasks   
-
-
-      if user.pid.indexOf(5)>=0
+      if user.pid.indexOf(2)>=0 || user.pid.indexOf(6)>=0
+        .col-xs-12.col-sm-6.col-md-3
+          .panel.panel-primary
+            .panel-heading 
+              b Accounts & Security
+            .panel-body
+              if user.pid.indexOf(2)>=0    
+                div.padding5
+                  a(href="/c/#{company.companyId}/hr/listAccounts") Add/Edit Accounts
+              if user.pid.indexOf(6)>=0    
+                div.padding5
+                  a(href="/c/#{company.companyId}/hr/listRoles") Add/Edit Roles              
+      if user.pid.indexOf(5)>=0 || user.pid.indexOf(4)>=0
         .col-xs-12.col-sm-6.col-md-3
           .panel.panel-primary
             .panel-heading 
@@ -40,4 +38,10 @@ block content
             .panel-body
               if user.pid.indexOf(5)>=0
                 div.padding5 
-                  a(href="/c/#{company.companyId}/hr/listDepartments") Add/Edit Departments                    
+                  a(href="/c/#{company.companyId}/hr/listDepartments") Add/Edit Departments
+              if user.pid.indexOf(4)>=0
+                div.padding5 
+                  a(href="/c/#{company.companyId}/hr/listTsTasks") Add/Edit Timesheet Tasks
+              if user.pid.indexOf(7)>=0
+                div.padding5 
+                  a(href="/c/#{company.companyId}/hr/listHrFileRooms") Add/Edit File Rooms                            

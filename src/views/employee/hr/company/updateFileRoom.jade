@@ -1,0 +1,67 @@
+extends /templates/authLayout
+block head
+  title Update File Room
+  script(src="/javascript/hrsystem/apps/hr/editFileRoom.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listHrFileRooms") List File Rooms  
+    li.active Edit File Room   
+block content
+  .container(ng-app="editFileRoom",ng-controller="editFileRoomCtrl" ng-cloak)
+    .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
+      b {{errMsg}}
+    .alert.alert-success.alignCenter.container(ng-show="successMsg") 
+      b {{successMsg}}
+    form.form-horizontal
+      .form-group
+        label.col-sm-2.control-label(for="roomName") File Room Name
+        .col-sm-6
+          input.form-control#roomName(type="text" placeholder="File Room Name" ng-model="fileRoomObj.roomName" required)
+      .form-group
+        label.col-sm-2.control-label Employee Access
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="employeeAccess" value="OD" ng-model="fileRoomObj.accessToEmployee") 
+              span Only Download
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="employeeAccess" value="DU" ng-model="fileRoomObj.accessToEmployee") 
+              span Download & Upload
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="employeeAccess" value="NA" ng-model="fileRoomObj.accessToEmployee") 
+              span No Access  
+      .form-group
+        label.col-sm-2.control-label Supervisor Access
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="supervisorAccess" value="OD" ng-model="fileRoomObj.accessToSupervisor") 
+              span Only Download
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="supervisorAccess" value="DU" ng-model="fileRoomObj.accessToSupervisor") 
+              span Download & Upload
+        .col-sm-2
+          .radio
+            label
+              input(type="radio" name="supervisorAccess" value="NA" ng-model="fileRoomObj.accessToSupervisor") 
+              span No Access                  
+    
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type="submit" ng-click="saveFileRoomDetails()") Save
+      div
+        b Note: 
+        span.small File Room created cannot be deleted, however you can edit it.    
+    
+                   

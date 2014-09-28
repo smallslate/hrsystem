@@ -1,0 +1,18 @@
+extends /templates/authLayout
+block head
+  title View File Room Files
+  script(src="/javascript/hrsystem/apps/employee/empFileRoomDocs.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.ui.widget.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.iframe-transport.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.fileupload.js")
+
+block 
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/emp/empHome") My Tasks
+    li.active Files
+block content
+  .container(ng-app="empFileRoomDocs",ng-controller="empFileRoomDocsCtrl" ng-cloak)
+    h3 Employee file roomsbreadcrumbs

@@ -4,10 +4,7 @@ module.exports = (sequelize,DataTypes)->
       type:DataTypes.BIGINT
       autoIncrement : true
       primaryKey : true
-      allowNull: false
       unique: true
-      validate:
-        isNumeric: true
     roleName:
       type: DataTypes.STRING(20)
       allowNull: false

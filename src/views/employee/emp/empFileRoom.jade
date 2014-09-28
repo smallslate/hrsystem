@@ -1,0 +1,23 @@
+extends /templates/authLayout
+block head
+  title File Rooms
+  script(type='text/javascript').
+    var LIST_URL = '/rest/emp/getEmployeeFileRooms'
+  script(src="/javascript/hrsystem/apps/hr/list.js")
+
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/emp/empHome") My Tasks
+    li.active File Rooms
+block content
+  .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
+    .row
+      .col-sm-4.col-md-3.marginBottom10(ng-repeat="empFileRoom in lists")
+        a(href="/c/#{company.companyId}/id/{{empFileRoom.id}}/emp/empFileRoomDocs")
+          div.alignCenter
+            img(src="/images/folder-icon.png")
+            div {{empFileRoom.roomName}}
+    

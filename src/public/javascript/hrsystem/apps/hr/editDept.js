@@ -26,9 +26,11 @@ editDeptApp.controller('editDeptCtrl', ['$scope','editDeptService', function($sc
 		editDeptService.saveDeptDetails({deptObj:$scope.deptObj},function(result) {
 	  	  if(result && result.id) {
 	  	    $scope.deptObj = result;
-	  	     $scope.successMsg = "Department saved successfully.";
+	  	    $scope.successMsg = "Department saved successfully.";
+	  	    $scope.errMsg = null;
 	  	  } else {
 	  	  	$scope.errMsg = "Failed to save department data. Please try again.";
+	  	  	$scope.successMsg = null;
 	  	  }
 	    });
 	  }
@@ -38,6 +40,6 @@ editDeptApp.controller('editDeptCtrl', ['$scope','editDeptService', function($sc
 editDeptApp.factory('editDeptService',['$resource', function($resource) {
 	return $resource('#', {}, {
 		getDeptDetails : {method : 'POST',url:'/rest/hr/getDeptDetails'},
-		saveDeptDetails : {method : 'POST',url:'/rest/hr/saveDeptDetails'},
+		saveDeptDetails : {method : 'POST',url:'/rest/hr/saveDeptDetails'}
 	});
 }]);

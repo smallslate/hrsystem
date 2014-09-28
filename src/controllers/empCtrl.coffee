@@ -155,7 +155,10 @@ class EmpCtrl
       if emplObj?.DepartmentId
         return employeeDao.getCompanyTasksByDept(companyId,emplObj.DepartmentId)
       else
-        return employeeDao.getCompanyTasks(companyId)    
+        return employeeDao.getCompanyTasks(companyId) 
+
+  getEmployeeFileRooms: (companyId) ->
+    return employeeDao.getEmployeeFileRooms(companyId)        
 
 
 module.exports = new EmpCtrl()      

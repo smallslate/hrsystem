@@ -1,0 +1,114 @@
+extends /templates/authLayout
+block head
+  title Update Role
+  script(src="/javascript/hrsystem/apps/hr/editRole.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listRoles") List Roles  
+    li.active Edit Role   
+block content
+  .container(ng-app="editRole",ng-controller="editRoleCtrl" ng-cloak)
+    .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
+      b {{errMsg}}
+    .alert.alert-success.alignCenter.container(ng-show="successMsg") 
+      b {{successMsg}}
+    form.form-horizontal
+      .form-group
+        label.col-sm-2.control-label(for="roleName") Role Name
+        .col-sm-6
+          input.form-control#roleName(type="text" placeholder="Role Name" ng-model="roleObj.roleName" required)
+      .form-group
+        label.col-sm-2.control-label(for="roleDescr") Role description
+        .col-sm-6
+          input.form-control#roleDescr(type="text" placeholder="Role description" ng-model="roleObj.roleDescr")
+      .form-group
+        label.col-sm-2.control-label(for="roleDescr") Page Access
+        .col-sm-10
+          .panel-group#myTaskAccordion(ng-if="accessPageIdList.1000")
+            .panel.panel-default
+              .panel-heading
+                h4.panel-title
+                  a(data-toggle="collapse" data-parent="#myTaskAccordion" href="#collapseMyTask")
+                    span.glyphicon.glyphicon-hand-up.paddingRight10
+                    b Employee My Tasks
+              .panel-collapse.collapse.in#collapseMyTask
+                .panel-body
+                  .row
+                    .col-xs-12.col-sm-4
+                      .panel.panel-primary
+                        .panel-heading 
+                          b Tasks
+                        .panel-body 
+                          .checkbox(ng-if="accessPageIdList.1001")
+                            label
+                              input(type="checkbox" name="selectedPages" value="1001" ng-checked="alreadySelectedPages.1001")
+                              span Timesheets
+                          .checkbox(ng-if="accessPageIdList.1002")
+                            label
+                              input(type="checkbox" name="selectedPages" value="1002" ng-checked="alreadySelectedPages.1002")
+                              span File Rooms   
+          .panel-group#hrAccordion(ng-if="accessPageIdList.1")
+            .panel.panel-default
+              .panel-heading
+                h4.panel-title
+                  a(data-toggle="collapse" data-parent="#hrAccordion" href="#collapseHr")
+                    span.glyphicon.glyphicon-hand-up.paddingRight10
+                    b HR
+              .panel-collapse.collapse.in#collapseHr
+                .panel-body
+                  .row
+                    .col-xs-12.col-sm-4
+                      .panel.panel-primary
+                        .panel-heading 
+                          b Employee Tasks
+                        .panel-body 
+                          .checkbox(ng-if="accessPageIdList.3")
+                            label
+                              input(type="checkbox" name="selectedPages" value="3" ng-checked="alreadySelectedPages.3") 
+                              span Approve Timesheets
+                    .col-xs-12.col-sm-4
+                      .panel.panel-primary
+                        .panel-heading 
+                          b Accounts & Security
+                        .panel-body 
+                          .checkbox(ng-if="accessPageIdList.2")
+                            label
+                              input(type="checkbox" name="selectedPages" value="2" ng-checked="alreadySelectedPages.2") 
+                              span Add/Edit Accounts
+                          .checkbox(ng-if="accessPageIdList.6")
+                            label
+                              input(type="checkbox" name="selectedPages" value="6" ng-checked="alreadySelectedPages.6") 
+                              span Add/Edit Roles 
+                    .col-xs-12.col-sm-4
+                      .panel.panel-primary
+                        .panel-heading 
+                          b Company
+                        .panel-body 
+                          .checkbox(ng-if="accessPageIdList.5")
+                            label
+                              input(type="checkbox" name="selectedPages" value="5" ng-checked="alreadySelectedPages.5") 
+                              span Add/Edit Departments
+                          .checkbox(ng-if="accessPageIdList.4")
+                            label
+                              input(type="checkbox" name="selectedPages" value="4" ng-checked="alreadySelectedPages.4") 
+                              span Add/Edit Timesheet Tasks 
+                          .checkbox(ng-if="accessPageIdList.7")
+                            label
+                              input(type="checkbox" name="selectedPages" value="7" ng-checked="alreadySelectedPages.7") 
+                              span Add/Edit File Rooms
+
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type="submit" ng-click="saveRoleDetails()") Save
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          b Note: 
+          span.small Role created cannot be deleted, however you can edit it.   
+      br     
+    
+                   

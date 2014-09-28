@@ -1,4 +1,6 @@
-models = require('../factory/db').models
+db = require('../factory/db')
+sequelize = db.sequelize
+models = db.models
 
 class AccountDao
   getResetPasswordVerificationObj: (verificationId,signInId,companyId) ->
@@ -59,4 +61,20 @@ class AccountDao
         companyuid:companyuid
         isActive:isActive
       attributes:['companyuid','companyId','companyName','companyImg']
+
+  getRoleList: (companyid) ->
+    models['Role'].findAll({where: {CompanyId:companyid},attributes:['roleId','roleName','roleDescr']})
+
+  getRoleDetails: (companyid,roleId) ->
+    models['Role'].find({where: {roleId:roleId,CompanyId:companyid},attributes:['roleId','roleName','roleDescr']})
+
+  createRole: (companyid,roleObj) ->
+    models['Role'].create({roleName:roleObj.roleName,roleDescr:roleObj.roleDescr,CompanyId:companyid}) 
+
+  getCompanyAccessPageIds: (companyid) ->
+    models['PageAccess'].findAll({where: {CompanyId:companyid},attributes:['pageId']})
+
+  deletePageAccessRoles: (roleId) ->
+    sequelize.query("DELETE FROM PageAccessesRoles WHERE RoleId ="+roleId)
+
 module.exports = new AccountDao()

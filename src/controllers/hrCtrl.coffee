@@ -234,6 +234,71 @@ class HrCtrl
           tsTaskDetails.setDepartments(taskObj.deptList)
           return taskObj
     else
-                
+    
+  getRoleList: (companyId)->
+    P.invoke(accountDao,"getRoleList",companyId)               
 
+  getRoleDetails: (companyId,roleId)->
+    P.invoke(accountDao,"getRoleDetails",companyId,roleId)
+    .then (roleDetails) ->
+      roleDetails.getPageAccesses()
+      .then (pageAccesses) ->
+        roleDetailsObj = {roleId:roleDetails.roleId,roleName:roleDetails.roleName,roleDescr:roleDetails.roleDescr}
+        roleDetailsObj.pageAccessList = pageAccesses
+        return roleDetailsObj
+
+  saveRoleDetails: (companyId,roleObj)->
+    if roleObj?.roleId
+      P.invoke(accountDao,"getRoleDetails",companyId,roleObj.roleId)
+      .then (roleDetails) ->
+        if roleDetails
+          roleDetails.roleName = roleObj.roleName
+          roleDetails.roleDescr = roleObj.roleDescr
+          roleDetails.save()
+          P.invoke(accountDao,"deletePageAccessRoles",roleObj.roleId)
+          .then () ->
+            commonUtils.getParentPageAccessList(roleObj.pageAccessList)
+            roleDetails.setPageAccesses(roleObj.pageAccessList)
+            return roleObj
+        else
+          P.invoke(accountDao,"createRole",companyId,roleObj)
+          .then (roleDetails) ->
+            roleDetails.setPageAccess(roleObj.pageAccessList)
+            roleObj.roleId = roleDetails.roleId
+            return roleObj 
+    else
+      P.invoke(accountDao,"createRole",companyId,roleObj)
+      .then (roleDetails) ->
+        commonUtils.getParentPageAccessList(roleObj.pageAccessList)
+        roleDetails.setPageAccesses(roleObj.pageAccessList)
+        roleObj.roleId = roleDetails.roleId
+        return roleObj
+
+  getCompanyAccessPageIds: (companyId)->
+    P.invoke(accountDao,"getCompanyAccessPageIds",companyId)
+
+  getHrFileRooms: (companyId)->
+    P.invoke(employeeDao,"getFileRoomsByCompanyId",companyId) 
+
+  getFileRoomDetails: (companyId,fileRoomId)->
+    P.invoke(employeeDao,"getFileRoomDetails",companyId,fileRoomId)
+    .then (fileRoomDetails) ->
+      return fileRoomDetails
+
+  saveFileRoomDetails: (companyId,fileRoomObj)->
+    if fileRoomObj?.id
+      P.invoke(employeeDao,"getFileRoomDetails",companyId,fileRoomObj.id)
+      .then (fileRoomDetails) ->
+        if fileRoomDetails
+          fileRoomDetails.roomName = fileRoomObj.roomName
+          fileRoomDetails.accessToEmployee = fileRoomObj.accessToEmployee
+          fileRoomDetails.accessToSupervisor = fileRoomObj.accessToSupervisor
+          fileRoomDetails.save()
+          return fileRoomDetails
+        else
+          return {} 
+    else
+      P.invoke(employeeDao,"createFileRoom",companyId,fileRoomObj)
+      .then (fileRoomDetails) ->
+        return fileRoomDetails
 module.exports = new HrCtrl() 

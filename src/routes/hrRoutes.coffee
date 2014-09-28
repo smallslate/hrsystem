@@ -42,6 +42,24 @@ module.exports = (app)->
   server.get "/c/:companyId/id/:id/hr/updateTsTask",(req,res)->
     res.render("employee/hr/timesheets/updateTsTasks")
 
+  server.get "/c/:companyId/hr/updateRole",(req,res)->
+    res.render("employee/hr/company/updateRole")
+
+  server.get "/c/:companyId/id/:id/hr/updateRole",(req,res)->
+    res.render("employee/hr/company/updateRole")
+
+  server.get "/c/:companyId/hr/listRoles",(req,res)->
+    res.render("employee/hr/company/listRoles")
+
+  server.get "/c/:companyId/hr/listHrFileRooms",(req,res)->
+    res.render("employee/hr/company/hrFileRoomList")
+
+  server.get "/c/:companyId/hr/updateFileRoom",(req,res)->
+    res.render("employee/hr/company/updateFileRoom")
+
+  server.get "/c/:companyId/id/:id/hr/updateFileRoom",(req,res)->
+    res.render("employee/hr/company/updateFileRoom")
+
   server.post "/rest/hr/getNextEmplid",(req,res)->
     P.invoke(hrCtrl,"getNextEmplid",req.session.user.companyuid)
     .then (nextEmplid)->
@@ -172,8 +190,63 @@ module.exports = (app)->
       res.send(tsTaskDetails)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])                         
+      res.send(messages['server.error']) 
 
+  server.post "/rest/hr/getRoleList",(req,res)->
+    P.invoke(hrCtrl,"getRoleList",req.session.user.companyuid)
+    .then (roleList) ->
+      res.send(roleList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error']) 
+
+  server.post "/rest/hr/getRoleDetails",(req,res)->
+    P.invoke(hrCtrl,"getRoleDetails",req.session.user.companyuid,req.body.roleId)
+    .then (roleDetails) ->
+      res.send(roleDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error']) 
+
+  server.post "/rest/hr/saveRoleDetails",(req,res)->
+    P.invoke(hrCtrl,"saveRoleDetails",req.session.user.companyuid,req.body.roleObj)
+    .then (roleDetails) ->
+      res.send(roleDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])
+      
+  server.post "/rest/hr/getCompanyAccessPageIds",(req,res)->
+    P.invoke(hrCtrl,"getCompanyAccessPageIds",req.session.user.companyuid)
+    .then (pageIdList) ->
+      res.send(pageIdList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])   
+
+  server.post "/rest/hr/getHrFileRooms",(req,res)->
+    P.invoke(hrCtrl,"getHrFileRooms",req.session.user.companyuid)
+    .then (fileRoomList) ->
+      res.send(fileRoomList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])                                         
+
+  server.post "/rest/hr/getFileRoomDetails",(req,res)->
+    P.invoke(hrCtrl,"getFileRoomDetails",req.session.user.companyuid,req.body.fileRoomId)
+    .then (fileRoomDetails) ->
+      res.send(fileRoomDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])
+
+  server.post "/rest/hr/saveFileRoomDetails",(req,res)->
+    P.invoke(hrCtrl,"saveFileRoomDetails",req.session.user.companyuid,req.body.fileRoomObj)
+    .then (fileRoomDetails) ->
+      res.send(fileRoomDetails)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])    
 
 
 

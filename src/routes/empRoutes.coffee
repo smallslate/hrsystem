@@ -11,6 +11,12 @@ module.exports = (app)->
   server.get "/c/:companyId/emp/timesheet",(req,res)->
     res.render("employee/emp/timesheet")  
 
+  server.get "/c/:companyId/emp/fileRooms",(req,res)->
+    res.render("employee/emp/empFileRoom") 
+
+  server.get "/c/:companyId/id/:id/emp/empFileRoomDocs",(req,res)->
+    res.render("employee/emp/empFileRoomDocs")
+
   server.post "/rest/emp/getTimesheetDocs",(req,res)->
     P.invoke(empCtrl,"getTimesheetDocs",req.session.user.companyuid,req.session.user.uuid,req.body.weekId)
     .then (timeSheetDocList) ->
@@ -78,6 +84,14 @@ module.exports = (app)->
       res.send(companyTasksList)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])         
+      res.send(messages['server.error']) 
+
+  server.post "/rest/emp/getEmployeeFileRooms",(req,res)->
+    P.invoke(empCtrl,"getEmployeeFileRooms",req.session.user.companyuid)
+    .then (employeeFileRoomList) ->
+      res.send(employeeFileRoomList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])            
 
 

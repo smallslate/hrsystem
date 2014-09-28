@@ -93,6 +93,18 @@ class EmployeeDao
         task.TimesheetId = timesheetId
     models['TimesheetTask'].bulkCreate(taskList) 
 
+  getFileRoomsByCompanyId: (companyId) ->
+    models['FileRoom'].findAll({where: {CompanyId:companyId},attributes:['id','roomName','accessToEmployee','accessToSupervisor']})
+
+  getFileRoomDetails: (companyid,fileRoomId) ->
+    models['FileRoom'].find({where: {id:fileRoomId,CompanyId:companyid},attributes:['id','roomName','accessToEmployee','accessToSupervisor']})
+
+  createFileRoom: (companyid,fileRoomObj) ->
+    models['FileRoom'].create({roomName:fileRoomObj.roomName,accessToEmployee:fileRoomObj.accessToEmployee,accessToSupervisor:fileRoomObj.accessToSupervisor,CompanyId:companyid})
+  
+  getEmployeeFileRooms: (companyid) ->
+    models['FileRoom'].findAll({where: {CompanyId:companyid,accessToEmployee:['OD','DU']},attributes:['id','roomName','accessToEmployee','accessToSupervisor']})
+
   getAllEmployeeList: (companyId) ->
     sequelize.query("SELECT us.uuid,us.signInId,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId,
       us.isAccountActive FROM Users us,Employees emp where us.uuid = emp.UserId and us.CompanyId ="+companyId)   
@@ -112,6 +124,6 @@ class EmployeeDao
         return {}  
 
   deleteTaskDepart: (taskId) ->
-    sequelize.query("DELETE FROM companytasksdepartments WHERE CompanyTaskId ="+taskId)
+    sequelize.query("DELETE FROM CompanyTasksDepartments WHERE CompanyTaskId ="+taskId)
 
 module.exports = new EmployeeDao()    
