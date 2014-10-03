@@ -14,7 +14,7 @@ block breadcrumbs
 block content
   .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
     a.btn.btn-primary.marginBottom10(href="/c/#{company.companyId}/hr/updateDepartment") Add Department
-    .table-responsive
+    .table-responsive(ng-if="lists.length > 0")
       table.table.table-bordered.table-hover
         tr.info
           th.col-sm-2
@@ -30,5 +30,7 @@ block content
             div Active
           td.alert-danger(ng-if="listObj.isActive!=1")
             div Not Active
+    .alert.alert-success(ng-if="lists.length==0")
+      b No departments exist.  
     
                    

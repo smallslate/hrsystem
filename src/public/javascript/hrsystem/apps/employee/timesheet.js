@@ -160,8 +160,6 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   $('#fileupload').bind('fileuploadsubmit', function (e, data) {
      $scope.$apply(function() {
       data.formData = {weekId: $scope.timeSheetObj.weekId};
-       $('#progress .progress-bar').css('width','0%');
-       $('#progress-bar').text('0%');
     });
   });
 

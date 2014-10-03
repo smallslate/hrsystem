@@ -1,0 +1,41 @@
+extends /templates/authLayout
+block head
+  title File Room
+  script(src="/frameworks/jqueryFileUpload/jquery.ui.widget.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.iframe-transport.js")
+  script(src="/frameworks/jqueryFileUpload/jquery.fileupload.js")
+  script(src="/javascript/hrsystem/apps/hr/hrFileRoom.js")
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li
+      a(href="/c/#{company.companyId}/hr/listFileRoomEmps") File Room  
+    li.active Employee Files
+block content
+  .container(ng-app="hrFileRoom",ng-controller="hrFileRoomCtrl" ng-cloak)
+    include /templates/empDetails
+    .form-horizontal(role="form")
+      .form-group
+        label.col-sm-2.control-label(for="selectFileRoom") Select File Room
+        .col-sm-4
+          select.form-control(ng-options="fileRoom.id as fileRoom.roomName for fileRoom in fileRooms" data-ng-model="selectedFileRoom" style="width:100%;" ng-change="onChangeFileRoom()")
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          ul.list-group
+            li.list-group-item(ng-repeat="fileObj in fileRoomObj.files")
+              span.glyphicon.glyphicon-file.marginRight10
+              a(href="/rest/hr/downloadDocFromFileRoom?id={{fileObj.id}}")
+                span.marginRight10 {{fileObj.orginalName}}
+                span.glyphicon.glyphicon-download.marginRight10
+              span.glyphicon.glyphicon-trash.cursorPointer(ng-click="deleteEmpFileFromRoom(fileObj.id)")   
+          .alert.alert-success(ng-if="fileRoomObj.files.length==0")
+            b File room is empty
+      .form-group
+        label.col-sm-2.control-label Upload Files
+        .col-sm-4    
+          input#fileupload(type="file" name="files")      
+
+    

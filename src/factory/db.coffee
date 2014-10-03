@@ -53,10 +53,10 @@ class DB
     @models['PageAccess'].hasMany(@models['Role'])
     @models['Employee'].hasOne(@models['Employee'],{as:'Supervisor',foreignKey:'supervisorId'}).hasMany(@models['Timesheet'])
       .hasMany(@models['FileRoomDoc'])
-    @models['Department'].hasMany(@models['Employee']).hasMany(@models['CompanyTask']).hasMany(@models['FileRoom'])
+    @models['Department'].hasMany(@models['Employee']).hasMany(@models['CompanyTask'])
     @models['Timesheet'].hasMany(@models['TimesheetTask']).hasMany(@models['TimesheetDoc'])
     @models['CompanyTask'].hasMany(@models['Department'])
-    @models['FileRoom'].hasMany(@models['Department']).hasMany(@models['FileRoomDoc'])
+    @models['FileRoom'].hasMany(@models['FileRoomDoc'])
     
   syncModels:->
     @sequelize.sync()

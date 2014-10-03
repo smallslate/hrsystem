@@ -5,14 +5,24 @@ block head
   script(src="/frameworks/jqueryFileUpload/jquery.ui.widget.js")
   script(src="/frameworks/jqueryFileUpload/jquery.iframe-transport.js")
   script(src="/frameworks/jqueryFileUpload/jquery.fileupload.js")
-
-block 
+block breadcrumbs
   ol.breadcrumb
     li
       a(href="/c/#{company.companyId}/a/home") Home
     li
       a(href="/c/#{company.companyId}/emp/empHome") My Tasks
-    li.active Files
+    li
+      a(href="/c/#{company.companyId}/emp/fileRooms") File Room  
+    li.active Documents
 block content
   .container(ng-app="empFileRoomDocs",ng-controller="empFileRoomDocsCtrl" ng-cloak)
-    h3 Employee file roomsbreadcrumbs
+    ul.list-group
+      li.list-group-item(ng-repeat="fileObj in fileRoomObj.files")
+        span.glyphicon.glyphicon-file.marginRight10
+        a(href="/rest/emp/downloadDocFromFileRoom?id={{fileObj.id}}")
+          span.marginRight10 {{fileObj.orginalName}}
+          span.glyphicon.glyphicon-download.marginRight10
+        span.glyphicon.glyphicon-trash.cursorPointer(ng-click="deleteEmpFileFromRoom(fileObj.id)" ng-if="fileRoomObj.accessToEmployee == 'DU'")
+    .alert.alert-success(ng-if="fileRoomObj.files.length==0")
+      b File room is empty    
+    input#fileupload(type="file" name="files" ng-disabled="fileRoomObj.accessToEmployee != 'DU'")

@@ -47,22 +47,24 @@ block content
       .panel-heading 
         b Having trouble signing in?
       .panel-body
-        form(action="/c/#{company.companyId}/accountRecovery" method="post")
-          div
-            label
-              input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()")
-              span I don't know my password
-            div.noscreen#forgotPassword
-              div.small To reset your password, enter the SignIn id you use to sign in.
-              input#signInId(placeholder="SignIn Id" name="signInId")
-          div
-            label
-              input(type="radio" name="recovery" value="forgotSignInId" onClick="onForgotSignInIdClick()") 
-              span I don't know my SignIn id
-            div.noscreen#forgotSignInId
-              div.small Enter the email address associated with your account. 
-              input#emailAddress(placeholder="Email Address" type="email" name="emailAddress")
-            div.paddingTop10.noscreen#continue
-              button.btn.btn-primary.btn-sm(type="submit" onClick="return onContinueClick()") Continue
+        form.form-horizontal(action="/c/#{company.companyId}/accountRecovery" method="post")
+          div.form-group
+            div.radio.col-sm-6
+              label
+                input(type="radio" name="recovery" value="forgotPassword" onClick="onForgotPasswordClick()")
+                span I don't know my password
+              div.noscreen#forgotPassword
+                div.small To reset your password, enter your SignIn id.
+                input.form-control#signInId(placeholder="SignIn Id" name="signInId")
+          div.form-group      
+            div.radio.col-sm-6
+              label
+                input(type="radio" name="recovery" value="forgotSignInId" onClick="onForgotSignInIdClick()") 
+                span I don't know my SignIn id
+              div.noscreen#forgotSignInId
+                div.small Enter the primary email address associated with your account.
+                input.form-control#emailAddress(placeholder="Email Address" type="email" name="emailAddress")
+              div.paddingTop10.noscreen#continue
+                button.btn.btn-primary.btn-sm(type="submit" onClick="return onContinueClick()") Continue
         a(href="/c/#{company.companyId}/signin") Back Home      
 

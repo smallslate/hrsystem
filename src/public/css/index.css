@@ -63,3 +63,8 @@ body {
 .width100 {
   width:100px;
 }
+
+.cursorPointer {
+  cursor: pointer;
+}
+

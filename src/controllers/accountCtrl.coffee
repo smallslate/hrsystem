@@ -52,7 +52,7 @@ class AccountCtrl
 
   setNewPassword: (verificationId,signInId,companyId,newPassword,reenteredPassword)->
     savePasswordHash = (hash)->
-      P.invoke(accountDao,"updateUserPassword",signInId,hash)
+      P.invoke(accountDao,"updateUserPassword",signInId,hash,companyId)
     generateHash = (verificationObj)->
       P.nfcall(bcrypt.hash,newPassword,null,null)
     validateVerificationObj = (verificationObj)->
@@ -68,9 +68,9 @@ class AccountCtrl
     else
       throw new Error('password.not.match') 
 
-  changePassword: (uuid,oldPassword,newPassword,reenteredPassword)->
+  changePassword: (uuid,companyId,oldPassword,newPassword,reenteredPassword)->
     savePasswordHash = (hash)->
-      P.invoke(accountDao,"updateUserPasswordByUid",uuid,hash)
+      P.invoke(accountDao,"updateUserPasswordByUid",uuid,hash,companyId)
     generateHash = (userObj)->
       P.nfcall(bcrypt.hash,newPassword,null,null)
     comparePassword = (userObj)->
@@ -82,7 +82,7 @@ class AccountCtrl
           return if res then userObj else throw new Error('user.old.password.incorrect')
 
     if newPassword == reenteredPassword 
-      P.invoke(accountDao,"getAllUserAttributesByUid",uuid)
+      P.invoke(accountDao,"getAllUserAttributesByUid",uuid,companyId)
       .then(comparePassword)
       .then(generateHash)
       .then(savePasswordHash)

@@ -40,6 +40,7 @@ module.exports = (app)->
   server.all '/rest/hr/*',accountCtrl.authorizeRestRequest
 
   server.all '/c/:companyId/emp/*',accountCtrl.authorizeEmpRequest
+  server.all '/c/:companyId/id/:id/emp/*',accountCtrl.authorizeEmpRequest
   server.all '/rest/emp/*',accountCtrl.authorizeRestRequest
 
   server.get "/c/:companyId/signin",(req,res)->
@@ -56,9 +57,12 @@ module.exports = (app)->
   server.post "/rest/hr/checkSigninIdAvailability",(req,res)->
     P.invoke(accountCtrl, "checkSigninIdAvailability",req.body.signInId)
     .then (obj)->
-      res.send(obj) 
+      res.send(obj)
+    ,(err) -> 
+      res.send(null)
 
   server.post "/c/:companyId/signin",(req, res,next)->
+    req.logout()
     authenticate = passport.authenticate 'local',(err, user, info)->
       if err then res.render("common/signin")
       if !user then return res.render("common/signin",message:messages['user.password.error'])
@@ -96,7 +100,7 @@ module.exports = (app)->
     res.render("common/changePassword")
 
   server.post "/c/:companyId/a/changePassword",(req,res)->
-    P.invoke(accountCtrl, "changePassword",req.session.user.uuid,req.body.currentPassword,req.body.newPassword,req.body.reEnterNewPassword)
+    P.invoke(accountCtrl, "changePassword",req.session.user.uuid,req.session.user.companyuid,req.body.currentPassword,req.body.newPassword,req.body.reEnterNewPassword)
     .then (obj)->
       res.render("common/accountSetting",{message:messages['password.success']})
     ,(err) ->
@@ -109,7 +113,10 @@ module.exports = (app)->
 
   server.get "/c/:companyId/:signInId/:verificationId/:type/createPassword",(req,res)->
     P.invoke(accountCtrl, "verifyResetPasswordLink",req.params.verificationId,req.params.signInId,req.params.companyId)
-    .then (verificationObj)->
+    .then (verificationObj) ->
+      if req.isAuthenticated()
+        req.session.destroy()
+        req.logout()
       verificationObj.lastName = verificationObj.lastName.toUpperCase()
       res.render("common/createPassword",{verificationObj:verificationObj})    
     ,(err) ->

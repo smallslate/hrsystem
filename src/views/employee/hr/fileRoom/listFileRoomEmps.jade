@@ -1,0 +1,41 @@
+extends /templates/authLayout
+block head
+  title List Employees
+  script(type='text/javascript').
+    var LIST_URL = '/rest/hr/getAllActiveEmployeeList'
+  script(src="/javascript/hrsystem/apps/hr/list.js")
+
+block breadcrumbs
+  ol.breadcrumb
+    li
+      a(href="/c/#{company.companyId}/a/home") Home
+    li
+      a(href="/c/#{company.companyId}/hr/hrHome") HR
+    li.active File Room  
+block content
+  .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
+    .table-responsive
+      table.table.table-bordered.table-hover
+        tr.info
+          th.col-sm-2
+            div Employee Id
+          th.col-sm-2
+            div First Name
+          th.col-sm-2
+            div Middle Name  
+          th.col-sm-2
+            div Last Name
+          th.col-sm-2
+            div Supervisor Id
+        tr(ng-repeat="emp in lists")
+          td
+            div
+              a(href="/c/#{company.companyId}/id/{{emp.emplid}}/hr/employeeFileRoom") {{emp.emplid}} 
+          td
+            div {{emp.firstName}}
+          td
+            div {{emp.middleName}}  
+          td
+            div {{emp.lastName}}
+          td
+            div {{emp.supervisorId}}

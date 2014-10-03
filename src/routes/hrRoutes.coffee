@@ -60,10 +60,19 @@ module.exports = (app)->
   server.get "/c/:companyId/id/:id/hr/updateFileRoom",(req,res)->
     res.render("employee/hr/company/updateFileRoom")
 
+  server.get "/c/:companyId/hr/listFileRoomEmps",(req,res)->
+    res.render("employee/hr/fileRoom/listFileRoomEmps")
+
+  server.get "/c/:companyId/id/:id/hr/employeeFileRoom",(req,res)->
+    res.render("employee/hr/fileRoom/employeeFileRoom")
+
   server.post "/rest/hr/getNextEmplid",(req,res)->
     P.invoke(hrCtrl,"getNextEmplid",req.session.user.companyuid)
     .then (nextEmplid)->
       res.send({"nextEmplid":nextEmplid})
+    ,(err) ->
+      console.log 'err is ',err
+      res.send(null)    
 
   server.post "/rest/hr/getEmployeeHeader",(req,res)->
     P.invoke(hrCtrl,"getEmployeeHeader",req.session.user.companyuid,req.body.emplid)
@@ -76,7 +85,10 @@ module.exports = (app)->
   server.post "/rest/hr/getCompanyRoles",(req,res)->
     P.invoke(hrCtrl,"getCompanyRoles",req.session.user.companyuid)
     .then (roleList)->
-      res.send(roleList) 
+      res.send(roleList)
+    ,(err) ->
+      console.log 'err is ',err
+      res.send(null)    
 
   server.post "/rest/hr/updateEmpAccount",(req,res)->
     P.invoke(hrCtrl,"updateEmpAccount",req.session.user.companyuid,req.body)
@@ -246,7 +258,52 @@ module.exports = (app)->
       res.send(fileRoomDetails)
     ,(err) ->
       console.log 'err=',err
-      res.send(messages['server.error'])    
+      res.send(messages['server.error'])
+
+  server.post "/rest/hr/getAllFileRooms",(req,res)->
+    P.invoke(hrCtrl,"getAllFileRooms",req.session.user.companyuid)
+    .then (employeeFileRoomList) ->
+      res.send(employeeFileRoomList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])
+
+  server.post "/rest/hr/getEmployeeFileRoomDocs",(req,res)->
+    P.invoke(hrCtrl,"getEmployeeFileRoomDocs",req.session.user.companyuid,req.body.emplId,req.body.fileRoomId)
+    .then (empFileRoomDocList) ->
+      res.send(empFileRoomDocList)
+    ,(err) ->
+      console.log 'err=',err
+      res.send(messages['server.error'])
+
+  server.post "/rest/hr/uploadEmpFilesToFileRoom",(req,res)->
+    P.invoke(hrCtrl,"uploadEmpFilesToFileRoom",req.session.user.companyuid,req.body,req.files)
+    .then (empFileRoomDocList) ->
+      res.send(empFileRoomDocList)
+    ,(err) -> 
+      console.log 'err=',err
+      if err?.message
+        res.send([{message:messages[err.message]}])
+      else   
+        res.send(messages['server.error'])
+
+  server.post "/rest/hr/deleteEmpFileFromRoom",(req,res)->
+    P.invoke(hrCtrl,"deleteEmpFileFromRoom",req.session.user.companyuid,req.body.emplId,req.body.fileRoomId,req.body.fileId)
+    .then (empFileRoomDocList) ->
+      res.send(empFileRoomDocList)
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])
+
+  server.get "/rest/hr/downloadDocFromFileRoom",(req,res)->
+    P.invoke(hrCtrl,"downloadDocFromFileRoom",req.session.user.companyuid,req.query)
+    .then (fileObj) ->
+      res.setHeader('Content-disposition', 'attachment; filename=' + fileObj.fileRoomDoc.orginalName)
+      res.setHeader('Content-type', fileObj.fileRoomDoc.mimeType)
+      res.end(fileObj.fileData, "binary")
+    ,(err) -> 
+      console.log 'err=',err 
+      res.send(messages['server.error'])                       
 
 
 

@@ -1,6 +1,6 @@
 #1.Add here
 #2.Add to respective menu and sub menu
-#3.Add to edit roles page
+#3.Add to update roles page
 #4.Script to assign new page to company
 module.exports = 
   authorizedUrl : ['/a/home','/a/signOut','/a/accountSetting','/a/changePassword']
@@ -12,10 +12,11 @@ module.exports =
     5      : {'name':'Add/Edit Departments','parentId':'1','url':['/rest/hr/saveDeptDetails','/rest/hr/getDeptDetails','/hr/updateDepartment','/hr/listDepartments','/rest/hr/getDepartmentList']}
     6      : {'name':'Add/Edit Roles','parentId':'1','url':['/rest/hr/getCompanyAccessPageIds','/rest/hr/saveRoleDetails','/rest/hr/getRoleDetails','/hr/listRoles','/rest/hr/getRoleList','/hr/updateRole']}
     7      : {'name':'Add/Edit File Rooms','parentId':'1','url':['/hr/listHrFileRooms','/rest/hr/getHrFileRooms','/hr/updateFileRoom','/rest/hr/getFileRoomDetails','/rest/hr/saveFileRoomDetails']}
+    8      : {'name':'File Rooms','parentId':'1','url':['/hr/listFileRoomEmps','/rest/hr/getAllActiveEmployeeList','/hr/employeeFileRoom','/rest/hr/getEmployeeHeader','/rest/hr/getAllFileRooms','/rest/hr/getEmployeeFileRoomDocs','/rest/hr/uploadEmpFilesToFileRoom','/rest/hr/deleteEmpFileFromRoom','/rest/hr/downloadDocFromFileRoom']}
 
     1000   : {'name':'My Tasks','url':['/emp/empHome']}
     1001   : {'name':'Timesheets','parentId':'1000','url':['/rest/emp/getCompanyTasks','/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet']}
-    1002   : {'name':'File Rooms','parentId':'1000','url':['/emp/fileRooms','/rest/emp/getEmployeeFileRooms','/emp/empFileRoomDocs']}
+    1002   : {'name':'File Rooms','parentId':'1000','url':['/emp/fileRooms','/rest/emp/getEmployeeFileRooms','/emp/empFileRoomDocs','/rest/emp/getEmpFileRoomDocs','/rest/emp/empUploadToFileRoom','/rest/emp/deleteEmpFileFromRoom','/rest/emp/downloadDocFromFileRoom']}
   
     
 

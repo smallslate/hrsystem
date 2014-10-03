@@ -4,19 +4,19 @@ models = db.models
 
 class EmployeeDao
   getMaxEmplidOfCompany: (companyId) ->
-    models['Employee'].max('emplId',{ where: {companyId: companyId}}) 
+    models['Employee'].max('emplId',{ where: {CompanyId: companyId}}) 
 
   getCompanyRoles: (companyid) ->
-    models['Role'].findAll({where: {companyid:companyid},attributes:['roleId','roleName','roleDescr']})
+    models['Role'].findAll({where: {CompanyId:companyid},attributes:['roleId','roleName','roleDescr']})
 
   getCompanyRolesById: (companyid,roleIdList) ->
-    models['Role'].findAll({where: {companyid:companyid,roleId:[roleIdList]},attributes:['roleId','roleName','roleDescr']})
+    models['Role'].findAll({where: {CompanyId:companyid,roleId:[roleIdList]},attributes:['roleId','roleName','roleDescr']})
 
   getEmployeeByEmplid: (companyId,emplid) ->
-    models['Employee'].find({ where: {companyId: companyId,emplId:emplid}})
+    models['Employee'].find({ where: {CompanyId: companyId,emplId:emplid}})
 
   getEmployeeById: (companyId,emplid) ->
-    models['Employee'].find({ where: {companyId: companyId,id:emplid}})
+    models['Employee'].find({ where: {CompanyId: companyId,id:emplid}})
 
   getDepartmentList: (companyid) ->
     models['Department'].findAll({where: {CompanyId:companyid},attributes:['id','departmentName','departmentHead','isActive']})
@@ -30,6 +30,9 @@ class EmployeeDao
   getCompanyTasks: (companyId) ->
     models['CompanyTask'].findAll({where: {CompanyId:companyId,isActive:true},attributes:['id','name']})
 
+  createCompanyTask: (companyId,taskObj) ->
+    models['CompanyTask'].create({name:taskObj.name,descr:taskObj.descr,CompanyId:companyId})
+    
   getCompanyTasksByDept: (companyId,deptId) ->
     models['Department'].find({where: {CompanyId:companyId,id:deptId}})
     .then (deptObj) ->
@@ -104,6 +107,24 @@ class EmployeeDao
   
   getEmployeeFileRooms: (companyid) ->
     models['FileRoom'].findAll({where: {CompanyId:companyid,accessToEmployee:['OD','DU']},attributes:['id','roomName','accessToEmployee','accessToSupervisor']})
+
+  getAllFileRooms: (companyid) ->
+    models['FileRoom'].findAll({where: {CompanyId:companyid},attributes:['id','roomName','accessToEmployee','accessToSupervisor']})
+
+  getEmpFileRoomDocs: (employeeId,fileRoomId) ->
+    models['FileRoomDoc'].findAll({where: {EmployeeId:employeeId,FileRoomId:fileRoomId},attributes:['id','orginalName','mimeType','extension']})
+
+  getDocFromFileRoom: (fileRoomId,fileId,employeeId) ->
+    models['FileRoomDoc'].find({where: {EmployeeId:employeeId,FileRoomId:fileRoomId,id:fileId},attributes:['id','cloudName','orginalName','mimeType','extension']})
+
+  getFileRoomDoc: (fileId,employeeId) ->
+    models['FileRoomDoc'].find({where: {EmployeeId:employeeId,id:fileId},attributes:['id','cloudName','orginalName','mimeType','extension']})
+
+  getFileRoomDocById: (fileId) ->
+    models['FileRoomDoc'].find({where: {id:fileId},attributes:['id','cloudName','orginalName','mimeType','extension']})
+
+  createFileRoomDoc: (fileRoomDocObj) ->
+   models['FileRoomDoc'].create({orginalName:fileRoomDocObj.orginalName,cloudName:fileRoomDocObj.cloudName,mimeType:fileRoomDocObj.mimeType,extension:fileRoomDocObj.extension,EmployeeId:fileRoomDocObj.EmployeeId,FileRoomId:fileRoomDocObj.FileRoomId})
 
   getAllEmployeeList: (companyId) ->
     sequelize.query("SELECT us.uuid,us.signInId,us.firstName,us.middleName,us.lastName,emp.emplid,emp.supervisorId,

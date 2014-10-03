@@ -23,9 +23,10 @@ class HrCtrl
     P.invoke(employeeDao,"getCompanyRoles",companyId)
 
   getEmpAccountDetails: (companyId,emplid)->
+    console.log 'companyId,emplid=',companyId,emplid
     P.invoke(employeeDao,"getEmployeeByEmplid",companyId,emplid)
     .then (emplObj) ->
-      P.invoke(accountDao,"getUserByUuid",emplObj.UserId,false)
+      P.invoke(accountDao,"getUserByUuid",emplObj.UserId,false,companyId)
       .then (userObj) ->
         userObj.getRoles()
         .then (rolesObj)->
@@ -42,7 +43,7 @@ class HrCtrl
     if !emplObj?.roleIds || emplObj?.roleIds?.length<1
       emplObj.roleIds = [0]
     if emplObj.uuid
-      P.invoke(accountDao,"getUserByUuid",emplObj.uuid,false)
+      P.invoke(accountDao,"getUserByUuid",emplObj.uuid,false,companyId)
       .then (userObj) ->
         if !userObj || userObj.CompanyId!=companyId
           throw new Error('employee.no.access.change')
@@ -137,7 +138,7 @@ class HrCtrl
             for taskObj in taskList
               savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             if dbTimeSheetObj.approvedBy
-              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
+              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy,true,companyId)
               .then (userNameObj) ->
                 savedTimeSheet.approvedBy = commonUtils.getFullName(userNameObj)
                 return savedTimeSheet
@@ -172,7 +173,7 @@ class HrCtrl
             for taskObj in taskList
               savedTimeSheet.tasks.push({name:taskObj.name,comments:taskObj.comments,Sun:taskObj.Sun,Mon:taskObj.Mon,Tue:taskObj.Tue,Wed:taskObj.Wed,Thu:taskObj.Thu,Fri:taskObj.Fri,Sat:taskObj.Sat})
             if dbTimeSheetObj.approvedBy
-              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy)
+              accountDao.getUserByUuid(dbTimeSheetObj.approvedBy,true,companyId)
               .then (userNameObj) ->
                 savedTimeSheet.approvedBy = commonUtils.getFullName(userNameObj)
                 return savedTimeSheet
@@ -231,10 +232,21 @@ class HrCtrl
         tsTaskDetails.save()
         P.invoke(employeeDao,"deleteTaskDepart",taskObj.id)
         .then () ->
-          tsTaskDetails.setDepartments(taskObj.deptList)
+          if taskObj?.deptList?.length > 0
+            tsTaskDetails.setDepartments(taskObj.deptList)
           return taskObj
     else
-    
+      P.invoke(employeeDao,"createCompanyTask",companyId,taskObj)
+      .then (tsTaskDetails) ->
+        if taskObj?.deptList?.length > 0
+          tsTaskDetails.setDepartments(taskObj.deptList)
+          .then (deptList) ->
+            taskObj.id = tsTaskDetails.id
+            return taskObj
+        else
+          taskObj.id = tsTaskDetails.id
+          return taskObj 
+
   getRoleList: (companyId)->
     P.invoke(accountDao,"getRoleList",companyId)               
 
@@ -301,4 +313,78 @@ class HrCtrl
       P.invoke(employeeDao,"createFileRoom",companyId,fileRoomObj)
       .then (fileRoomDetails) ->
         return fileRoomDetails
+
+  getAllFileRooms: (companyId) ->
+    return employeeDao.getAllFileRooms(companyId) 
+  
+  getEmployeeFileRoomDocs: (companyId,emplid,fileRoomId) ->
+    employeeDao.getEmployeeByEmplid(companyId,emplid)
+    .then (emplObj) ->
+      P.invoke(employeeDao,"getFileRoomDetails",companyId,fileRoomId)
+      .then (fileRoomDetails) ->
+        employeeDao.getEmpFileRoomDocs(emplObj.id,fileRoomId)
+        .then (fileRoomDocsList) ->
+          empFileRoom = {roomName:fileRoomDetails.roomName,accessToEmployee:fileRoomDetails.accessToEmployee,accessToSupervisor:fileRoomDetails.accessToSupervisor}
+          empFileRoom.files = []
+          if fileRoomDocsList && fileRoomDocsList.length>0
+            for fileRoomDoc in fileRoomDocsList
+              empFileRoom.files.push(fileRoomDoc) 
+          return empFileRoom
+
+  uploadEmpFilesToFileRoom: (companyId,body,files) ->
+    file = files.files
+    if file.size > 5000000
+      fs.unlink(file.path)
+      throw new Error('upload.file.size.5mb')
+    else
+      employeeDao.getEmployeeByEmplid(companyId,body.emplId)
+      .then (emplObj) ->
+        P.invoke(employeeDao,"getFileRoomDetails",companyId,body.fileRoomId)
+        .then (fileRoomDetails) ->
+          P.invoke(cloudStore,"empUploadToFileRoom",file,emplObj.UserId,fileRoomDetails.id)
+          .then (fileNameOnCloud) ->
+            fileRoomDocObj = {orginalName:file.originalname,cloudName:fileNameOnCloud,mimeType:file.mimetype,extension:file.extension,EmployeeId:emplObj.id,FileRoomId:body.fileRoomId}
+            P.invoke(employeeDao,"createFileRoomDoc",fileRoomDocObj)
+            .then (fileObj) ->
+              employeeDao.getEmpFileRoomDocs(emplObj.id,fileRoomDetails.id)
+              .then (fileRoomDocsList) ->
+                empFileRoom = {roomName:fileRoomDetails.roomName,accessToEmployee:fileRoomDetails.accessToEmployee,accessToSupervisor:fileRoomDetails.accessToSupervisor}
+                empFileRoom.files = []
+                if fileRoomDocsList && fileRoomDocsList.length>0
+                  for fileRoomDoc in fileRoomDocsList
+                    empFileRoom.files.push(fileRoomDoc) 
+                return empFileRoom
+
+  deleteEmpFileFromRoom: (companyId,emplId,fileRoomId,fileId) ->
+    employeeDao.getEmployeeByEmplid(companyId,emplId)
+    .then (emplObj) ->
+      P.invoke(employeeDao,"getFileRoomDetails",companyId,fileRoomId)
+        .then (fileRoomDetails) ->
+          P.invoke(employeeDao,"getDocFromFileRoom",fileRoomId,fileId,emplObj.id)
+          .then (docDetails) ->
+            cloudStore.deleteFileRoomFileFromStore(docDetails.cloudName)
+            docDetails.destroy()
+            .then () ->
+              employeeDao.getEmpFileRoomDocs(emplObj.id,fileRoomDetails.id)
+              .then (fileRoomDocsList) ->
+                empFileRoom = {roomName:fileRoomDetails.roomName,accessToEmployee:fileRoomDetails.accessToEmployee,accessToSupervisor:fileRoomDetails.accessToSupervisor}
+                empFileRoom.files = []
+                if fileRoomDocsList && fileRoomDocsList.length>0
+                  for fileRoomDoc in fileRoomDocsList
+                    empFileRoom.files.push(fileRoomDoc) 
+                return empFileRoom 
+
+  downloadDocFromFileRoom: (companyId,params) ->
+    employeeDao.getFileRoomDocById(params.id)
+    .then (docDetails) ->
+      if docDetails
+        cloudStore.downloadFileRoomFileFromStore(docDetails.cloudName)
+        .then (fileData) ->
+          fileObj = {}
+          fileObj.fileData = fileData
+          fileObj.fileRoomDoc = docDetails
+          return fileObj
+      else
+        throw new Error('employee.no.access.change')
+
 module.exports = new HrCtrl() 

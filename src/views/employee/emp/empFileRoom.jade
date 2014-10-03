@@ -11,11 +11,11 @@ block breadcrumbs
       a(href="/c/#{company.companyId}/a/home") Home
     li
       a(href="/c/#{company.companyId}/emp/empHome") My Tasks
-    li.active File Rooms
+    li.active File Room
 block content
   .container(ng-app="list",ng-controller="listCtrl" ng-cloak)
     .row
-      .col-sm-4.col-md-3.marginBottom10(ng-repeat="empFileRoom in lists")
+      .col-xs-6.col-sm-4.col-md-3.marginBottom10(ng-repeat="empFileRoom in lists")
         a(href="/c/#{company.companyId}/id/{{empFileRoom.id}}/emp/empFileRoomDocs")
           div.alignCenter
             img(src="/images/folder-icon.png")

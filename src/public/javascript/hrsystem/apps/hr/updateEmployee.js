@@ -37,9 +37,14 @@ updateEmployeeApp.controller('updateEmployeeCtrl', ['$scope','employeeHrService'
 	  	alert('Please enter valid employee id');
 	  } else {
 	  	$scope.empObj.roleIds = []
-	  	for(var i=0;i<$scope.empRoleList.length;i++) {
-      	  $scope.empObj.roleIds.push($scope.empRoleList[i].roleId)
-        }
+	  	if($scope.empRoleList && $scope.empRoleList.length >0) {
+		  for(var i=0;i<$scope.empRoleList.length;i++) {
+      	    $scope.empObj.roleIds.push($scope.empRoleList[i].roleId);
+          }
+	  	} else {
+	  		$scope.empObj.roleIds =[];
+	  	}
+	  	
         if(action) {
           if(action =='activate') {
           	var r = confirm('Do you want to activate this account? Email will be sent to employee to reset password.');

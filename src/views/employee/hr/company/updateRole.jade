@@ -71,6 +71,10 @@ block content
                             label
                               input(type="checkbox" name="selectedPages" value="3" ng-checked="alreadySelectedPages.3") 
                               span Approve Timesheets
+                          .checkbox(ng-if="accessPageIdList.8")
+                            label
+                              input(type="checkbox" name="selectedPages" value="8" ng-checked="alreadySelectedPages.8") 
+                              span File Room    
                     .col-xs-12.col-sm-4
                       .panel.panel-primary
                         .panel-heading 
@@ -108,7 +112,10 @@ block content
       .form-group
         .col-sm-offset-2.col-sm-10
           b Note: 
-          span.small Role created cannot be deleted, however you can edit it.   
-      br     
-    
+          span.small Role created cannot be deleted, however you can edit it. 
+               
+    .alert.alert-danger.alignCenter.container(ng-show="errMsg") 
+      b {{errMsg}}
+    .alert.alert-success.alignCenter.container(ng-show="successMsg") 
+      b {{successMsg}}
                    
