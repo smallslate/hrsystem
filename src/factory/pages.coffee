@@ -15,7 +15,7 @@ module.exports =
     8      : {'name':'File Rooms','parentId':'1','url':['/hr/listFileRoomEmps','/rest/hr/getAllActiveEmployeeList','/hr/employeeFileRoom','/rest/hr/getEmployeeHeader','/rest/hr/getAllFileRooms','/rest/hr/getEmployeeFileRoomDocs','/rest/hr/uploadEmpFilesToFileRoom','/rest/hr/deleteEmpFileFromRoom','/rest/hr/downloadDocFromFileRoom']}
 
     1000   : {'name':'My Tasks','url':['/emp/empHome']}
-    1001   : {'name':'Timesheets','parentId':'1000','url':['/rest/emp/getCompanyTasks','/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet']}
+    1001   : {'name':'Timesheets','parentId':'1000','url':['/rest/emp/getCompanyTasksByDept','/rest/emp/getCompanyTasks','/rest/emp/downloadTimesheetDoc','/rest/emp/deleteTimesheetDoc','/rest/emp/getTimesheetDocs','/emp/timesheet','/rest/emp/saveTimeSheet','/rest/emp/uploadTimeSheetDoc','/rest/emp/getTimeSheet']}
     1002   : {'name':'File Rooms','parentId':'1000','url':['/emp/fileRooms','/rest/emp/getEmployeeFileRooms','/emp/empFileRoomDocs','/rest/emp/getEmpFileRoomDocs','/rest/emp/empUploadToFileRoom','/rest/emp/deleteEmpFileFromRoom','/rest/emp/downloadDocFromFileRoom']}
   
     

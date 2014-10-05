@@ -14,7 +14,7 @@ class AWS
       verificationId = nodeUuid.v4()
       fileName = uuid+'_'+weekId+'_'+verificationId+'.'+file.extension
       fileName = fileName.replace(/\//g, '_');
-      params = {Key: config.uploadPath.timeSheets+fileName,Body: fileData,ACL: 'public-read',ContentType: file.mimetype}
+      params = {Key: config.uploadPath.timeSheets+fileName,Body: fileData,ContentType: file.mimetype}
       P.ninvoke(fileBucket,'putObject',params)
       .then () ->
         fs.unlink(file.path)
@@ -35,7 +35,7 @@ class AWS
       verificationId = nodeUuid.v4()
       fileName = uuid+'_'+fileRoomId+'_'+verificationId+'.'+file.extension
       fileName = fileName.replace(/\//g, '_');
-      params = {Key: config.uploadPath.fileRoom+fileName,Body: fileData,ACL: 'public-read',ContentType: file.mimetype}
+      params = {Key: config.uploadPath.fileRoom+fileName,Body: fileData,ContentType: file.mimetype}
       P.ninvoke(fileBucket,'putObject',params)
       .then () ->
         fs.unlink(file.path)

@@ -39,7 +39,8 @@ block content
         .input-group
           .input-group-addon.width100 
             b Status
-          label.form-control.alert-danger(ng-if="timeSheetObj.status=='new'") New  
+          label.form-control.alert-danger(ng-if="timeSheetObj.status=='new'") New 
+          label.form-control.alert-danger(ng-if="timeSheetObj.status=='draft'") Draft
           label.form-control.alert-info(ng-if="timeSheetObj.status=='submit'") Submitted  
           label.form-control.alert-success(ng-if="timeSheetObj.status=='approved'") Approved
 
@@ -119,6 +120,6 @@ block content
 
       div(ng-if="timeSheetObj.status!='new'")
         b(ng-if="timeSheetObj.status=='approved'") Timesheet approved.
-        div Submitted On : {{timeSheetObj.submittedOn | date : 'M/d/yy h:mm a'}} 
+        div(ng-if="timeSheetObj.status=='submit'") Submitted On : {{timeSheetObj.submittedOn | date : 'M/d/yy h:mm a'}} 
         div(ng-if="timeSheetObj.status=='approved'") Approved On : {{timeSheetObj.approvedOn | date : 'M/d/yy h:mm a'}} 
         div(ng-if="timeSheetObj.status=='approved'") Approved By : {{timeSheetObj.approvedBy}}  

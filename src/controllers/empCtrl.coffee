@@ -6,6 +6,7 @@ accountDao = require('../dao/accountDao')
 fs = require('fs')
 messages = require('../utils/messages').code
 cloudStore = require('../factory/cloudStore')
+mailUtils = require('../utils/mailUtils')
 
 class EmpCtrl
 
@@ -92,6 +93,8 @@ class EmpCtrl
           timesheetObj['EmployeeId'] = emplObj.id
           employeeDao.createTimeSheet(timesheetObj)
           .then (dbTimeSheetObj) ->
+            if timesheetObj.status =='submit'
+              mailUtils.sendTimesheetSubmitEmail(emplObj,timesheetObj)
             savedTimeSheet = {}
             savedTimeSheet.id = dbTimeSheetObj.id
             savedTimeSheet.weekId = dbTimeSheetObj.weekId
@@ -103,12 +106,15 @@ class EmpCtrl
             return savedTimeSheet
         else if savedTimesheetObjList?.length > 0 
           savedTimesheetObj = savedTimesheetObjList[0]
+          if timesheetObj.status =='submit' && savedTimesheetObj.status =='draft'
+            mailUtils.sendTimesheetSubmitEmail(emplObj,timesheetObj)
           savedTimesheetObj['submittedOn'] =  new Date()
+          savedTimesheetObj['status'] =  timesheetObj.status
           savedTimesheetObj.save()
           employeeDao.deleteTimeSheetTasks(savedTimesheetObj.id)
           .then () ->
             employeeDao.createTimeSheetTasks(timesheetObj.tasks,savedTimesheetObj.id)
-            timesheetObj.status = 'submit'
+            timesheetObj.status = savedTimesheetObj.status
             timesheetObj.submittedOn =  savedTimesheetObj.submittedOn
             return timesheetObj 
         else

@@ -72,7 +72,8 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   	}
   };
 
-  $scope.saveTimeSheet = function() {
+  $scope.saveTimeSheet = function(status) {
+    $scope.timeSheetObj.status = status;
   	timesheetService.saveTimeSheet($scope.timeSheetObj, function(result) {
 		  $scope.timeSheetObj = result;
 		  $scope.updateValues();

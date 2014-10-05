@@ -91,4 +91,27 @@ class Mail
       forgotSignInId[prop] = S(forgotSignInId[prop]).template(valuesObj).s
     return forgotSignInId 
 
+  getTimesheetSubmitEmailObj: (valuesObj)->
+    timesheetSubmitEmail = 
+      from: 'support@smallslate.com'
+      to: '{{supervisorEmail}}'
+      subject: 'Timesheet submitted by {{employeeName}} for week {{weekId}}'
+      html:'<html>
+              <body>
+                <div style="border-radius: 4px;background-color:#f1f1f1;height:150px;padding:5px;font-family:Helvetica,Arial,sans-serif;">
+                  <div style="margin:10px;"> 
+                    <p>Timesheet has been submitted by <b>{{employeeName}}</b> for week <b>{{weekId}}</b></p>
+                    <div><a href="'+config.server.serverUrl+'/c/{{companyId}}/emplid/{{emplIdWeekId}}/hr/approveTimesheet" style="text-align:center;color:black;text-decoration: none;padding-top:15px;border-radius: 4px;background-color:orange;display: block;height: 30px;width: 150px;"><b> Open Timesheet</b></a></div>
+                    <br/>
+                    Sincerely,
+                    <div>{{companyName}} Team</div>
+                  </div>  
+                </div>
+              </body>
+            </html>'
+    keys = Object.keys(timesheetSubmitEmail)
+    for prop in keys
+      timesheetSubmitEmail[prop] = S(timesheetSubmitEmail[prop]).template(valuesObj).s
+    return timesheetSubmitEmail
+
 module.exports = new Mail()       

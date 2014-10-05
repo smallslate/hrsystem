@@ -17,5 +17,5 @@ module.exports = (sequelize,DataTypes)->
       type:DataTypes.BIGINT
     status:
       type: DataTypes.STRING(10)
-      defaultValue: 'submit'     
+      defaultValue: 'draft'     
   })	

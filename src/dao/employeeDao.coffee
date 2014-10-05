@@ -63,7 +63,7 @@ class EmployeeDao
     models['TimesheetDoc'].destroy({TimesheetId:timesheetId,id:timesheetDocId})   
 
   createTimeSheet: (timesheetObj) ->
-    models['Timesheet'].create({weekId:timesheetObj.weekId,EmployeeId:timesheetObj.EmployeeId,submittedOn:new Date()})
+    models['Timesheet'].create({status:timesheetObj.status,weekId:timesheetObj.weekId,EmployeeId:timesheetObj.EmployeeId,submittedOn:new Date()})
     .then (dbTimeSheetObj) ->
       if timesheetObj.tasks && timesheetObj.tasks.length > 0
         for task in timesheetObj.tasks
@@ -88,12 +88,12 @@ class EmployeeDao
   deleteTimeSheetTasks: (timeSheetId) ->
     models['TimesheetTask'].destroy({TimesheetId:timeSheetId})
 
-  getTimeSheetTasks: (timeSheetId) ->
-    models['TimesheetTask'].destroy({TimesheetId:timeSheetId})
-
   createTimeSheetTasks: (taskList,timesheetId) ->
     for task in taskList
-        task.TimesheetId = timesheetId
+      if Number.isNaN(task.name) || task.name ==' '|| task.name ==''
+        task.name =0
+      task.TimesheetId = timesheetId
+      console.log(task.name)
     models['TimesheetTask'].bulkCreate(taskList) 
 
   getFileRoomsByCompanyId: (companyId) ->
@@ -143,6 +143,18 @@ class EmployeeDao
         return result[0]
       else
         return {}  
+
+  getEmployeeSupervisorDetails: (companyId,emplid) ->
+    query = "select us.email,us.firstName,us.middleName,us.lastName,ee.UserId,ee.emplId from Employees ee,Users us where us.uuid= ee.UserId and us.CompanyId = ee.CompanyId" 
+    query = query+" and ee.CompanyId="+companyId
+    query = query+" and ee.emplId = (SELECT e.supervisorId from Employees e where e.CompanyId=ee.CompanyId"
+    query = query+" and e.emplId ="+emplid+")"
+    sequelize.query(query)
+    .then (result) ->
+      if result && result.length>0
+        return result[0]
+      else
+        return {} 
 
   deleteTaskDepart: (taskId) ->
     sequelize.query("DELETE FROM CompanyTasksDepartments WHERE CompanyTaskId ="+taskId)

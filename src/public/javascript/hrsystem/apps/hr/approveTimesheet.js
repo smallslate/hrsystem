@@ -11,14 +11,20 @@ timeSheetApp.controller('timeSheetCtrl', ['$scope','timesheetService', function(
   })
 
   emplidIndex = location.pathname.indexOf("/emplid/");
-  $scope.selectedEmplid = null;
-  if(emplidIndex>5) {
-      $scope.selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/approveTimesheet"))
-  }
-
+  selectedEmplid = null;
   $scope.timeSheetObj = {};
-  $('#selectedDate').datepicker('setDate',(new Date().getMonth()+1)+'/'+new Date().getDate()+'/'+new Date().getFullYear());
-  
+
+  if(emplidIndex>5) {
+      selectedEmplid = location.pathname.substring(emplidIndex+8,location.pathname.indexOf("/hr/approveTimesheet"))
+  }
+  if(selectedEmplid.indexOf('WID') >-1) {
+    $scope.selectedEmplid = selectedEmplid.substring(0,selectedEmplid.indexOf('WID'));
+    selectedWeekId = selectedEmplid.substring(selectedEmplid.indexOf('WID')+3).replace(new RegExp('-','g'),'/');
+    $('#selectedDate').datepicker('setDate',selectedWeekId);
+  } else {
+    $scope.selectedEmplid = selectedEmplid;
+    $('#selectedDate').datepicker('setDate',(new Date().getMonth()+1)+'/'+new Date().getDate()+'/'+new Date().getFullYear());
+  } 
   $scope.updateTableHeader = function() {
   	var selectedDate = $('#selectedDate').datepicker('getDate');
   	if(selectedDate && selectedDate!='Invalid Date') {

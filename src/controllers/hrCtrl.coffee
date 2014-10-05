@@ -83,6 +83,8 @@ class HrCtrl
             reqNewUserObj = {signInId:emplObj.signInId,email:emplObj.email,firstName:emplObj.firstName,middleName:emplObj?.middleName,lastName:emplObj.lastName,CompanyId:companyId}
             P.invoke(accountDao,"createNewAccount",reqNewUserObj)
               .then (newUser) ->
+                if Number.isNaN(emplObj.supervisorId) || emplObj.supervisorId ==''
+                  emplObj.supervisorId = null
                 P.invoke(employeeDao,"saveNewEmployee",{emplId:emplObj.emplId,CompanyId:companyId,UserId:newUser.uuid,supervisorId:emplObj.supervisorId})
                 .then (newEmplObj) ->
                   P.invoke(employeeDao,'getCompanyRolesById',companyId,emplObj.roleIds)
