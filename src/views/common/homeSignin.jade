@@ -1,15 +1,12 @@
-extends /templates/layout
+extends /templates/homeLayout
 block head
   link(href="/css/signin.css" rel="stylesheet")
-  title Welcome to #{company.companyName}
+  title Sign in
   script(src="/javascript/hrsystem/utils/signin.js")
-
 block content
   .container
-    h2.form.form-signin-heading.alignCenter One account. All your data @ #{company.companyName}
-    form.form-signin(action="/c/#{company.companyId}/signIn" method="post")
+    h2.form.form-signin-heading.alignCenter One account. All your data @ Office
+    form.form-signin(action="/signIn" method="post")
       input.form-control#username(placeholder="SignIn Id" required autofocus name="username")
       input.form-control#password(type="password" name="password" placeholder="Password" required)
       button.btn.btn-lg.btn-primary.btn-block(type="submit" onClick="validateForm()") Sign in
-      a.small(href="/c/#{company.companyId}/recovery") 
-        h6 Having trouble signing in?

@@ -74,7 +74,7 @@ block content
               div {{tableHeader[6]}}
             th.col-sm-2 
               div Comments
-            th.col-sm-1 
+            th.col-sm-1.hidden-print 
               div  
           tr(ng-repeat="task in timeSheetObj.tasks")
             td
@@ -96,12 +96,13 @@ block content
             td
               input(type="text" data-ng-model="task['comments']" ng-disabled="{{timeSheetObj.status=='approved'}}")   
             td(ng-if="timeSheetObj.status!='approved'")
-              button.btn.btn-default(type="button" ng-click="removeTask($index)")
+              button.btn.btn-default.hidden-print(type="button" ng-click="removeTask($index)")
                 span.glyphicon.glyphicon-remove  
           tr.success
             td
               button.btn.btn-link(ng-click="addNewTask()" ng-if="timeSheetObj.status!='approved'")
                 b Add New Row
+              div(ng-if="timeSheetObj.status=='approved'") Timesheet Approved  
             td
               label {{subTotals[days[0]]}}
             td
@@ -123,11 +124,11 @@ block content
         button.btn.btn-link(ng-click="deleteTimesheetDoc(timeSheetDoc.id)" ng-if="timeSheetObj.status!='approved'")
           span.glyphicon.glyphicon-trash.btn-link
 
-      input#fileupload(type="file" name="files" ng-disabled="timeSheetObj.status=='approved'")
+      input#fileupload.hidden-print(type="file" name="files" ng-disabled="timeSheetObj.status=='approved'")
       .div(ng-if="timeSheetObj.status!='approved'")
         br
-        button.btn.btn-primary.marginRight10(type="submit" ng-click="saveTimeSheet('submit')") Submit Timesheet
-        button.btn.btn-primary(type="submit" ng-click="saveTimeSheet('draft')" ng-if="timeSheetObj.status!='submit'") Save As Draft
+        button.btn.btn-primary.marginRight10.hidden-print(type="submit" ng-click="saveTimeSheet('submit')") Submit Timesheet
+        button.btn.btn-primary.hidden-print(type="submit" ng-click="saveTimeSheet('draft')" ng-if="timeSheetObj.status!='submit'") Save As Draft
 
     div(ng-if="timeSheetObj.status!='new'")
       b(ng-if="timeSheetObj.status=='approved'") Timesheet approved.

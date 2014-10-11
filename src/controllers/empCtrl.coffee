@@ -27,6 +27,7 @@ class EmpCtrl
             timesheetObj['EmployeeId'] = emplObj.id
             timesheetObj['weekId'] = body.weekId
             timesheetObj['submittedOn'] =  new Date()
+            timesheetObj['status'] =  'draft'
             timesheetObj['tasks'] = []
             employeeDao.createTimeSheet(timesheetObj)
             .then (dbTimeSheetObj) =>

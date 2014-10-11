@@ -44,10 +44,16 @@ module.exports = (app)->
   server.all '/rest/emp/*',accountCtrl.authorizeRestRequest
 
   server.get "/c/:companyId/signin",(req,res)->
-    if req.isAuthenticated()
+    if req.isAuthenticated() && req.session.company?.companyId
       res.redirect("/c/#{req.session.company.companyId}/a/home")
     else  
       res.render("common/signin")
+
+  server.get "/signin",(req,res)->
+    if req.isAuthenticated()
+      res.redirect("/c/#{req.session.company.companyId}/a/home")
+    else  
+      res.render("common/homeSignin")    
 
   server.get "/c/:companyId/a/signOut",(req,res)->
     req.session.destroy()
@@ -60,6 +66,36 @@ module.exports = (app)->
       res.send(obj)
     ,(err) -> 
       res.send(null)
+
+  server.post "/signin",(req, res,next)->
+    req.logout()
+    authenticate = passport.authenticate 'local',(err, user, info)->
+      if err then res.render("common/homeSignin",message:messages['user.login.error'])
+      if !user then return res.render("common/homeSignin",message:messages['user.password.error'])
+      P.invoke(accountCtrl, "updateCompanyInSessionById",req, res,user.dataValues.companyId)
+      .then (obj)->
+        if obj
+          req.logIn user,(err)->
+            if err then  res.render("common/homeSignin",message:messages['user.password.error'])
+            pid = []
+            for role in user.roles
+              for pageAccess in role.pageAccesses
+                pid.push pageAccess.pageId
+            req.session.user = {}
+            req.session.user.name = user.dataValues.lastName
+            req.session.user.uuid = user.dataValues.uuid
+            req.session.user.companyuid = user.dataValues.companyId
+            req.session.user.pid = pid
+            res.redirect("/c/#{req.session.company.companyId}/a/home")     
+        else
+          req.session.destroy()
+          req.logout()
+          return res.render("common/homeSignin",message:messages['user.password.error'])   
+      ,(error)->
+        req.session.destroy()
+        req.logout()
+        return res.render("common/homeSignin",message:messages['user.password.error'])    
+    authenticate(req, res, next)
 
   server.post "/c/:companyId/signin",(req, res,next)->
     req.logout()

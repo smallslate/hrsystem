@@ -186,8 +186,7 @@ class AccountCtrl
         res.locals= null
         req.session.destroy()
         req.logout()
-        #replace with common login
-        res.render("common/signin",message:messages['user.login.error'])
+        res.render("common/homeSignin",message:messages['user.login.error'])
     else
       res.locals= {}
       req.session.user = null
@@ -198,11 +197,20 @@ class AccountCtrl
           req.session.company = res.locals.company = company
           next()
         else
-          #replace with common login
-          res.render("common/signin",message:messages['user.login.error'])
+          res.render("common/homeSignin",message:messages['user.login.error'])
       ,(error)->
-        #replace with common login
-        res.render("common/signin",message:messages['user.login.error'])
+        res.render("common/homeSignin",message:messages['user.login.error'])
+
+  updateCompanyInSessionById:(req,res,companyId)->
+    accountDao.getCompanyByuid(companyId,true)
+    .then (company)->
+      console.log 'company=',company
+      if company 
+        req.session.company = res.locals.company = company
+        return true
+      else
+        throw new Error('user.login.error')
+
 module.exports = new AccountCtrl()
 
     

@@ -20,4 +20,6 @@ block content
           div.alignCenter
             img(src="/images/folder-icon.png")
             div {{empFileRoom.roomName}}
+    .alert.alert-success(ng-if="lists.length<1")
+      b File room is empty. Please contact your system administrator to create file rooms.        
     

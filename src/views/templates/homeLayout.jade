@@ -6,24 +6,19 @@ html
     link(href="/frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet")
     link(href="/css/index.css" rel="stylesheet")
     link(href="/css/menu.css" rel="stylesheet")
-    script(src="/frameworks/angular/angular.min.js")
-    script(src="/frameworks/angular/angular-route.min.js")
-    script(src="/frameworks/angular/angular-resource.min.js")
     script(src="/frameworks/jquery-1.11.1.min.js")
     script(src="/frameworks/bootstrap/js/bootstrap.min.js")
     block head
     title Welcome
   body
-    div
-      include authMenu
+    div#wrap
+      include homeMenu
       .container
-        .hidden-print
-          block breadcrumbs
         if message && message.successMsg
-          .alert.alert-success.alignCenter.container 
+          .alert.alert-success.alignCenter 
             b #{message.successMsg}
         if message && message.errMsg
-          .alert.alert-danger.alignCenter.container 
+          .alert.alert-danger.alignCenter 
             b #{message.errMsg}
-      block content
+        block content
     include footer
